@@ -1,5 +1,6 @@
 class Link {
   String url;
+  String name;
 
-  Link(this.url);
+  Link({required this.name, required this.url});
 }

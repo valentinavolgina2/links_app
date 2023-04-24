@@ -92,7 +92,7 @@ class SelectGrid extends StatelessWidget {
                     // BoardIconView(board: boardTemplates[grid]!),
                     // const SizedBox(height: 20),
                     Text(
-                      link.url,
+                      link.name,
                       style: textStyle,
                       textAlign: TextAlign.center,
                     ),
