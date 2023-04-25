@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../model/list.dart';
+import '../../widgets/list.dart';
 
 class ListPage extends StatelessWidget {
   const ListPage({super.key, required this.list});
@@ -19,7 +20,7 @@ class ListPage extends StatelessWidget {
           padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
             child: SingleChildScrollView(
               physics: const ScrollPhysics(),
-              child: list.buildList(context, withName: false),
+              child: ListContainer(list: list, withName: false),
             )
           ),
         );

@@ -4,7 +4,17 @@ import 'list.dart';
 // https://www.mysqltutorial.org/mysql-adjacency-list-tree/
 final myLists = [
   LinksList(
-    name: 'Amazon', 
+    name: 'Amazon',
+    links: [
+      Link(
+        name: 'Link 1',
+        url:
+            'https://www.amazon.com/gp/product/B01LWC7XTW/ref=ox_sc_act_title_3?smid=A1M24Z1DO0DHDE&th=1&psc=1'),
+      Link(
+        name: 'Link 2',
+        url:
+            'https://www.amazon.com/gp/product/B083CTQ518/ref=ewc_pr_img_1?smid=A22EDVDQDLC8XN&psc=1')
+    ],
     lists: [
       LinksList(name: 'Sport', links: [
         Link(
