@@ -5,6 +5,7 @@ class AppColors {
   static _Scaffold scaffold = _Scaffold();
   static _Button button = _Button();
   static _Link link = _Link();
+  static _Category category = _Category();
 }
 
 /// A scaffold group of colors
@@ -20,6 +21,11 @@ class _Button {
 /// A link group of colors
 class _Link {
   Color? background = Colors.deepOrange[50];
+  Color text = Colors.black87;
+}
+
+/// A category group of colors
+class _Category {
   Color text = Colors.black87;
 }
 

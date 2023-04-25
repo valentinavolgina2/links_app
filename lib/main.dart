@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:links_app/styles/color.dart';
+import 'package:links_app/widgets/list_card.dart';
 
 import 'model/lists.dart';
-import 'widgets/listCard.dart';
 
 void main() {
   runApp(const MyApp());
