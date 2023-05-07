@@ -1,9 +1,28 @@
+import 'package:firebase_database/firebase_database.dart';
+
 import 'link.dart';
 
-class LinksList {
-  String name;
-  List<Link> links;
-  List<LinksList> lists;
+const String tableList = 'sublist';
+const String columnId = 'id';
+const String columnName = 'name';
 
-  LinksList({required this.name, this.links = const [], this.lists = const []});
+class LinksList {
+  final String id;
+  final String name;
+
+  List<Link> links = [];
+
+  LinksList({required this.id, required this.name});
+
+  LinksList.fromSnapshot(DataSnapshot snapshot):
+    id = snapshot.key!,
+    name = snapshot.key.toString();
+  
+
+  Map<String, String> toMap() {
+    return <String, String>{
+      columnId: id,
+      columnName: name
+    };
+  }
 }
