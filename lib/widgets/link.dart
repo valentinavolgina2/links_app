@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../model/link.dart';
+import '../providers/link.dart';
 import '../styles/color.dart';
 
 class LinkContainer extends StatelessWidget {
@@ -28,6 +29,10 @@ class LinkContainer extends StatelessWidget {
         title: Text(
           link.name,
           style: textStyle,
+        ),
+        trailing: IconButton(
+          onPressed: () => LinkProvider.deleteLink(linkKey: link.id, listId: link.listId),
+          icon: const Icon(Icons.delete),
         ),
         onTap: () {
           _launchURL(Uri.encodeFull(link.url));

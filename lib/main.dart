@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:links_app/connection/database.dart';
+import 'package:links_app/providers/list.dart';
 import 'package:links_app/styles/color.dart';
 import 'package:links_app/widgets/list_card.dart';
-import 'package:flutter/widgets.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -48,11 +48,9 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<LinksList> myLists = [];
-  late DatabaseReference _listsRef;
+
   late StreamSubscription<DatabaseEvent> _listsSubscription;
-  FirebaseException? _error;
-  bool initialized = false;
-  int _id = 0;
+  late StreamSubscription<DatabaseEvent> _listsDeleteSubscription;
 
   @override
   void initState() {
@@ -63,16 +61,24 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> init() async {
     DB.enableLogging(false);
 
-    setState(() {
-      initialized = true;
-    });
-
-    _listsRef = FirebaseDatabase.instance.ref('mylists');
-
-    _listsSubscription = _listsRef.onChildAdded.listen(
+    _listsSubscription = ListProvider.listsRef.onChildAdded.listen(
       (DatabaseEvent event) {
         setState(() {
           myLists.add(LinksList.fromSnapshot(event.snapshot));
+        });
+      },
+      onError: (Object o) {
+        final error = o as FirebaseException;
+        print('Error: ${error.code} ${error.message}');
+      },
+    );
+
+    _listsDeleteSubscription = ListProvider.listsRef.onChildRemoved.listen(
+      (DatabaseEvent event) {
+        setState(() {
+          final listToRemove =
+              myLists.where((list) => list.id == event.snapshot.key).first;
+          myLists.remove(listToRemove);
         });
       },
       onError: (Object o) {
@@ -86,28 +92,11 @@ class _MyHomePageState extends State<MyHomePage> {
   void dispose() {
     super.dispose();
     _listsSubscription.cancel();
-  }
-
-  Future<void> _addList() async {
-    final listName = 'List $_id';
-    final DatabaseReference newList =
-        FirebaseDatabase.instance.ref('mylists/$listName').push();
-
-    await newList.parent!.set(true);
-
-    // final DatabaseReference newLinks =
-    //     FirebaseDatabase.instance.ref('links/$listName').push();
-    // await newLinks.parent!.set({'name': 'Name $_id', 'url': 'url $_id'});
-
-    // await newLinks.parent!.set([{}, {}]);
-
-    _id++;
+    _listsDeleteSubscription.cancel();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!initialized) return Container();
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -115,10 +104,10 @@ class _MyHomePageState extends State<MyHomePage> {
       body: SafeArea(
           child: ListView(
               children: myLists.map((list) => ListCard(list: list)).toList())),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _addList,
+      floatingActionButton: const FloatingActionButton(
+        onPressed: ListProvider.addList,
         tooltip: 'Add new list',
-        child: const Icon(Icons.add),
+        child: Icon(Icons.add),
       ),
     );
   }

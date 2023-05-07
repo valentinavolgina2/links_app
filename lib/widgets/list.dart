@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../model/link.dart';
 import '../model/list.dart';
+import '../providers/link.dart';
 import '../styles/color.dart';
 import '../styles/size.dart';
 import 'link.dart';
@@ -22,9 +23,9 @@ class ListContainer extends StatefulWidget {
 
 class _ListContainerState extends State<ListContainer> {
   List<Link> _links = [];
-  int _id = 0;
   late DatabaseReference _linksRef;
   late StreamSubscription<DatabaseEvent> _linksSubscription;
+  late StreamSubscription<DatabaseEvent> _linksDeleteSubscription;
 
   @override
   void initState() {
@@ -46,22 +47,27 @@ class _ListContainerState extends State<ListContainer> {
         print('Error: ${error.code} ${error.message}');
       },
     );
+
+    _linksDeleteSubscription = _linksRef.onChildRemoved.listen(
+      (DatabaseEvent event) {
+        setState(() {
+          final linkToRemove =
+              _links.where((link) => link.id == event.snapshot.key).first;
+          _links.remove(linkToRemove);
+        });
+      },
+      onError: (Object o) {
+        final error = o as FirebaseException;
+        print('Error: ${error.code} ${error.message}');
+      },
+    );
   }
 
   @override
   void dispose() {
     super.dispose();
     _linksSubscription.cancel();
-  }
-
-  Future<void> _addLink() async {
-    final linkName = 'Name $_id';
-    final linkUrl = 'Url $_id';
-    final DatabaseReference newLink =
-        FirebaseDatabase.instance.ref('links/${widget.list.id}').push();
-    await newLink.set({'name': linkName, 'url': linkUrl});
-
-    _id++;
+    _linksDeleteSubscription.cancel();
   }
 
   @override
@@ -84,7 +90,7 @@ class _ListContainerState extends State<ListContainer> {
           ]),
         ),
         FloatingActionButton(
-          onPressed: _addLink,
+          onPressed: () => LinkProvider.addLink(listId: widget.list.id),
           tooltip: 'Add new link',
           child: const Icon(Icons.add),
         ),

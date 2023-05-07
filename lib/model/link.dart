@@ -16,11 +16,10 @@ class Link {
 
   Link({required this.id, required this.name, required this.url, required this.listId});
 
-  Link.fromSnapshot(DataSnapshot snapshot, String listId):
+  Link.fromSnapshot(DataSnapshot snapshot, this.listId):
     id = snapshot.key!,
     url = ((snapshot.value!) as Map<String, dynamic>)[columnURL]!,
-    name = ((snapshot.value!) as Map<String, dynamic>)[columnName]!,
-    listId = listId;
+    name = ((snapshot.value!) as Map<String, dynamic>)[columnName]!;
 
   Map<String, Object?> toMap() {
     return <String, String>{
