@@ -27,6 +27,10 @@ class _ListContainerState extends State<ListContainer> {
   late StreamSubscription<DatabaseEvent> _linksSubscription;
   late StreamSubscription<DatabaseEvent> _linksDeleteSubscription;
 
+  final TextEditingController _linkNameController = TextEditingController();
+  final TextEditingController _linkUrlController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     init();
@@ -70,31 +74,80 @@ class _ListContainerState extends State<ListContainer> {
     _linksDeleteSubscription.cancel();
   }
 
+  void _addLink(String listId) {
+    LinkProvider.addLink(Link(
+        name: _linkNameController.text,
+        url: _linkUrlController.text,
+        listId: listId));
+
+    _linkNameController.clear();
+    _linkUrlController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     final TextStyle titleStyle = TextStyle(
         color: AppColors.category.text, fontSize: AppSizes.category.text);
 
-    return Column(
-      children: [
-        ListTile(
-          contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0),
-          title: (widget.withName)
-              ? Padding(
-                  padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                  child: Text(widget.list.name, style: titleStyle),
-                )
-              : const SizedBox.shrink(),
-          subtitle: ListView(shrinkWrap: true, children: <Widget>[
-            ..._links.map((link) => LinkContainer(link: link)).toList(),
-          ]),
+    return ListTile(
+      contentPadding: const EdgeInsets.all(0.0),
+      title: Padding(
+        padding: const EdgeInsets.only(bottom: 32.0),
+        child: Form(
+          key: _formKey,
+          child: Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 4.0, right: 4.0),
+                  child: TextField(
+                    controller: _linkNameController,
+                    decoration: const InputDecoration(
+                      isDense: true,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1.0),
+                      ),
+                      hintText: 'New link name',
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 4.0, right: 4.0),
+                  child: TextField(
+                    controller: _linkUrlController,
+                    decoration: const InputDecoration(
+                      isDense: true,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1.0),
+                      ),
+                      hintText: 'Link url',
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 4.0, right: 4.0),
+                child: ElevatedButton(
+                    onPressed: () => _addLink(widget.list.id),
+                    child: const Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 14.0, horizontal: 8.0),
+                      child: Text('Add'),
+                    )),
+              ),
+            ],
+          ),
         ),
-        FloatingActionButton(
-          onPressed: () => LinkProvider.addLink(listId: widget.list.id),
-          tooltip: 'Add new link',
-          child: const Icon(Icons.add),
-        ),
-      ],
+      ),
+      subtitle: ListView(shrinkWrap: true, children: <Widget>[
+        ..._links.map((link) => LinkContainer(link: link)).toList(),
+      ]),
     );
   }
 }

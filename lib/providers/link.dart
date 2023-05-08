@@ -1,23 +1,19 @@
 import 'package:firebase_database/firebase_database.dart';
 
+import '../model/link.dart';
+
 class LinkProvider {
-  static int _id = 0;
   static const String _linksRoot = 'links';
 
-  static Future<void> addLink({required String listId}) async {
-    final linkName = 'Name $_id';
-    final linkUrl = 'Url $_id';
-
+  static Future<void> addLink(Link link) async {
     final DatabaseReference newLink =
-        FirebaseDatabase.instance.ref('$_linksRoot/$listId').push();
+        FirebaseDatabase.instance.ref('$_linksRoot/${link.listId}').push();
 
-    await newLink.set({'name': linkName, 'url': linkUrl});
-
-    _id++;
+    await newLink.set({'name': link.name, 'url': link.url});
   }
 
-  static Future<void> deleteLink({required String linkKey, required String listId}) async {
-    final linkRef = FirebaseDatabase.instance.ref('$_linksRoot/$listId').child(linkKey);
+  static Future<void> deleteLink(Link link) async {
+    final linkRef = FirebaseDatabase.instance.ref('$_linksRoot/${link.listId}').child(link.id);
     await linkRef.remove();
   }
 }

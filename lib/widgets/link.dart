@@ -15,7 +15,7 @@ class LinkContainer extends StatelessWidget {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     } else {
-      throw 'Could not launch $url';
+      print('Could not launch $url');
     }
   }
 
@@ -26,17 +26,17 @@ class LinkContainer extends StatelessWidget {
     return Card(
       color: AppColors.link.background,
       child: ListTile(
-        title: Text(
-          link.name,
-          style: textStyle,
-        ),
-        trailing: IconButton(
-          onPressed: () => LinkProvider.deleteLink(linkKey: link.id, listId: link.listId),
-          icon: const Icon(Icons.delete),
-        ),
-        onTap: () {
-          _launchURL(Uri.encodeFull(link.url));
-        }),
+          title: Text(
+            link.name,
+            style: textStyle,
+          ),
+          trailing: IconButton(
+            onPressed: () => LinkProvider.deleteLink(link),
+            icon: const Icon(Icons.delete),
+          ),
+          onTap: () {
+            _launchURL(Uri.encodeFull(link.url));
+          }),
     );
   }
 }

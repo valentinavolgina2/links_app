@@ -14,7 +14,7 @@ class Link {
   final String name;
   final String listId;
 
-  Link({required this.id, required this.name, required this.url, required this.listId});
+  Link({this.id = '', required this.name, required this.url, required this.listId});
 
   Link.fromSnapshot(DataSnapshot snapshot, this.listId):
     id = snapshot.key!,

@@ -17,7 +17,7 @@ class ListPage extends StatelessWidget {
       body: LayoutBuilder(builder: (context, constraints) {
         return SafeArea(
           child: Padding(
-          padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+          padding: const EdgeInsets.all(8.0),
             child: SingleChildScrollView(
               physics: const ScrollPhysics(),
               child: ListContainer(list: list, withName: false),

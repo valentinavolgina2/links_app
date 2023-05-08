@@ -52,6 +52,8 @@ class _MyHomePageState extends State<MyHomePage> {
   late StreamSubscription<DatabaseEvent> _listsSubscription;
   late StreamSubscription<DatabaseEvent> _listsDeleteSubscription;
 
+  TextEditingController addListController = TextEditingController();
+
   @override
   void initState() {
     init();
@@ -64,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _listsSubscription = ListProvider.listsRef.onChildAdded.listen(
       (DatabaseEvent event) {
         setState(() {
-          myLists.add(LinksList.fromSnapshot(event.snapshot));
+          myLists.insert(0, LinksList.fromSnapshot(event.snapshot));
         });
       },
       onError: (Object o) {
@@ -95,6 +97,11 @@ class _MyHomePageState extends State<MyHomePage> {
     _listsDeleteSubscription.cancel();
   }
 
+  void _addList() {
+    ListProvider.addList(addListController.text);
+    addListController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,12 +109,33 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: SafeArea(
-          child: ListView(
-              children: myLists.map((list) => ListCard(list: list)).toList())),
-      floatingActionButton: const FloatingActionButton(
-        onPressed: ListProvider.addList,
-        tooltip: 'Add new list',
-        child: Icon(Icons.add),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 16.0),
+                child: TextField(
+                  controller: addListController,
+                  maxLength: 100,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    border: const OutlineInputBorder(borderSide: BorderSide(width: 1.0)),
+                    hintText: 'New list name',
+                    contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                    suffixIcon: ElevatedButton(
+                        onPressed: _addList,
+                        child: const Text('Add')),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: ListView(
+                    children: myLists.map((list) => ListCard(list: list)).toList()),
+              ),
+            ],
+          ),
+        )
       ),
     );
   }
