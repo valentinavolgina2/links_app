@@ -4,6 +4,7 @@ import '../model/enums.dart';
 import '../model/list.dart';
 import '../pages/list/show.dart';
 import '../providers/list.dart';
+import 'message.dart';
 
 class ListCard extends StatelessWidget {
   const ListCard({super.key, required this.list});
@@ -37,20 +38,22 @@ class ListPopupMenu extends StatelessWidget {
       barrierDismissible: false, // user must tap button for close dialog! 
       builder: (BuildContext context) {
         return AlertDialog(  
-          title: const Text("Delete this list?"),
-          content: const Text("This will delete the list with all its links."),
+          title: const Text('Delete this list?'),
+          content: Text('This will delete the list ${list.name} with all its links.'),
           actions: [
             TextButton(
-              child: const Text("Cancel"),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop(ConfirmAction.Cancel);
               },
             ),
             TextButton(
-              child: const Text("OK"),
+              child: const Text('OK'),
               onPressed: () {
                 ListProvider.deleteList(list.id);
                 Navigator.of(context).pop(ConfirmAction.Accept);
+
+                SystemMessage.showSuccess(context: context, message: 'The list ${list.name} was deleted.');
               },
             ),
           ],

@@ -5,6 +5,7 @@ import '../model/enums.dart';
 import '../model/link.dart';
 import '../providers/link.dart';
 import '../styles/color.dart';
+import 'message.dart';
 
 class LinkContainer extends StatelessWidget {
   const LinkContainer({super.key, required this.link});
@@ -27,15 +28,14 @@ class LinkContainer extends StatelessWidget {
     return Card(
       color: AppColors.link.background,
       child: ListTile(
-        title: Text(
-          link.name,
-          style: textStyle,
-        ),
-        trailing: LinkPopupMenu(link: link),
-        onTap: () {
-          _launchURL(Uri.encodeFull(link.url));
-        }
-      ),
+          title: Text(
+            link.name,
+            style: textStyle,
+          ),
+          trailing: LinkPopupMenu(link: link),
+          onTap: () {
+            _launchURL(Uri.encodeFull(link.url));
+          }),
     );
   }
 }
@@ -51,20 +51,22 @@ class LinkPopupMenu extends StatelessWidget {
       barrierDismissible: false, // user must tap button for close dialog!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Delete this link?"),
-          content: const Text("This will delete the link."),
+          title: const Text('Delete this link?'),
+          content: Text('This will delete link ${link.name}.'),
           actions: [
             TextButton(
-              child: const Text("Cancel"),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop(ConfirmAction.Cancel);
               },
             ),
             TextButton(
-              child: const Text("OK"),
+              child: const Text('OK'),
               onPressed: () {
                 LinkProvider.deleteLink(link);
                 Navigator.of(context).pop(ConfirmAction.Accept);
+
+                SystemMessage.showSuccess(context: context, message: 'The link ${link.name} was deleted.');
               },
             ),
           ],
