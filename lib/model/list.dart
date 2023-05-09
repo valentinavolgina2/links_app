@@ -8,15 +8,15 @@ const String columnName = 'name';
 
 class LinksList {
   final String id;
-  final String name;
+  String name;
 
   List<Link> links = [];
 
-  LinksList({required this.id, required this.name});
+  LinksList({this.id = '', required this.name});
 
   LinksList.fromSnapshot(DataSnapshot snapshot):
     id = snapshot.key!,
-    name = snapshot.key.toString();
+    name = snapshot.value.toString();
   
 
   Map<String, String> toMap() {

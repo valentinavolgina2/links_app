@@ -51,6 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   late StreamSubscription<DatabaseEvent> _listsSubscription;
   late StreamSubscription<DatabaseEvent> _listsDeleteSubscription;
+  late StreamSubscription<DatabaseEvent> _listsChangeSubscription;
 
   TextEditingController addListController = TextEditingController();
 
@@ -88,6 +89,20 @@ class _MyHomePageState extends State<MyHomePage> {
         print('Error: ${error.code} ${error.message}');
       },
     );
+
+    _listsChangeSubscription = ListProvider.listsRef.onChildChanged.listen(
+      (DatabaseEvent event) {
+        setState(() {
+          final listToChange =
+              myLists.where((list) => list.id == event.snapshot.key).first;
+          listToChange.name = event.snapshot.value.toString();
+        });
+      },
+      onError: (Object o) {
+        final error = o as FirebaseException;
+        print('Error: ${error.code} ${error.message}');
+      },
+    );
   }
 
   @override
@@ -95,6 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
     _listsSubscription.cancel();
     _listsDeleteSubscription.cancel();
+    _listsChangeSubscription.cancel();
   }
 
   void _addList() {
@@ -109,34 +125,34 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 16.0),
-                child: TextField(
-                  controller: addListController,
-                  maxLength: 100,
-                  decoration: InputDecoration(
-                    isDense: true,
-                    border: const OutlineInputBorder(borderSide: BorderSide(width: 1.0)),
-                    hintText: 'New list name',
-                    contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                    suffixIcon: ElevatedButton(
-                        onPressed: _addList,
-                        child: const Text('Add')),
-                  ),
+          child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 16.0),
+              child: TextField(
+                controller: addListController,
+                maxLength: 100,
+                decoration: InputDecoration(
+                  isDense: true,
+                  border: const OutlineInputBorder(
+                      borderSide: BorderSide(width: 1.0)),
+                  hintText: 'New list name',
+                  contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                  suffixIcon: ElevatedButton(
+                      onPressed: _addList, child: const Text('Add')),
                 ),
               ),
-              Expanded(
-                child: ListView(
-                    children: myLists.map((list) => ListCard(list: list)).toList()),
-              ),
-            ],
-          ),
-        )
-      ),
+            ),
+            Expanded(
+              child: ListView(
+                  children:
+                      myLists.map((list) => ListCard(list: list)).toList()),
+            ),
+          ],
+        ),
+      )),
     );
   }
 }

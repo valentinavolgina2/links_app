@@ -41,12 +41,15 @@ class LinkContainer extends StatelessWidget {
 }
 
 class LinkPopupMenu extends StatelessWidget {
-  const LinkPopupMenu({super.key, required this.link});
+  LinkPopupMenu({super.key, required this.link});
 
   final Link link;
 
-  Future<ConfirmAction?> _deleteLink(BuildContext context) async {
-    return showDialog<ConfirmAction>(
+  final TextEditingController editLinkNameController = TextEditingController();
+  final TextEditingController editLinkUrlController = TextEditingController();
+
+  void _deleteLink(BuildContext context) {
+    showDialog(
       context: context,
       barrierDismissible: false, // user must tap button for close dialog!
       builder: (BuildContext context) {
@@ -57,16 +60,61 @@ class LinkPopupMenu extends StatelessWidget {
             TextButton(
               child: const Text('Cancel'),
               onPressed: () {
-                Navigator.of(context).pop(ConfirmAction.Cancel);
+                Navigator.of(context).pop();
               },
             ),
             TextButton(
               child: const Text('OK'),
               onPressed: () {
                 LinkProvider.deleteLink(link);
-                Navigator.of(context).pop(ConfirmAction.Accept);
+                Navigator.of(context).pop();
 
                 SystemMessage.showSuccess(context: context, message: 'The link ${link.name} was deleted.');
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _editLink(BuildContext context) {
+    editLinkNameController.text = link.name;
+    editLinkUrlController.text = link.url;
+
+    showDialog<ConfirmAction>(
+      context: context,
+      barrierDismissible: false, // user must tap button for close dialog!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Editing link ${link.name}'),
+          content: Form(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: editLinkNameController,
+                  ),
+                  TextField(
+                    controller: editLinkUrlController,
+                  )
+                ]
+              )),
+          actions: [
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('SAVE'),
+              onPressed: () {
+                LinkProvider.updateLink(link: link, newName: editLinkNameController.text, newUrl: editLinkUrlController.text);
+                Navigator.of(context).pop();
+
+                SystemMessage.showSuccess(
+                    context: context, message: 'The changes were saved.');
               },
             ),
           ],
@@ -118,10 +166,9 @@ class LinkPopupMenu extends StatelessWidget {
       ],
       onSelected: (value) async {
         if (value == 1) {
-          final ConfirmAction? action = await _deleteLink(context);
-          print(action);
+          _deleteLink(context);
         } else if (value == 2) {
-          //_editList(context);
+          _editLink(context);
         }
       },
     );

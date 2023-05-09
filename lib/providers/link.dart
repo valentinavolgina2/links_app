@@ -16,4 +16,9 @@ class LinkProvider {
     final linkRef = FirebaseDatabase.instance.ref('$_linksRoot/${link.listId}').child(link.id);
     await linkRef.remove();
   }
+
+  static Future<void> updateLink({required Link link, required String newName, required String newUrl}) async {
+    final linkRef = FirebaseDatabase.instance.ref('$_linksRoot/${link.listId}').child(link.id);
+    await linkRef.set({'name': newName, 'url': newUrl});
+  }
 }

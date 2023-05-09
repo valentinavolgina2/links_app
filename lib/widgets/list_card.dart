@@ -14,46 +14,86 @@ class ListCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        title: Text(list.name),
-        trailing: ListPopupMenu(list: list),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ListPage(list: list)),
-          );
-        }
-      ),
+          title: Text(list.name),
+          trailing: ListPopupMenu(list: list),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ListPage(list: list)),
+            );
+          }),
     );
   }
 }
 
 class ListPopupMenu extends StatelessWidget {
-  const ListPopupMenu({super.key, required this.list});
+  ListPopupMenu({super.key, required this.list});
 
   final LinksList list;
 
-  Future<ConfirmAction?> _deleteList(BuildContext context) async {
-    return showDialog<ConfirmAction>(
+  final TextEditingController editListController = TextEditingController();
+
+  void _deleteList(BuildContext context) {
+    showDialog(
       context: context,
-      barrierDismissible: false, // user must tap button for close dialog! 
+      barrierDismissible: false, // user must tap button for close dialog!
       builder: (BuildContext context) {
-        return AlertDialog(  
+        return AlertDialog(
           title: const Text('Delete this list?'),
-          content: Text('This will delete the list ${list.name} with all its links.'),
+          content: Text(
+              'This will delete the list ${list.name} with all its links.'),
           actions: [
             TextButton(
               child: const Text('Cancel'),
               onPressed: () {
-                Navigator.of(context).pop(ConfirmAction.Cancel);
+                Navigator.of(context).pop();
               },
             ),
             TextButton(
               child: const Text('OK'),
               onPressed: () {
                 ListProvider.deleteList(list.id);
-                Navigator.of(context).pop(ConfirmAction.Accept);
+                Navigator.of(context).pop();
 
-                SystemMessage.showSuccess(context: context, message: 'The list ${list.name} was deleted.');
+                SystemMessage.showSuccess(
+                    context: context,
+                    message: 'The list ${list.name} was deleted.');
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _editList(BuildContext context) {
+    editListController.text = list.name;
+
+    showDialog<ConfirmAction>(
+      context: context,
+      barrierDismissible: false, // user must tap button for close dialog!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Editing list ${list.name}'),
+          content: Form(
+              child: TextField(
+            controller: editListController,
+          )),
+          actions: [
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('SAVE'),
+              onPressed: () {
+                ListProvider.updateList(list: list, newName: editListController.text);
+                Navigator.of(context).pop();
+
+                SystemMessage.showSuccess(
+                    context: context, message: 'The changes were saved.');
               },
             ),
           ],
@@ -105,13 +145,11 @@ class ListPopupMenu extends StatelessWidget {
       ],
       onSelected: (value) async {
         if (value == 1) {
-          final ConfirmAction? action = await _deleteList(context);
-          print(action);
+          _deleteList(context);
         } else if (value == 2) {
-          //_editList(context);
+          _editList(context);
         }
       },
     );
   }
 }
-

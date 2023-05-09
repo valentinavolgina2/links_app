@@ -26,6 +26,7 @@ class _ListContainerState extends State<ListContainer> {
   late DatabaseReference _linksRef;
   late StreamSubscription<DatabaseEvent> _linksSubscription;
   late StreamSubscription<DatabaseEvent> _linksDeleteSubscription;
+  late StreamSubscription<DatabaseEvent> _linksUpdateSubscription;
 
   final TextEditingController _linkNameController = TextEditingController();
   final TextEditingController _linkUrlController = TextEditingController();
@@ -65,6 +66,21 @@ class _ListContainerState extends State<ListContainer> {
         print('Error: ${error.code} ${error.message}');
       },
     );
+
+    _linksUpdateSubscription = _linksRef.onChildChanged.listen(
+      (DatabaseEvent event) {
+        setState(() {
+          final linkToUpdate =
+              _links.where((link) => link.id == event.snapshot.key).first;
+
+          linkToUpdate.updateFromSnapshot(event.snapshot);
+        });
+      },
+      onError: (Object o) {
+        final error = o as FirebaseException;
+        print('Error: ${error.code} ${error.message}');
+      },
+    );
   }
 
   @override
@@ -72,6 +88,7 @@ class _ListContainerState extends State<ListContainer> {
     super.dispose();
     _linksSubscription.cancel();
     _linksDeleteSubscription.cancel();
+    _linksUpdateSubscription.cancel();
   }
 
   void _addLink(String listId) {
