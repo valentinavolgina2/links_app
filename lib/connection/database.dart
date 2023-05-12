@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -21,6 +22,8 @@ class DB {
       FirebaseDatabase.instance
           .useDatabaseEmulator(_emulatorHost, _emulatorPort);
     }
+
+    await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
   }
 
   static void enableLogging(state) {

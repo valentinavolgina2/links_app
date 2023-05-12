@@ -9,4 +9,14 @@ class SystemMessage {
       ),
     );
   }
+
+  static void showError(
+      {required BuildContext context, required String message}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red[400],
+      ),
+    );
+  }
 }
