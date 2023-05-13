@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../model/list.dart';
+import '../../widgets/app_bar.dart';
 import '../../widgets/list.dart';
 
 class ListPage extends StatelessWidget {
@@ -10,9 +11,12 @@ class ListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context).size;
+    
     return Scaffold(
-      appBar: AppBar(
-        title: Text(list.name),
+      appBar: PreferredSize(
+        preferredSize: Size(screenSize.width, 1000),
+        child: const MyAppBar()
       ),
       body: LayoutBuilder(builder: (context, constraints) {
         return SafeArea(

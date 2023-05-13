@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:links_app/connection/database.dart';
 import 'package:links_app/providers/list.dart';
 import 'package:links_app/styles/color.dart';
+import 'package:links_app/widgets/app_bar.dart';
 import 'package:links_app/widgets/auth_dialog.dart';
 import 'package:links_app/widgets/list_card.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -14,6 +15,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:links_app/widgets/message.dart';
 
 import 'connection/authentication.dart';
+import 'model/app.dart';
 import 'model/list.dart';
 
 Future<void> main() async {
@@ -33,25 +35,24 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Links App',
+      title: AppData.title,
       theme: ThemeData(
         primarySwatch: AppColors.scaffold.primary,
       ),
-      home: const MyHomePage(title: 'My lists'),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
   List<LinksList> myLists = [];
 
   late StreamSubscription<DatabaseEvent> _listsSubscription;
@@ -59,8 +60,6 @@ class _MyHomePageState extends State<MyHomePage> {
   late StreamSubscription<DatabaseEvent> _listsChangeSubscription;
 
   late TextEditingController addListController;
-
-  bool _isProcessing = false;
 
   @override
   void initState() {
@@ -134,67 +133,22 @@ class _MyHomePageState extends State<MyHomePage> {
     addListController.clear();
   }
 
-  _signout() async {
-    setState(() {
-      _isProcessing = true;
-    });
-
-    await signOut().then((result) {
-      SystemMessage.showSuccess(
-          context: context, message: 'You have signed out successfully.');
-
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          fullscreenDialog: true,
-          builder: (context) => MyHomePage(title: 'My lists'),
-        ),
-      );
-    }).catchError((error) {
-      SystemMessage.showError(
-          context: context, message: 'Sign Out Error: $error');
-    });
-
-    setState(() {
-      _isProcessing = false;
-    });
-  }
+  
 
   @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context).size;
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
+      appBar: PreferredSize(
+        preferredSize: Size(screenSize.width, 1000),
+        child: const MyAppBar()
       ),
       body: SafeArea(
           child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            ElevatedButton(
-                onPressed: userEmail == null
-                    ? () async {
-                        await showDialog(
-                          context: context,
-                          builder: (context) => AuthDialog(),
-                        );
-
-                        setState(() {});
-                      }
-                    : null,
-                child: userEmail == null
-                    ? const Text('Sign in')
-                    : Row(children: [
-                        Text(userEmail!,
-                            style: const TextStyle(
-                              color: Colors.white70,
-                            )),
-                        const SizedBox(width: 20.0),
-                        TextButton(
-                            onPressed: _isProcessing ? null : () => _signout(),
-                            child: _isProcessing
-                                ? const CircularProgressIndicator()
-                                : const Text('Sign out'))
-                      ])),
             Padding(
               padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 16.0),
               child: TextField(

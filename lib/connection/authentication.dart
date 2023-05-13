@@ -6,6 +6,7 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 
 String? uid;
 String? userEmail;
+String? imageUrl;
 
 Future<User?> registerWithEmailPassword(String email, String password) async {
   User? user;
