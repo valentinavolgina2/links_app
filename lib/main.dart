@@ -128,12 +128,42 @@ class _MyHomePageState extends State<MyHomePage> {
     _listsChangeSubscription.cancel();
   }
 
-  void _addList() {
-    ListProvider.addList(addListController.text);
-    addListController.clear();
-  }
+  void _addList(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // user must tap button for close dialog!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Adding new list'),
+          content: Form(
+              child: TextField(
+            controller: addListController,
+          )),
+          actions: [
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('SAVE'),
+              onPressed: () {
+                ListProvider.addList(addListController.text);
 
-  
+                Navigator.of(context).pop();
+
+                SystemMessage.showSuccess(
+                    context: context, message: 'List ${addListController.text} was added.');
+
+                addListController.clear();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,34 +175,24 @@ class _MyHomePageState extends State<MyHomePage> {
         child: const MyAppBar()
       ),
       body: SafeArea(
-          child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 16.0),
-              child: TextField(
-                controller: addListController,
-                maxLength: 100,
-                decoration: InputDecoration(
-                  isDense: true,
-                  border: const OutlineInputBorder(
-                      borderSide: BorderSide(width: 1.0)),
-                  hintText: 'New list name',
-                  contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                  suffixIcon: ElevatedButton(
-                      onPressed: _addList, child: const Text('Add')),
-                ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                    children:
+                        myLists.map((list) => ListCard(list: list)).toList()),
               ),
-            ),
-            Expanded(
-              child: ListView(
-                  children:
-                      myLists.map((list) => ListCard(list: list)).toList()),
-            ),
-          ],
-        ),
-      )),
+            ],
+          ),
+        )
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _addList(context),
+        tooltip: 'Add new list',
+        child: const Icon(Icons.add)
+      ),
     );
   }
 }
