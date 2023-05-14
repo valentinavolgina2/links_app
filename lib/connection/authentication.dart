@@ -22,6 +22,9 @@ Future<User?> registerWithEmailPassword(String email, String password) async {
     if (user != null) {
       uid = user.uid;
       userEmail = user.email;
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('auth', true);
     }
   } on FirebaseAuthException catch (e) {
     if (e.code == 'weak-password') {
@@ -41,7 +44,7 @@ Future<User?> registerWithEmailPassword(String email, String password) async {
 
 Future<User?> signInWithEmailPassword(String email, String password) async {
   User? user;
-
+  
   try {
     UserCredential userCredential = await _auth.signInWithEmailAndPassword(
       email: email,
@@ -57,12 +60,15 @@ Future<User?> signInWithEmailPassword(String email, String password) async {
       await prefs.setBool('auth', true);
     }
   } on FirebaseAuthException catch (e) {
-    if (e.code == 'user-not-found') {
+    if (e.code == 'user-not-found' ||
+        (e.message != null && e.message!.contains('user-not-found'))) {
       print('No user found for that email.');
       throw 'No user found for that email.';
     } else if (e.code == 'wrong-password') {
       print('Wrong password provided.');
       throw 'Wrong password provided.';
+    } else {
+      throw 'Unknown error occurred during the authetication.';
     }
   }
 
