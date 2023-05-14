@@ -27,13 +27,4 @@ class Link {
     url = ((snapshot.value!) as Map<String, dynamic>)[columnURL]!;
     name = ((snapshot.value!) as Map<String, dynamic>)[columnName]!;
   }
-
-  Map<String, Object?> toMap() {
-    return <String, String>{
-      columnId: id,
-      columnURL: url,
-      columnName: name,
-      columnList: listId
-    };
-  }
 }

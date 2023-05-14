@@ -52,7 +52,7 @@ class ListPopupMenu extends StatelessWidget {
             TextButton(
               child: const Text('OK'),
               onPressed: () {
-                ListProvider.deleteList(list.id);
+                ListProvider.deleteList(list);
                 Navigator.of(context).pop();
 
                 SystemMessage.showSuccess(
@@ -106,10 +106,10 @@ class ListPopupMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopupMenuButton<int>(
       itemBuilder: (context) => [
-        PopupMenuItem(
+        const PopupMenuItem(
           value: 1,
           child: Row(
-            children: const [
+            children: [
               Icon(Icons.delete),
               SizedBox(
                 width: 10,
@@ -118,10 +118,10 @@ class ListPopupMenu extends StatelessWidget {
             ],
           ),
         ),
-        PopupMenuItem(
+        const PopupMenuItem(
           value: 2,
           child: Row(
-            children: const [
+            children: [
               Icon(Icons.edit),
               SizedBox(
                 width: 10,
@@ -130,10 +130,10 @@ class ListPopupMenu extends StatelessWidget {
             ],
           ),
         ),
-        PopupMenuItem(
+        const PopupMenuItem(
           value: 3,
           child: Row(
-            children: const [
+            children: [
               Icon(Icons.close),
               SizedBox(
                 width: 10,

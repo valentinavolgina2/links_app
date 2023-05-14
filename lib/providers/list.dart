@@ -6,21 +6,22 @@ class ListProvider {
   static final DatabaseReference listsRef =
       FirebaseDatabase.instance.ref(_listsRoot);
 
-  static Future<void> addList(String listName) async {
-    final DatabaseReference newList = listsRef.push();
+  static Future<void> addList(String listName, String userId) async {
+    final DatabaseReference newList =
+        FirebaseDatabase.instance.ref('$_listsRoot/$userId').push();
 
     await newList.set(listName);
   }
 
-  static Future<void> deleteList(String listKey) async {
-    final listRef = listsRef.child(listKey);
+  static Future<void> deleteList(LinksList list) async {
+    final listRef = FirebaseDatabase.instance.ref('$_listsRoot/${list.userId}').child(list.id);
     await listRef.remove();
 
-    await FirebaseDatabase.instance.ref('links/$listKey').remove();
+    await FirebaseDatabase.instance.ref('links/${list.id}').remove();
   }
 
   static Future<void> updateList({required LinksList list, required String newName}) async {
-    final listRef = listsRef.child(list.id);
+    final listRef = FirebaseDatabase.instance.ref('$_listsRoot/${list.userId}').child(list.id);
     await listRef.set(newName);
   }
 }

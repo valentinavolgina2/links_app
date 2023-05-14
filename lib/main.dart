@@ -25,6 +25,8 @@ Future<void> main() async {
 
   await DB.connect();
 
+  await getUser();
+
   runApp(const MyApp());
 }
 
@@ -52,26 +54,21 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   List<LinksList> myLists = [];
 
   late StreamSubscription<DatabaseEvent> _listsSubscription;
   late StreamSubscription<DatabaseEvent> _listsDeleteSubscription;
   late StreamSubscription<DatabaseEvent> _listsChangeSubscription;
 
+  late DatabaseReference _listsRef;
+
   late TextEditingController addListController;
 
   @override
   void initState() {
     init();
-    getUserInfo();
-    super.initState();
-  }
 
-  Future getUserInfo() async {
-    await getUser();
-    setState(() {});
-    //print(uid);
+    super.initState();
   }
 
   Future<void> init() async {
@@ -79,10 +76,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
     addListController = TextEditingController();
 
-    _listsSubscription = ListProvider.listsRef.onChildAdded.listen(
+    _listsRef = FirebaseDatabase.instance.ref('mylists/$uid');
+
+    _listsSubscription = _listsRef.onChildAdded.listen(
       (DatabaseEvent event) {
         setState(() {
-          myLists.insert(0, LinksList.fromSnapshot(event.snapshot));
+          myLists.insert(0, LinksList.fromSnapshot(event.snapshot, uid!));
         });
       },
       onError: (Object o) {
@@ -91,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
       },
     );
 
-    _listsDeleteSubscription = ListProvider.listsRef.onChildRemoved.listen(
+    _listsDeleteSubscription = _listsRef.onChildRemoved.listen(
       (DatabaseEvent event) {
         setState(() {
           final listToRemove =
@@ -105,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
       },
     );
 
-    _listsChangeSubscription = ListProvider.listsRef.onChildChanged.listen(
+    _listsChangeSubscription = _listsRef.onChildChanged.listen(
       (DatabaseEvent event) {
         setState(() {
           final listToChange =
@@ -149,12 +148,13 @@ class _MyHomePageState extends State<MyHomePage> {
             TextButton(
               child: const Text('SAVE'),
               onPressed: () {
-                ListProvider.addList(addListController.text);
+                ListProvider.addList(addListController.text, uid!);
 
                 Navigator.of(context).pop();
 
                 SystemMessage.showSuccess(
-                    context: context, message: 'List ${addListController.text} was added.');
+                    context: context,
+                    message: 'List ${addListController.text} was added.');
 
                 addListController.clear();
               },
@@ -171,28 +171,26 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size(screenSize.width, 1000),
-        child: const MyAppBar()
-      ),
+          preferredSize: Size(screenSize.width, 1000), child: const MyAppBar()),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView(
-                    children:
-                        myLists.map((list) => ListCard(list: list)).toList()),
-              ),
-            ],
-          ),
-        )
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _addList(context),
-        tooltip: 'Add new list',
-        child: const Icon(Icons.add)
-      ),
+          child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                  children:
+                      myLists.map((list) => ListCard(list: list)).toList()),
+            ),
+          ],
+        ),
+      )),
+      floatingActionButton: uid == null
+          ? null
+          : FloatingActionButton(
+              onPressed: () => _addList(context),
+              tooltip: 'Add new list',
+              child: const Icon(Icons.add)),
     );
   }
 }
