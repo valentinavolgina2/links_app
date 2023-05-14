@@ -5,7 +5,6 @@ import 'package:links_app/connection/database.dart';
 import 'package:links_app/providers/list.dart';
 import 'package:links_app/styles/color.dart';
 import 'package:links_app/widgets/app_bar.dart';
-import 'package:links_app/widgets/auth_dialog.dart';
 import 'package:links_app/widgets/list_card.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -86,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
       },
       onError: (Object o) {
         final error = o as FirebaseException;
-        print('Error: ${error.code} ${error.message}');
+        debugPrint('Error: ${error.code} ${error.message}');
       },
     );
 
@@ -100,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
       },
       onError: (Object o) {
         final error = o as FirebaseException;
-        print('Error: ${error.code} ${error.message}');
+        debugPrint('Error: ${error.code} ${error.message}');
       },
     );
 
@@ -114,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
       },
       onError: (Object o) {
         final error = o as FirebaseException;
-        print('Error: ${error.code} ${error.message}');
+        debugPrint('Error: ${error.code} ${error.message}');
       },
     );
   }

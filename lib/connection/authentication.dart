@@ -1,5 +1,5 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -28,14 +28,14 @@ Future<User?> registerWithEmailPassword(String email, String password) async {
     }
   } on FirebaseAuthException catch (e) {
     if (e.code == 'weak-password') {
-      print('The password provided is too weak.');
+      debugPrint('The password provided is too weak.');
       throw 'The password provided is too weak.';
     } else if (e.code == 'email-already-in-use') {
-      print('An account already exists for that email.');
+      debugPrint('An account already exists for that email.');
       throw 'An account already exists for that email.';
     }
   } catch (e) {
-    print(e);
+    debugPrint(e.toString());
     throw e.toString();
   }
 
@@ -62,10 +62,10 @@ Future<User?> signInWithEmailPassword(String email, String password) async {
   } on FirebaseAuthException catch (e) {
     if (e.code == 'user-not-found' ||
         (e.message != null && e.message!.contains('user-not-found'))) {
-      print('No user found for that email.');
+      debugPrint('No user found for that email.');
       throw 'No user found for that email.';
     } else if (e.code == 'wrong-password') {
-      print('Wrong password provided.');
+      debugPrint('Wrong password provided.');
       throw 'Wrong password provided.';
     } else {
       throw 'Unknown error occurred during the authetication.';

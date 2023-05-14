@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../model/enums.dart';
 import '../model/list.dart';
 import '../pages/list/show.dart';
 import '../providers/list.dart';
@@ -69,7 +68,7 @@ class ListPopupMenu extends StatelessWidget {
   void _editList(BuildContext context) {
     editListController.text = list.name;
 
-    showDialog<ConfirmAction>(
+    showDialog(
       context: context,
       barrierDismissible: false, // user must tap button for close dialog!
       builder: (BuildContext context) {

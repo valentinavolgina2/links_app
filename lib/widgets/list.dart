@@ -21,7 +21,7 @@ class ListContainer extends StatefulWidget {
 }
 
 class _ListContainerState extends State<ListContainer> {
-  List<Link> _links = [];
+  final List<Link> _links = [];
   late DatabaseReference _linksRef;
   late StreamSubscription<DatabaseEvent> _linksSubscription;
   late StreamSubscription<DatabaseEvent> _linksDeleteSubscription;
@@ -44,7 +44,7 @@ class _ListContainerState extends State<ListContainer> {
       },
       onError: (Object o) {
         final error = o as FirebaseException;
-        print('Error: ${error.code} ${error.message}');
+        debugPrint('Error: ${error.code} ${error.message}');
       },
     );
 
@@ -58,7 +58,7 @@ class _ListContainerState extends State<ListContainer> {
       },
       onError: (Object o) {
         final error = o as FirebaseException;
-        print('Error: ${error.code} ${error.message}');
+        debugPrint('Error: ${error.code} ${error.message}');
       },
     );
 
@@ -73,7 +73,7 @@ class _ListContainerState extends State<ListContainer> {
       },
       onError: (Object o) {
         final error = o as FirebaseException;
-        print('Error: ${error.code} ${error.message}');
+        debugPrint('Error: ${error.code} ${error.message}');
       },
     );
   }

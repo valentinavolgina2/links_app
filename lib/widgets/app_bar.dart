@@ -17,15 +17,6 @@ class MyAppBar extends StatefulWidget {
 class _MyAppBarState extends State<MyAppBar> {
   bool _isProcessing = false;
 
-  // @override
-  // void initState() {
-  //   setState(() {});
-
-  //   print('building app bar for user $uid');
-
-  //   super.initState();
-  // }
-
   _signout() async {
     setState(() {
       _isProcessing = true;
@@ -37,7 +28,7 @@ class _MyAppBarState extends State<MyAppBar> {
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => MyHomePage()),
+        MaterialPageRoute(builder: (context) => const MyHomePage()),
       );
     }).catchError((error) {
       SystemMessage.showError(
@@ -51,8 +42,6 @@ class _MyAppBarState extends State<MyAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-
     return Container(
       color: AppColors.scaffold.primary,
       child: Padding(
@@ -61,39 +50,17 @@ class _MyAppBarState extends State<MyAppBar> {
           children: [
             Expanded(
                 child: Text(AppData.title.toUpperCase(),
-                    style: TextStyle(color: Colors.white))),
-            // Expanded(
-            //   child: Row(
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     children: [
-            //       InkWell(
-            //         onTap: () {},
-            //         child: const Text(
-            //           'Home',
-            //           style: TextStyle(color: Colors.white),
-            //         ),
-            //       ),
-            //       // SizedBox(width: screenSize.width / 20),
-            //       // InkWell(
-            //       //   onTap: () {},
-            //       //   child: const Text(
-            //       //     'Contact Us',
-            //       //     style: TextStyle(color: Colors.black),
-            //       //   ),
-            //       // ),
-            //     ],
-            //   ),
-            // ),
+                    style: const TextStyle(color: Colors.white))),
             InkWell(
                 onTap: userEmail == null
                     ? () async {
                         await showDialog(
                           context: context,
-                          builder: (context) => AuthDialog(),
+                          builder: (context) => const AuthDialog(),
                         ).then((result) => {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => MyHomePage()),
+                            MaterialPageRoute(builder: (context) => const MyHomePage()),
                           )
                         });
                       }
@@ -109,7 +76,7 @@ class _MyAppBarState extends State<MyAppBar> {
                           backgroundImage:
                               imageUrl != null ? NetworkImage(imageUrl!) : null,
                           child: imageUrl == null
-                              ? Icon(Icons.account_circle, size: 30)
+                              ? const Icon(Icons.account_circle, size: 30)
                               : Container(),
                         ),
                         Text(userEmail!,

@@ -1,9 +1,9 @@
 /// An app sizes grouped by widgets
 class AppSizes {
-  static _Category category = _Category();
+  static CategoryWidgetSize category = CategoryWidgetSize();
 }
 
 /// A category group of sizes
-class _Category {
+class CategoryWidgetSize {
   double text = 21.0;
 }
