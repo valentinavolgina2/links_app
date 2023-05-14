@@ -44,10 +44,10 @@ class ListPage extends StatelessWidget {
             TextButton(
               child: const Text('SAVE'),
               onPressed: () {
-                LinkProvider.addLink(Link(
+                LinkProvider.addLink(
                   name: _linkNameController.text,
                   url: _linkUrlController.text,
-                  listId: list.id));
+                  listId: list.id);
 
                 Navigator.of(context).pop();
 

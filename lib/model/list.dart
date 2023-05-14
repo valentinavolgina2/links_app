@@ -16,7 +16,7 @@ class LinksList {
 
   LinksList({this.id = '', required this.name, required this.userId});
 
-  LinksList.fromSnapshot(DataSnapshot snapshot, this.userId)
+  LinksList.fromSnapshot({required DataSnapshot snapshot, required this.userId})
       : id = snapshot.key!,
         name = snapshot.value.toString();
 }

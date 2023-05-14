@@ -1,27 +1,32 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:links_app/model/list.dart';
 
+import 'link.dart';
+
 class ListProvider {
   static const String _listsRoot = 'mylists';
-  static final DatabaseReference listsRef =
-      FirebaseDatabase.instance.ref(_listsRoot);
 
-  static Future<void> addList(String listName, String userId) async {
-    final DatabaseReference newList =
-        FirebaseDatabase.instance.ref('$_listsRoot/$userId').push();
+  static DatabaseReference userlistsRef({required String? userId}) {
+    return FirebaseDatabase.instance.ref('$_listsRoot/$userId');
+  }
 
-    await newList.set(listName);
+  static Future<void> addList(
+      {required String name, required String userId}) async {
+    final DatabaseReference newList = userlistsRef(userId: userId).push();
+
+    await newList.set(name);
   }
 
   static Future<void> deleteList(LinksList list) async {
-    final listRef = FirebaseDatabase.instance.ref('$_listsRoot/${list.userId}').child(list.id);
+    final listRef = userlistsRef(userId: list.userId).child(list.id);
     await listRef.remove();
 
-    await FirebaseDatabase.instance.ref('links/${list.id}').remove();
+    await LinkProvider.listLinksRef(listId: list.id).remove();
   }
 
-  static Future<void> updateList({required LinksList list, required String newName}) async {
-    final listRef = FirebaseDatabase.instance.ref('$_listsRoot/${list.userId}').child(list.id);
+  static Future<void> updateList(
+      {required LinksList list, required String newName}) async {
+    final listRef = userlistsRef(userId: list.userId).child(list.id);
     await listRef.set(newName);
   }
 }

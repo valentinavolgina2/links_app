@@ -18,7 +18,7 @@ class Link {
       required this.url,
       required this.listId});
 
-  Link.fromSnapshot(DataSnapshot snapshot, this.listId)
+  Link.fromSnapshot({required DataSnapshot snapshot, required this.listId})
       : id = snapshot.key!,
         url = ((snapshot.value!) as Map<String, dynamic>)[columnURL]!,
         name = ((snapshot.value!) as Map<String, dynamic>)[columnName]!;

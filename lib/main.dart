@@ -75,12 +75,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
     addListController = TextEditingController();
 
-    _listsRef = FirebaseDatabase.instance.ref('mylists/$uid');
+    _listsRef = ListProvider.userlistsRef(userId: uid);
 
     _listsSubscription = _listsRef.onChildAdded.listen(
       (DatabaseEvent event) {
         setState(() {
-          myLists.insert(0, LinksList.fromSnapshot(event.snapshot, uid!));
+          myLists.insert(0,
+              LinksList.fromSnapshot(snapshot: event.snapshot, userId: uid!));
         });
       },
       onError: (Object o) {
@@ -147,7 +148,8 @@ class _MyHomePageState extends State<MyHomePage> {
             TextButton(
               child: const Text('SAVE'),
               onPressed: () {
-                ListProvider.addList(addListController.text, uid!);
+                ListProvider.addList(
+                    name: addListController.text, userId: uid!);
 
                 Navigator.of(context).pop();
 

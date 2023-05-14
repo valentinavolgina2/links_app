@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../model/link.dart';
 import '../model/list.dart';
+import '../providers/link.dart';
 import '../styles/color.dart';
 import '../styles/size.dart';
 import 'link.dart';
@@ -34,12 +35,13 @@ class _ListContainerState extends State<ListContainer> {
   }
 
   Future<void> init() async {
-    _linksRef = FirebaseDatabase.instance.ref('links/${widget.list.id}');
+    _linksRef = LinkProvider.listLinksRef(listId: widget.list.id);
 
     _linksSubscription = _linksRef.onChildAdded.listen(
       (DatabaseEvent event) {
         setState(() {
-          _links.add(Link.fromSnapshot(event.snapshot, widget.list.id));
+          _links.add(Link.fromSnapshot(
+              snapshot: event.snapshot, listId: widget.list.id));
         });
       },
       onError: (Object o) {
@@ -94,9 +96,9 @@ class _ListContainerState extends State<ListContainer> {
     return ListTile(
       contentPadding: const EdgeInsets.all(0.0),
       title: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
-        child: Text(widget.list.name, style: TextStyle(fontSize: titleStyle.fontSize))
-      ),
+          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+          child: Text(widget.list.name,
+              style: TextStyle(fontSize: titleStyle.fontSize))),
       subtitle: ListView(shrinkWrap: true, children: <Widget>[
         ..._links.map((link) => LinkContainer(link: link)).toList(),
       ]),
