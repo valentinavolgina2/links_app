@@ -5,7 +5,7 @@ import '../model/link.dart';
 import '../providers/link.dart';
 import '../styles/color.dart';
 import '../styles/size.dart';
-import 'forms/utils.dart';
+import 'forms/helper.dart';
 import 'message.dart';
 
 class LinkContainer extends StatelessWidget {
@@ -91,7 +91,7 @@ class LinkPopupMenu extends StatelessWidget {
       builder: (BuildContext context) {
         return Dialog(
           child: Container(
-            constraints: FormUtils.formMaxWidthConstraints(),
+            constraints: FormHelpers.formMaxWidthConstraints(),
             child: Padding(
               padding: EdgeInsets.all(AppSizes.medium),
               child: Form(
@@ -105,14 +105,14 @@ class LinkPopupMenu extends StatelessWidget {
                     SizedBox(height: AppSizes.small),
                     TextField(
                       controller: editLinkNameController,
-                      decoration: FormUtils.inputDecoration(hintText: 'Name'),
+                      decoration: FormHelpers.inputDecoration(hintText: 'Name'),
                     ),
                     SizedBox(height: AppSizes.medium),
                     const Text('Url'),
                     SizedBox(height: AppSizes.small),
                     TextField(
                       controller: editLinkUrlController,
-                      decoration: FormUtils.inputDecoration(hintText: 'Url'),
+                      decoration: FormHelpers.inputDecoration(hintText: 'Url'),
                     ),
                     SizedBox(height: AppSizes.medium),
                     Row(
@@ -128,7 +128,7 @@ class LinkPopupMenu extends StatelessWidget {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: FormUtils.cancelButton(),
+                                child: FormHelpers.cancelButton(),
                               ),
                             ),
                           ),
@@ -148,7 +148,7 @@ class LinkPopupMenu extends StatelessWidget {
                                   SystemMessage.showSuccess(
                                       context: context, message: 'The changes were saved.');
                                 },
-                                child: FormUtils.saveButton(),
+                                child: FormHelpers.saveButton(),
                               ),
                             ),
                           ),

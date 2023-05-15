@@ -51,32 +51,40 @@ class _MyAppBarState extends State<MyAppBar> {
         child: Row(
           children: [
             Expanded(
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MyHomePage()),
+                  );
+                },
                 child: Text(AppData.title.toUpperCase(),
-                    style: TextStyle(color: AppColors.whiteText))),
+                    style: TextStyle(color: AppColors.whiteText)),
+            )),
             InkWell(
-              onTap: userEmail == null
-                ? () async {
+                onTap: userEmail == null
+                    ? () async {
                         await showDialog(
                           context: context,
                           builder: (context) => const SigninDialog(),
                         ).then((result) => {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const MyHomePage()),
-                          )
-                        });
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const MyHomePage()),
+                              )
+                            });
                       }
-                : null,
-              child: userEmail == null
-                ? Padding(
-                  padding: EdgeInsets.only(right: AppSizes.medium),
-                  child: Text('Login',
-                          style: TextStyle(
-                            color: AppColors.whiteText,
-                          )),
-                )
-                : const SizedBox(width: 0)
-            ),
+                    : null,
+                child: userEmail == null
+                    ? Padding(
+                        padding: EdgeInsets.only(right: AppSizes.medium),
+                        child: Text('Login',
+                            style: TextStyle(
+                              color: AppColors.whiteText,
+                            )),
+                      )
+                    : const SizedBox(width: 0)),
             InkWell(
                 onTap: userEmail == null
                     ? () async {
@@ -84,11 +92,12 @@ class _MyAppBarState extends State<MyAppBar> {
                           context: context,
                           builder: (context) => const SignupDialog(),
                         ).then((result) => {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const MyHomePage()),
-                          )
-                        });
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const MyHomePage()),
+                              )
+                            });
                       }
                     : null,
                 child: userEmail == null

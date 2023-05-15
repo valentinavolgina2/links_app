@@ -3,7 +3,7 @@ import 'package:links_app/styles/color.dart';
 
 import '../../styles/size.dart';
 
-class FormUtils {
+class FormHelpers {
   static InputDecoration inputDecoration(
       {String hintText = '', String? errorText}) {
     return InputDecoration(

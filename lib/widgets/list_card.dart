@@ -4,7 +4,7 @@ import '../model/list.dart';
 import '../pages/list/show.dart';
 import '../providers/list.dart';
 import '../styles/size.dart';
-import 'forms/utils.dart';
+import 'forms/helper.dart';
 import 'message.dart';
 
 class ListCard extends StatelessWidget {
@@ -76,7 +76,7 @@ class ListPopupMenu extends StatelessWidget {
       builder: (BuildContext context) {
         return Dialog(
           child: Container(
-            constraints: FormUtils.formMaxWidthConstraints(),
+            constraints: FormHelpers.formMaxWidthConstraints(),
             child: Padding(
               padding: EdgeInsets.all(AppSizes.medium),
               child: Form(
@@ -90,7 +90,7 @@ class ListPopupMenu extends StatelessWidget {
                     SizedBox(height: AppSizes.small),
                     TextField(
                       controller: editListController,
-                      decoration: FormUtils.inputDecoration(hintText: 'Name'),
+                      decoration: FormHelpers.inputDecoration(hintText: 'Name'),
                     ),
                     SizedBox(height: AppSizes.medium),
                     Row(
@@ -106,7 +106,7 @@ class ListPopupMenu extends StatelessWidget {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: FormUtils.cancelButton(),
+                                child: FormHelpers.cancelButton(),
                               ),
                             ),
                           ),
@@ -123,7 +123,7 @@ class ListPopupMenu extends StatelessWidget {
                                   SystemMessage.showSuccess(
                                       context: context, message: 'The changes were saved.');
                                 },
-                                child: FormUtils.saveButton(),
+                                child: FormHelpers.saveButton(),
                               ),
                             ),
                           ),

@@ -3,7 +3,7 @@ import 'package:links_app/styles/color.dart';
 
 import '../../connection/authentication.dart';
 import '../../styles/size.dart';
-import '../forms/utils.dart';
+import '../forms/helper.dart';
 import '../message.dart';
 
 class SigninDialog extends StatefulWidget {
@@ -63,7 +63,7 @@ class _SigninDialogState extends State<SigninDialog> {
   Widget build(BuildContext context) {
     return Dialog(
       child: Container(
-        constraints: FormUtils.formMaxWidthConstraints(),
+        constraints: FormHelpers.formMaxWidthConstraints(),
         child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.all(AppSizes.medium),
@@ -90,7 +90,7 @@ class _SigninDialogState extends State<SigninDialog> {
                     FocusScope.of(context).requestFocus(textFocusNodePassword);
                   },
                   style: TextStyle(color: AppColors.darkText),
-                  decoration: FormUtils.inputDecoration(
+                  decoration: FormHelpers.inputDecoration(
                     hintText: 'Email', 
                     errorText: _isEditingEmail
                         ? _validateEmail(textControllerEmail.text)
@@ -106,7 +106,7 @@ class _SigninDialogState extends State<SigninDialog> {
                   controller: textControllerPassword,
                   autofocus: false,
                   style: TextStyle(color: AppColors.darkText),
-                  decoration: FormUtils.inputDecoration(hintText: 'Password'),
+                  decoration: FormHelpers.inputDecoration(hintText: 'Password'),
                 ),
                 SizedBox(height: AppSizes.medium),
                 _error == '' ? const SizedBox() : Padding(

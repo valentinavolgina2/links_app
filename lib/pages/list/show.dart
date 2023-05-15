@@ -4,7 +4,7 @@ import '../../model/list.dart';
 import '../../providers/link.dart';
 import '../../styles/size.dart';
 import '../../widgets/app_bar.dart';
-import '../../widgets/forms/utils.dart';
+import '../../widgets/forms/helper.dart';
 import '../../widgets/list.dart';
 import '../../widgets/message.dart';
 
@@ -23,7 +23,7 @@ class ListPage extends StatelessWidget {
       builder: (BuildContext context) {
         return Dialog(
           child: Container(
-            constraints: FormUtils.formMaxWidthConstraints(),
+            constraints: FormHelpers.formMaxWidthConstraints(),
             child: Padding(
               padding: EdgeInsets.all(AppSizes.medium),
               child: Form(
@@ -37,14 +37,14 @@ class ListPage extends StatelessWidget {
                       SizedBox(height: AppSizes.small),
                       TextField(
                         controller: _linkNameController,
-                        decoration: FormUtils.inputDecoration(hintText: 'Name'),
+                        decoration: FormHelpers.inputDecoration(hintText: 'Name'),
                       ),
                       SizedBox(height: AppSizes.medium),
                       const Text('Url'),
                       SizedBox(height: AppSizes.small),
                       TextField(
                         controller: _linkUrlController,
-                        decoration: FormUtils.inputDecoration(hintText: 'Url'),
+                        decoration: FormHelpers.inputDecoration(hintText: 'Url'),
                       ),
                       SizedBox(height: AppSizes.medium),
                       Row(
@@ -60,7 +60,7 @@ class ListPage extends StatelessWidget {
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: FormUtils.cancelButton(),
+                              child: FormHelpers.cancelButton(),
                             ),
                           ),
                         ),
@@ -84,7 +84,7 @@ class ListPage extends StatelessWidget {
                                 _linkNameController.clear();
                                 _linkUrlController.clear();
                               },
-                              child: FormUtils.saveButton(),
+                              child: FormHelpers.saveButton(),
                             ),
                           ),
                         ),

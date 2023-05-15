@@ -6,7 +6,7 @@ import 'package:links_app/providers/list.dart';
 import 'package:links_app/styles/color.dart';
 import 'package:links_app/styles/size.dart';
 import 'package:links_app/widgets/app_bar.dart';
-import 'package:links_app/widgets/forms/utils.dart';
+import 'package:links_app/widgets/forms/helper.dart';
 import 'package:links_app/widgets/list_card.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -136,7 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
       builder: (BuildContext context) {
         return Dialog(
           child: Container(
-            constraints: FormUtils.formMaxWidthConstraints(),
+            constraints: FormHelpers.formMaxWidthConstraints(),
             child: Padding(
               padding: EdgeInsets.all(AppSizes.medium),
               child: Form(
@@ -150,7 +150,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     SizedBox(height: AppSizes.small),
                     TextField(
                       controller: addListController,
-                      decoration: FormUtils.inputDecoration(hintText: 'Name'),
+                      decoration: FormHelpers.inputDecoration(hintText: 'Name'),
                     ),
                     SizedBox(height: AppSizes.medium),
                     Row(
@@ -166,7 +166,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: FormUtils.cancelButton(),
+                              child: FormHelpers.cancelButton(),
                             ),
                           ),
                         ),
@@ -188,7 +188,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
                                 addListController.clear();
                               },
-                              child: FormUtils.saveButton(),
+                              child: FormHelpers.saveButton(),
                             ),
                           ),
                         ),
