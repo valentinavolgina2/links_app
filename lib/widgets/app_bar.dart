@@ -5,7 +5,8 @@ import '../main.dart';
 import '../model/app.dart';
 import '../styles/color.dart';
 import '../styles/size.dart';
-import 'auth_dialog.dart';
+import 'user/signup.dart';
+import 'user/login.dart';
 import 'message.dart';
 
 class MyAppBar extends StatefulWidget {
@@ -53,11 +54,35 @@ class _MyAppBarState extends State<MyAppBar> {
                 child: Text(AppData.title.toUpperCase(),
                     style: TextStyle(color: AppColors.whiteText))),
             InkWell(
+              onTap: userEmail == null
+                ? () async {
+                        await showDialog(
+                          context: context,
+                          builder: (context) => const SigninDialog(),
+                        ).then((result) => {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const MyHomePage()),
+                          )
+                        });
+                      }
+                : null,
+              child: userEmail == null
+                ? Padding(
+                  padding: EdgeInsets.only(right: AppSizes.medium),
+                  child: Text('Login',
+                          style: TextStyle(
+                            color: AppColors.whiteText,
+                          )),
+                )
+                : const SizedBox(width: 0)
+            ),
+            InkWell(
                 onTap: userEmail == null
                     ? () async {
                         await showDialog(
                           context: context,
-                          builder: (context) => const AuthDialog(),
+                          builder: (context) => const SignupDialog(),
                         ).then((result) => {
                           Navigator.push(
                             context,
@@ -67,7 +92,7 @@ class _MyAppBarState extends State<MyAppBar> {
                       }
                     : null,
                 child: userEmail == null
-                    ? Text('Sign in',
+                    ? Text('Sign up',
                         style: TextStyle(
                           color: AppColors.whiteText,
                         ))

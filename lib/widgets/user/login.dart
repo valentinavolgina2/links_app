@@ -1,42 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:links_app/styles/color.dart';
 
-import '../connection/authentication.dart';
-import '../styles/size.dart';
-import 'forms/utils.dart';
-import 'message.dart';
+import '../../connection/authentication.dart';
+import '../../styles/size.dart';
+import '../forms/utils.dart';
+import '../message.dart';
 
-class AuthDialog extends StatefulWidget {
-  const AuthDialog({super.key});
+class SigninDialog extends StatefulWidget {
+  const SigninDialog({super.key});
 
   @override
-  State<AuthDialog> createState() => _AuthDialogState();
+  State<SigninDialog> createState() => _SigninDialogState();
 }
 
-class _AuthDialogState extends State<AuthDialog> {
-  late TextEditingController textControllerEmail;
-  late FocusNode textFocusNodeEmail;
+class _SigninDialogState extends State<SigninDialog> {
+  TextEditingController textControllerEmail = TextEditingController();
+  FocusNode textFocusNodeEmail = FocusNode();
   bool _isEditingEmail = false;
 
-  late TextEditingController textControllerPassword;
-  late FocusNode textFocusNodePassword;
+  TextEditingController textControllerPassword = TextEditingController();
+  FocusNode textFocusNodePassword = FocusNode();
 
-  bool _isRegistering = false;
-
-  late String _error;
+  String _error = '';
 
   @override
   void initState() {
-    textControllerEmail = TextEditingController();
-    textControllerEmail.text = '';
-    textFocusNodeEmail = FocusNode();
-
-    textControllerPassword = TextEditingController();
-    textControllerEmail.text = '';
-    textFocusNodePassword = FocusNode();
-
-    _error = '';
-
     super.initState();
   }
 
@@ -53,31 +41,6 @@ class _AuthDialogState extends State<AuthDialog> {
     }
 
     return null;
-  }
-
-  void _signup(BuildContext context) async {
-    setState(() {
-      _isRegistering = true;
-    });
-
-    await registerWithEmailPassword(
-            textControllerEmail.text, textControllerPassword.text)
-        .then((result) {
-      if (result != null) {
-        Navigator.of(context).pop();
-
-        SystemMessage.showSuccess(
-            context: context, message: 'You have registered successfully.');
-      }
-    }).catchError((error) {
-      setState(() {
-        _error = 'Error occured while registering: $error';
-      });
-    });
-
-    setState(() {
-      _isRegistering = false;
-    });
   }
 
   void _signin(BuildContext context) async {
@@ -168,34 +131,6 @@ class _AuthDialogState extends State<AuthDialog> {
                               bottom: AppSizes.medium,
                             ),
                             child: const Text('Sign in'),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                      flex: 1,
-                      child: Container(
-                        width: double.maxFinite,
-                        padding: EdgeInsets.only(left: AppSizes.small, right: AppSizes.small),
-                        child: FilledButton(
-                          onPressed: () => _signup(context),
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              top: AppSizes.medium,
-                              bottom: AppSizes.medium,
-                            ),
-                            child: _isRegistering
-                                ? SizedBox(
-                                    height: AppSizes.medium,
-                                    width: AppSizes.medium,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                        AppColors.whiteText,
-                                      ),
-                                    ),
-                                  )
-                                : const Text('Sign up'),
                           ),
                         ),
                       ),
