@@ -12,4 +12,5 @@ class AppSizes {
   static double inputBorderWidth = 3;
 
   static double dialogMaxWidth = 300.0;
+  static double listMaxWidth = 600.0;
 }

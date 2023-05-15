@@ -93,15 +93,20 @@ class _ListContainerState extends State<ListContainer> {
     final TextStyle titleStyle = TextStyle(
         color: AppColors.darkText, fontSize: AppSizes.textTitle);
 
-    return ListTile(
-      contentPadding: const EdgeInsets.all(0.0),
-      title: Padding(
-          padding: EdgeInsets.symmetric(vertical: AppSizes.medium, horizontal: AppSizes.small),
-          child: Text(widget.list.name,
-              style: TextStyle(fontSize: titleStyle.fontSize))),
-      subtitle: ListView(shrinkWrap: true, children: <Widget>[
-        ..._links.map((link) => LinkContainer(link: link)).toList(),
-      ]),
+    return Center(
+      child: Container(
+        constraints: BoxConstraints(maxWidth: AppSizes.listMaxWidth),
+        child: ListTile(
+          contentPadding: const EdgeInsets.all(0.0),
+          title: Padding(
+              padding: EdgeInsets.symmetric(vertical: AppSizes.medium, horizontal: AppSizes.small),
+              child: Text(widget.list.name,
+                  style: TextStyle(fontSize: titleStyle.fontSize))),
+          subtitle: ListView(shrinkWrap: true, children: <Widget>[
+            ..._links.map((link) => LinkContainer(link: link)).toList(),
+          ]),
+        ),
+      ),
     );
   }
 }

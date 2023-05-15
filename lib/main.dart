@@ -213,14 +213,20 @@ class _MyHomePageState extends State<MyHomePage> {
       body: SafeArea(
           child: Padding(
         padding: EdgeInsets.all(AppSizes.small),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                  children:
-                      myLists.map((list) => ListCard(list: list)).toList()),
+        child: Center(
+          child: Container(
+            constraints: BoxConstraints(maxWidth: AppSizes.listMaxWidth),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded( 
+                  child: ListView(
+                      children:
+                          myLists.map((list) => ListCard(list: list)).toList()),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       )),
       floatingActionButton: uid == null
