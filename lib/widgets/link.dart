@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../model/link.dart';
 import '../providers/link.dart';
 import '../styles/color.dart';
+import 'forms/utils.dart';
 import 'message.dart';
 
 class LinkContainer extends StatelessWidget {
@@ -87,38 +88,73 @@ class LinkPopupMenu extends StatelessWidget {
       context: context,
       barrierDismissible: false, // user must tap button for close dialog!
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Editing link ${link.name}'),
-          content: Form(
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-            TextField(
-              controller: editLinkNameController,
+        return Dialog(
+          child: Container(
+            constraints: FormUtils.formMaxWidthConstraints(),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('Editing ${link.name}', style: const TextStyle(fontSize: 20.0)),
+                    const SizedBox(height: 20.0),
+                    const Text('Name'),
+                    const SizedBox(height: 10.0),
+                    TextField(
+                      controller: editLinkNameController,
+                      decoration: FormUtils.inputDecoration(hintText: 'Name'),
+                    ),
+                    const SizedBox(height: 20.0),
+                    const Text('Url'),
+                    const SizedBox(height: 10.0),
+                    TextField(
+                      controller: editLinkUrlController,
+                      decoration: FormUtils.inputDecoration(hintText: 'Url'),
+                    ),
+                    const SizedBox(height: 20.0),
+                    Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Flexible(
+                            flex: 1,
+                            child: Container(
+                              width: double.maxFinite,
+                              padding: const EdgeInsets.only(left: 10, right: 10),
+                              child: FilledButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: FormUtils.cancelButton(),
+                              ),
+                            ),
+                          ),
+                          Flexible(
+                            flex: 1,
+                            child: Container(
+                              width: double.maxFinite,
+                              padding: const EdgeInsets.only(left: 10, right: 10),
+                              child: FilledButton(
+                                onPressed: () {
+                                  LinkProvider.updateLink(
+                                      link: link,
+                                      newName: editLinkNameController.text,
+                                      newUrl: editLinkUrlController.text);
+                                  Navigator.of(context).pop();
+            
+                                  SystemMessage.showSuccess(
+                                      context: context, message: 'The changes were saved.');
+                                },
+                                child: FormUtils.saveButton(),
+                              ),
+                            ),
+                          ),
+                        ])
+                  ])),
             ),
-            TextField(
-              controller: editLinkUrlController,
-            )
-          ])),
-          actions: [
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('SAVE'),
-              onPressed: () {
-                LinkProvider.updateLink(
-                    link: link,
-                    newName: editLinkNameController.text,
-                    newUrl: editLinkUrlController.text);
-                Navigator.of(context).pop();
-
-                SystemMessage.showSuccess(
-                    context: context, message: 'The changes were saved.');
-              },
-            ),
-          ],
+          ),
         );
       },
     );

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../model/list.dart';
 import '../pages/list/show.dart';
 import '../providers/list.dart';
+import 'forms/utils.dart';
 import 'message.dart';
 
 class ListCard extends StatelessWidget {
@@ -72,30 +73,65 @@ class ListPopupMenu extends StatelessWidget {
       context: context,
       barrierDismissible: false, // user must tap button for close dialog!
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Editing list ${list.name}'),
-          content: Form(
-              child: TextField(
-            controller: editListController,
-          )),
-          actions: [
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('SAVE'),
-              onPressed: () {
-                ListProvider.updateList(list: list, newName: editListController.text);
-                Navigator.of(context).pop();
+        return Dialog(
+          child: Container(
+            constraints: FormUtils.formMaxWidthConstraints(),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('Editing ${list.name}', style: const TextStyle(fontSize: 20.0)),
+                    const SizedBox(height: 20.0),
+                    const Text('Name'),
+                    const SizedBox(height: 10.0),
+                    TextField(
+                      controller: editListController,
+                      decoration: FormUtils.inputDecoration(hintText: 'Name'),
+                    ),
+                    const SizedBox(height: 20.0),
+                    Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Flexible(
+                            flex: 1,
+                            child: Container(
+                              width: double.maxFinite,
+                              padding: const EdgeInsets.only(left: 10, right: 10),
+                              child: FilledButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: FormUtils.cancelButton(),
+                              ),
+                            ),
+                          ),
+                          Flexible(
+                            flex: 1,
+                            child: Container(
+                              width: double.maxFinite,
+                              padding: const EdgeInsets.only(left: 10, right: 10),
+                              child: FilledButton(
+                                onPressed: () {
+                                  ListProvider.updateList(list: list, newName: editListController.text);
+                                  Navigator.of(context).pop();
 
-                SystemMessage.showSuccess(
-                    context: context, message: 'The changes were saved.');
-              },
+                                  SystemMessage.showSuccess(
+                                      context: context, message: 'The changes were saved.');
+                                },
+                                child: FormUtils.saveButton(),
+                              ),
+                            ),
+                          ),
+                        ])
+                  ],
+                )
+              ),
             ),
-          ],
+          ),
         );
       },
     );
