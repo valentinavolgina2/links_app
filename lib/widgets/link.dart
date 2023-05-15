@@ -125,6 +125,7 @@ class LinkPopupMenu extends StatelessWidget {
                               width: double.maxFinite,
                               padding: EdgeInsets.only(left: AppSizes.small, right: AppSizes.small),
                               child: FilledButton(
+                                style: FilledButton.styleFrom(backgroundColor: AppColors.secondaryColor),
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },

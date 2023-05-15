@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../model/list.dart';
 import '../pages/list/show.dart';
 import '../providers/list.dart';
+import '../styles/color.dart';
 import '../styles/size.dart';
 import 'forms/helper.dart';
 import 'message.dart';
@@ -103,6 +104,7 @@ class ListPopupMenu extends StatelessWidget {
                               width: double.maxFinite,
                               padding: EdgeInsets.only(left: AppSizes.small, right: AppSizes.small),
                               child: FilledButton(
+                                style: FilledButton.styleFrom(backgroundColor: AppColors.secondaryColor),
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
