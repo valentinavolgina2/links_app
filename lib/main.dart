@@ -14,6 +14,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:links_app/widgets/message.dart';
+import 'package:links_app/widgets/no_content.dart';
 
 import 'connection/authentication.dart';
 import 'model/app.dart';
@@ -217,7 +218,9 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Center(
           child: Container(
             constraints: BoxConstraints(maxWidth: AppSizes.listMaxWidth),
-            child: Column(
+            child: uid == null 
+            ? EmptyContainer.needLogin(context)
+            : Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded( 
