@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../model/list.dart';
 import '../../providers/link.dart';
+import '../../styles/size.dart';
 import '../../widgets/app_bar.dart';
 import '../../widgets/forms/utils.dart';
 import '../../widgets/list.dart';
@@ -24,28 +25,28 @@ class ListPage extends StatelessWidget {
           child: Container(
             constraints: FormUtils.formMaxWidthConstraints(),
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(AppSizes.medium),
               child: Form(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text('Adding new link', style: TextStyle(fontSize: 20.0)),
-                      const SizedBox(height: 20.0),
+                      Text('Adding new link', style: TextStyle(fontSize: AppSizes.textTitle)),
+                      SizedBox(height: AppSizes.medium),
                       const Text('Name'),
-                      const SizedBox(height: 10.0),
+                      SizedBox(height: AppSizes.small),
                       TextField(
                         controller: _linkNameController,
                         decoration: FormUtils.inputDecoration(hintText: 'Name'),
                       ),
-                      const SizedBox(height: 20.0),
+                      SizedBox(height: AppSizes.medium),
                       const Text('Url'),
-                      const SizedBox(height: 10.0),
+                      SizedBox(height: AppSizes.small),
                       TextField(
                         controller: _linkUrlController,
                         decoration: FormUtils.inputDecoration(hintText: 'Url'),
                       ),
-                      const SizedBox(height: 20.0),
+                      SizedBox(height: AppSizes.medium),
                       Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -54,7 +55,7 @@ class ListPage extends StatelessWidget {
                           flex: 1,
                           child: Container(
                             width: double.maxFinite,
-                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            padding: EdgeInsets.only(left: AppSizes.small, right: AppSizes.small),
                             child: FilledButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
@@ -67,7 +68,7 @@ class ListPage extends StatelessWidget {
                           flex: 1,
                           child: Container(
                             width: double.maxFinite,
-                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            padding: EdgeInsets.only(left: AppSizes.small, right: AppSizes.small),
                             child: FilledButton(
                               onPressed: () {
                                 LinkProvider.addLink(
@@ -107,7 +108,7 @@ class ListPage extends StatelessWidget {
       body: LayoutBuilder(builder: (context, constraints) {
         return SafeArea(
           child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(AppSizes.small),
               child: SingleChildScrollView(
                 physics: const ScrollPhysics(),
                 child: ListContainer(list: list, withName: false),

@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:links_app/styles/color.dart';
 
+import '../../styles/size.dart';
+
 class FormUtils {
   static InputDecoration inputDecoration(
       {String hintText = '', String? errorText}) {
     return InputDecoration(
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(AppSizes.inputBorderRadius),
           borderSide: BorderSide(
             color: AppColors.inputBorder,
-            width: 3,
+            width: AppSizes.inputBorderWidth,
           ),
         ),
         filled: true,
@@ -20,32 +22,32 @@ class FormUtils {
         fillColor: AppColors.whiteText,
         errorText: errorText,
         errorStyle: TextStyle(
-          fontSize: 12,
+          fontSize: AppSizes.textSmall,
           color: AppColors.redText,
         ));
   }
 
   static BoxConstraints formMaxWidthConstraints() {
-    return const BoxConstraints(maxWidth: 300);
+    return BoxConstraints(maxWidth: AppSizes.dialogMaxWidth);
   }
 
   static Widget cancelButton() {
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.only(
-        top: 15.0,
-        bottom: 15.0,
+        top: AppSizes.medium,
+        bottom: AppSizes.medium,
       ),
-      child: Text('Cancel'),
+      child: const Text('Cancel'),
     );
   }
 
   static Widget saveButton() {
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.only(
-        top: 15.0,
-        bottom: 15.0,
+        top: AppSizes.medium,
+        bottom: AppSizes.medium,
       ),
-      child: Text('SAVE'),
+      child: const Text('SAVE'),
     );
   }
 }

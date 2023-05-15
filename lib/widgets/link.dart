@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../model/link.dart';
 import '../providers/link.dart';
 import '../styles/color.dart';
+import '../styles/size.dart';
 import 'forms/utils.dart';
 import 'message.dart';
 
@@ -92,28 +93,28 @@ class LinkPopupMenu extends StatelessWidget {
           child: Container(
             constraints: FormUtils.formMaxWidthConstraints(),
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(AppSizes.medium),
               child: Form(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('Editing ${link.name}', style: const TextStyle(fontSize: 20.0)),
-                    const SizedBox(height: 20.0),
+                    Text('Editing ${link.name}', style: TextStyle(fontSize: AppSizes.textTitle)),
+                    SizedBox(height: AppSizes.medium),
                     const Text('Name'),
-                    const SizedBox(height: 10.0),
+                    SizedBox(height: AppSizes.small),
                     TextField(
                       controller: editLinkNameController,
                       decoration: FormUtils.inputDecoration(hintText: 'Name'),
                     ),
-                    const SizedBox(height: 20.0),
+                    SizedBox(height: AppSizes.medium),
                     const Text('Url'),
-                    const SizedBox(height: 10.0),
+                    SizedBox(height: AppSizes.small),
                     TextField(
                       controller: editLinkUrlController,
                       decoration: FormUtils.inputDecoration(hintText: 'Url'),
                     ),
-                    const SizedBox(height: 20.0),
+                    SizedBox(height: AppSizes.medium),
                     Row(
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -122,7 +123,7 @@ class LinkPopupMenu extends StatelessWidget {
                             flex: 1,
                             child: Container(
                               width: double.maxFinite,
-                              padding: const EdgeInsets.only(left: 10, right: 10),
+                              padding: EdgeInsets.only(left: AppSizes.small, right: AppSizes.small),
                               child: FilledButton(
                                 onPressed: () {
                                   Navigator.of(context).pop();
@@ -135,7 +136,7 @@ class LinkPopupMenu extends StatelessWidget {
                             flex: 1,
                             child: Container(
                               width: double.maxFinite,
-                              padding: const EdgeInsets.only(left: 10, right: 10),
+                              padding: EdgeInsets.only(left: AppSizes.small, right: AppSizes.small),
                               child: FilledButton(
                                 onPressed: () {
                                   LinkProvider.updateLink(
@@ -164,39 +165,33 @@ class LinkPopupMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopupMenuButton<int>(
       itemBuilder: (context) => [
-        const PopupMenuItem(
+        PopupMenuItem(
           value: 1,
           child: Row(
             children: [
-              Icon(Icons.delete),
-              SizedBox(
-                width: 10,
-              ),
-              Text("Delete link")
+              const Icon(Icons.delete),
+              SizedBox(width: AppSizes.small),
+              const Text("Delete link")
             ],
           ),
         ),
-        const PopupMenuItem(
+        PopupMenuItem(
           value: 2,
           child: Row(
             children: [
-              Icon(Icons.edit),
-              SizedBox(
-                width: 10,
-              ),
-              Text("Edit link")
+              const Icon(Icons.edit),
+              SizedBox(width: AppSizes.small),
+              const Text("Edit link")
             ],
           ),
         ),
-        const PopupMenuItem(
+        PopupMenuItem(
           value: 3,
           child: Row(
             children: [
-              Icon(Icons.close),
-              SizedBox(
-                width: 10,
-              ),
-              Text("Cancel")
+              const Icon(Icons.close),
+              SizedBox(width: AppSizes.small),
+              const Text("Cancel")
             ],
           ),
         ),

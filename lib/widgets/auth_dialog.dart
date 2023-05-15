@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:links_app/styles/color.dart';
 
 import '../connection/authentication.dart';
+import '../styles/size.dart';
 import 'forms/utils.dart';
 import 'message.dart';
 
@@ -23,9 +24,6 @@ class _AuthDialogState extends State<AuthDialog> {
   bool _isRegistering = false;
 
   late String _error;
-
-  static const double space20 = 20.0;
-  static const double space40 = 40.0;
 
   @override
   void initState() {
@@ -105,14 +103,14 @@ class _AuthDialogState extends State<AuthDialog> {
         constraints: FormUtils.formMaxWidthConstraints(),
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(AppSizes.medium),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const SizedBox(height: 20.0),
+                SizedBox(height: AppSizes.medium),
                 const Text('Email address'),
-                const SizedBox(height: 20.0),
+                SizedBox(height: AppSizes.medium),
                 TextField(
                   focusNode: textFocusNodeEmail,
                   keyboardType: TextInputType.emailAddress,
@@ -135,9 +133,9 @@ class _AuthDialogState extends State<AuthDialog> {
                         ? _validateEmail(textControllerEmail.text)
                         : null),
                 ),
-                const SizedBox(height: space40),
+                SizedBox(height: AppSizes.large),
                 const Text('Password'),
-                const SizedBox(height: space20),
+                SizedBox(height: AppSizes.medium),
                 TextField(
                   focusNode: textFocusNodePassword,
                   keyboardType: TextInputType.visiblePassword,
@@ -147,12 +145,12 @@ class _AuthDialogState extends State<AuthDialog> {
                   style: TextStyle(color: AppColors.darkText),
                   decoration: FormUtils.inputDecoration(hintText: 'Password'),
                 ),
-                const SizedBox(height: space20),
+                SizedBox(height: AppSizes.medium),
                 _error == '' ? const SizedBox() : Padding(
-                  padding: const EdgeInsets.only(top: space20, bottom: space20),
+                  padding: EdgeInsets.only(top: AppSizes.medium, bottom: AppSizes.medium),
                   child: Center(child: Text(_error, style: TextStyle(color: AppColors.redText))),
                 ),
-                const SizedBox(height: space20),
+                SizedBox(height: AppSizes.medium),
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -161,15 +159,15 @@ class _AuthDialogState extends State<AuthDialog> {
                       flex: 1,
                       child: Container(
                         width: double.maxFinite,
-                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        padding: EdgeInsets.only(left: AppSizes.small, right: AppSizes.small),
                         child: FilledButton(
                           onPressed: () => _signin(context),
-                          child: const Padding(
+                          child: Padding(
                             padding: EdgeInsets.only(
-                              top: 15.0,
-                              bottom: 15.0,
+                              top: AppSizes.medium,
+                              bottom: AppSizes.medium,
                             ),
-                            child: Text('Sign in'),
+                            child: const Text('Sign in'),
                           ),
                         ),
                       ),
@@ -178,18 +176,18 @@ class _AuthDialogState extends State<AuthDialog> {
                       flex: 1,
                       child: Container(
                         width: double.maxFinite,
-                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        padding: EdgeInsets.only(left: AppSizes.small, right: AppSizes.small),
                         child: FilledButton(
                           onPressed: () => _signup(context),
                           child: Padding(
-                            padding: const EdgeInsets.only(
-                              top: 15.0,
-                              bottom: 15.0,
+                            padding: EdgeInsets.only(
+                              top: AppSizes.medium,
+                              bottom: AppSizes.medium,
                             ),
                             child: _isRegistering
                                 ? SizedBox(
-                                    height: 16,
-                                    width: 16,
+                                    height: AppSizes.medium,
+                                    width: AppSizes.medium,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
                                       valueColor: AlwaysStoppedAnimation<Color>(

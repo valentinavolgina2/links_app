@@ -1,9 +1,15 @@
 /// An app sizes grouped by widgets
 class AppSizes {
-  static CategoryWidgetSize category = CategoryWidgetSize();
-}
+  static double small = 8.0;
+  static double medium = 16.0;
+  static double large = 32.0;
 
-/// A category group of sizes
-class CategoryWidgetSize {
-  double text = 21.0;
+  static double textSmall = 12;
+  static double textLable = 10;
+  static double textTitle = 20;
+
+  static double inputBorderRadius = 10.0;
+  static double inputBorderWidth = 3;
+
+  static double dialogMaxWidth = 300.0;
 }

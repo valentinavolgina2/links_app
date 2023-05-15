@@ -4,6 +4,7 @@ import '../connection/authentication.dart';
 import '../main.dart';
 import '../model/app.dart';
 import '../styles/color.dart';
+import '../styles/size.dart';
 import 'auth_dialog.dart';
 import 'message.dart';
 
@@ -45,7 +46,7 @@ class _MyAppBarState extends State<MyAppBar> {
     return Container(
       color: AppColors.primaryColor,
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(AppSizes.medium),
         child: Row(
           children: [
             Expanded(
@@ -83,7 +84,7 @@ class _MyAppBarState extends State<MyAppBar> {
                             style: TextStyle(
                               color: AppColors.whiteText,
                             )),
-                        const SizedBox(width: 20.0),
+                        SizedBox(width: AppSizes.medium),
                         TextButton(
                             style: TextButton.styleFrom(
                               backgroundColor: AppColors.secondaryColor,

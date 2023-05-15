@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:links_app/connection/database.dart';
 import 'package:links_app/providers/list.dart';
 import 'package:links_app/styles/color.dart';
+import 'package:links_app/styles/size.dart';
 import 'package:links_app/widgets/app_bar.dart';
 import 'package:links_app/widgets/forms/utils.dart';
 import 'package:links_app/widgets/list_card.dart';
@@ -137,21 +138,21 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Container(
             constraints: FormUtils.formMaxWidthConstraints(),
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(AppSizes.medium),
               child: Form(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text('Adding new list', style: TextStyle(fontSize: 20.0)),
-                    const SizedBox(height: 20.0),
+                    Text('Adding new list', style: TextStyle(fontSize: AppSizes.textTitle)),
+                    SizedBox(height: AppSizes.medium),
                     const Text('Name'),
-                    const SizedBox(height: 10.0),
+                    SizedBox(height: AppSizes.small),
                     TextField(
                       controller: addListController,
                       decoration: FormUtils.inputDecoration(hintText: 'Name'),
                     ),
-                    const SizedBox(height: 20.0),
+                    SizedBox(height: AppSizes.medium),
                     Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -160,7 +161,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           flex: 1,
                           child: Container(
                             width: double.maxFinite,
-                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            padding: EdgeInsets.only(left: AppSizes.small, right: AppSizes.small),
                             child: FilledButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
@@ -173,7 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           flex: 1,
                           child: Container(
                             width: double.maxFinite,
-                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            padding: EdgeInsets.only(left: AppSizes.small, right: AppSizes.small),
                             child: FilledButton(
                               onPressed: () {
                                 ListProvider.addList(
@@ -211,7 +212,7 @@ class _MyHomePageState extends State<MyHomePage> {
           preferredSize: Size(screenSize.width, 1000), child: const MyAppBar()),
       body: SafeArea(
           child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(AppSizes.small),
         child: Column(
           children: [
             Expanded(
