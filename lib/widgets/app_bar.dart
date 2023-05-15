@@ -43,14 +43,14 @@ class _MyAppBarState extends State<MyAppBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.scaffold.primary,
+      color: AppColors.primaryColor,
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Row(
           children: [
             Expanded(
                 child: Text(AppData.title.toUpperCase(),
-                    style: const TextStyle(color: Colors.white))),
+                    style: TextStyle(color: AppColors.whiteText))),
             InkWell(
                 onTap: userEmail == null
                     ? () async {
@@ -66,9 +66,9 @@ class _MyAppBarState extends State<MyAppBar> {
                       }
                     : null,
                 child: userEmail == null
-                    ? const Text('Sign in',
+                    ? Text('Sign in',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: AppColors.whiteText,
                         ))
                     : Row(children: [
                         CircleAvatar(
@@ -80,21 +80,21 @@ class _MyAppBarState extends State<MyAppBar> {
                               : Container(),
                         ),
                         Text(userEmail!,
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: AppColors.whiteText,
                             )),
                         const SizedBox(width: 20.0),
                         TextButton(
                             style: TextButton.styleFrom(
-                              backgroundColor: Colors.blueGrey,
+                              backgroundColor: AppColors.secondaryColor,
                             ),
                             onPressed: _isProcessing ? null : () => _signout(),
                             child: _isProcessing
                                 ? const CircularProgressIndicator()
-                                : const Text(
+                                : Text(
                                     'Sign out',
                                     style: TextStyle(
-                                      color: Colors.white,
+                                      color: AppColors.whiteText,
                                     ),
                                   ))
                       ])),

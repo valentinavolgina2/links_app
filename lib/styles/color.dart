@@ -2,31 +2,18 @@ import 'package:flutter/material.dart';
 
 /// An app colors grouped by widgets
 class AppColors {
-  static ScaffoldWidgetColor scaffold = ScaffoldWidgetColor();
-  static ButtonWidgetColor button = ButtonWidgetColor();
-  static LinkWidgetColor link = LinkWidgetColor();
-  static CategoryWidgetColor category = CategoryWidgetColor();
-}
+  static MaterialColor? primaryColor =
+      createMaterialColor(const Color(0xff1b434d));
+  static Color secondaryColor = Colors.blueGrey;
+  static Color pinkBackground = Colors.deepOrange[50]!;
+  static Color redBackground = Colors.red[400]!;
 
-/// A scaffold group of colors
-class ScaffoldWidgetColor {
-  MaterialColor? primary = createMaterialColor(const Color(0xff1b434d));
-}
+  static Color darkText = Colors.black87;
+  static Color whiteText = Colors.white;
+  static Color redText = Colors.redAccent;
 
-/// A button group of colors
-class ButtonWidgetColor {
-  Color? reset = Colors.amber[600];
-}
-
-/// A link group of colors
-class LinkWidgetColor {
-  Color? background = Colors.deepOrange[50];
-  Color text = Colors.black87;
-}
-
-/// A category group of colors
-class CategoryWidgetColor {
-  Color text = Colors.black87;
+  static Color inputBorder = Colors.blueGrey[800]!;
+  static Color fadeText = Colors.blueGrey[300]!;
 }
 
 MaterialColor createMaterialColor(Color color) {
@@ -38,7 +25,7 @@ MaterialColor createMaterialColor(Color color) {
     strengths.add(0.1 * i);
   }
 
-  for(final strength in strengths){
+  for (final strength in strengths) {
     final double ds = 0.5 - strength;
     swatch[(strength * 1000).round()] = Color.fromRGBO(
       r + ((ds < 0 ? r : (255 - r)) * ds).round(),

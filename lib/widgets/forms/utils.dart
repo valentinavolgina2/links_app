@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:links_app/styles/color.dart';
 
 class FormUtils {
   static InputDecoration inputDecoration(
@@ -7,20 +8,20 @@ class FormUtils {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(
-            color: Colors.blueGrey[800]!,
+            color: AppColors.inputBorder,
             width: 3,
           ),
         ),
         filled: true,
         hintStyle: TextStyle(
-          color: Colors.blueGrey[300],
+          color: AppColors.darkText,
         ),
         hintText: hintText,
-        fillColor: Colors.white,
+        fillColor: AppColors.whiteText,
         errorText: errorText,
-        errorStyle: const TextStyle(
+        errorStyle: TextStyle(
           fontSize: 12,
-          color: Colors.redAccent,
+          color: AppColors.redText,
         ));
   }
 

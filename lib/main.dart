@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: AppData.title,
       theme: ThemeData(
-        primarySwatch: AppColors.scaffold.primary,
+        primarySwatch: AppColors.primaryColor,
       ),
       home: const MyHomePage(),
     );

@@ -23,10 +23,10 @@ class LinkContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle textStyle = TextStyle(color: AppColors.link.text);
+    final TextStyle textStyle = TextStyle(color: AppColors.darkText);
 
     return Card(
-      color: AppColors.link.background,
+      color: AppColors.pinkBackground,
       child: ListTile(
           title: Text(
             link.name,

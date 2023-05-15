@@ -91,7 +91,7 @@ class _ListContainerState extends State<ListContainer> {
   @override
   Widget build(BuildContext context) {
     final TextStyle titleStyle = TextStyle(
-        color: AppColors.category.text, fontSize: AppSizes.category.text);
+        color: AppColors.darkText, fontSize: AppSizes.category.text);
 
     return ListTile(
       contentPadding: const EdgeInsets.all(0.0),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:links_app/styles/color.dart';
 
 class SystemMessage {
   static void showSuccess(
@@ -15,7 +16,7 @@ class SystemMessage {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.red[400],
+        backgroundColor: AppColors.redBackground,
       ),
     );
   }

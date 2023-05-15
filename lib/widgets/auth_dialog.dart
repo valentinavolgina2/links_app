@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:links_app/styles/color.dart';
 
 import '../connection/authentication.dart';
 import 'forms/utils.dart';
@@ -127,7 +128,7 @@ class _AuthDialogState extends State<AuthDialog> {
                     textFocusNodeEmail.unfocus();
                     FocusScope.of(context).requestFocus(textFocusNodePassword);
                   },
-                  style: const TextStyle(color: Colors.black),
+                  style: TextStyle(color: AppColors.darkText),
                   decoration: FormUtils.inputDecoration(
                     hintText: 'Email', 
                     errorText: _isEditingEmail
@@ -143,13 +144,13 @@ class _AuthDialogState extends State<AuthDialog> {
                   textInputAction: TextInputAction.next,
                   controller: textControllerPassword,
                   autofocus: false,
-                  style: const TextStyle(color: Colors.black),
+                  style: TextStyle(color: AppColors.darkText),
                   decoration: FormUtils.inputDecoration(hintText: 'Password'),
                 ),
                 const SizedBox(height: space20),
                 _error == '' ? const SizedBox() : Padding(
                   padding: const EdgeInsets.only(top: space20, bottom: space20),
-                  child: Center(child: Text(_error, style: const TextStyle(color: Colors.redAccent))),
+                  child: Center(child: Text(_error, style: TextStyle(color: AppColors.redText))),
                 ),
                 const SizedBox(height: space20),
                 Row(
@@ -186,13 +187,13 @@ class _AuthDialogState extends State<AuthDialog> {
                               bottom: 15.0,
                             ),
                             child: _isRegistering
-                                ? const SizedBox(
+                                ? SizedBox(
                                     height: 16,
                                     width: 16,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
                                       valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.white,
+                                        AppColors.whiteText,
                                       ),
                                     ),
                                   )
