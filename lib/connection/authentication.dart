@@ -1,11 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
+final GoogleSignIn googleSignIn = GoogleSignIn();
 
 String? uid;
 String? userEmail;
+String? name;
 String? imageUrl;
 
 Future<User?> registerWithEmailPassword(String email, String password) async {
@@ -75,6 +78,35 @@ Future<User?> signInWithEmailPassword(String email, String password) async {
   return user;
 }
 
+Future<User?> signInWithGoogle() async {
+  User? user;
+
+  // The `GoogleAuthProvider` can only be used while running on the web
+  // for app: https://blog.codemagic.io/firebase-authentication-google-sign-in-using-flutter/
+  GoogleAuthProvider authProvider = GoogleAuthProvider();
+
+  try {
+    final UserCredential userCredential =
+        await _auth.signInWithPopup(authProvider);
+
+    user = userCredential.user;
+  } catch (e) {
+    debugPrint(e.toString());
+  }
+
+  if (user != null) {
+    uid = user.uid;
+    name = user.displayName;
+    userEmail = user.email;
+    imageUrl = user.photoURL;
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('auth', true);
+  }
+
+  return user;
+}
+
 Future<String> signOut() async {
   await _auth.signOut();
 
@@ -83,8 +115,25 @@ Future<String> signOut() async {
 
   uid = null;
   userEmail = null;
+  name = null;
+  imageUrl = null;
 
   return 'User signed out';
+}
+
+void signOutGoogle() async {
+  await googleSignIn.signOut();
+  await _auth.signOut();
+
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setBool('auth', false);
+
+  uid = null;
+  name = null;
+  userEmail = null;
+  imageUrl = null;
+
+  debugPrint("User signed out of Google account");
 }
 
 Future getUser() async {
@@ -97,6 +146,8 @@ Future getUser() async {
     if (user != null) {
       uid = user.uid;
       userEmail = user.email;
+      name = user.displayName;
+      imageUrl = user.photoURL;
     }
   }
 }

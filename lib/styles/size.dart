@@ -13,4 +13,7 @@ class AppSizes {
 
   static double dialogMaxWidth = 300.0;
   static double listMaxWidth = 600.0;
+
+  static double googleButtonRadius = 20.0;
+  static double googleBorderWidth = 2;
 }
