@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../helpers/gradient.dart';
 import '../model/link.dart';
 import '../providers/link.dart';
 import '../styles/color.dart';
@@ -25,15 +26,20 @@ class LinkContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextStyle textStyle = TextStyle(color: AppColors.darkText);
+    final double randomStart = randomGradientStart();
+    final Map<String, Alignment> randomGardient = randomGradient();
 
     return Card(
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [AppColors.gradientStart, AppColors.gradientEnd],
-            stops: const [0.5, 0.9],
+            begin: randomGardient['begin']!,
+            end: randomGardient['end']!,
+            colors: [
+              AppColors.gradientStart,
+              AppColors.gradientEnd,
+            ],
+            stops: [randomStart, randomStart + 0.2],
           ),
         ),
         child: ListTile(
@@ -105,11 +111,12 @@ class LinkPopupMenu extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.all(AppSizes.medium),
               child: Form(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text('Editing ${link.name}', style: TextStyle(fontSize: AppSizes.textTitle)),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                    Text('Editing ${link.name}',
+                        style: TextStyle(fontSize: AppSizes.textTitle)),
                     SizedBox(height: AppSizes.medium),
                     const Text('Name'),
                     SizedBox(height: AppSizes.small),
@@ -133,9 +140,11 @@ class LinkPopupMenu extends StatelessWidget {
                             flex: 1,
                             child: Container(
                               width: double.maxFinite,
-                              padding: EdgeInsets.only(left: AppSizes.small, right: AppSizes.small),
+                              padding: EdgeInsets.only(
+                                  left: AppSizes.small, right: AppSizes.small),
                               child: FilledButton(
-                                style: FilledButton.styleFrom(backgroundColor: AppColors.secondaryColor),
+                                style: FilledButton.styleFrom(
+                                    backgroundColor: AppColors.secondaryColor),
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
@@ -147,7 +156,8 @@ class LinkPopupMenu extends StatelessWidget {
                             flex: 1,
                             child: Container(
                               width: double.maxFinite,
-                              padding: EdgeInsets.only(left: AppSizes.small, right: AppSizes.small),
+                              padding: EdgeInsets.only(
+                                  left: AppSizes.small, right: AppSizes.small),
                               child: FilledButton(
                                 onPressed: () {
                                   LinkProvider.updateLink(
@@ -155,9 +165,10 @@ class LinkPopupMenu extends StatelessWidget {
                                       newName: editLinkNameController.text,
                                       newUrl: editLinkUrlController.text);
                                   Navigator.of(context).pop();
-            
+
                                   SystemMessage.showSuccess(
-                                      context: context, message: 'The changes were saved.');
+                                      context: context,
+                                      message: 'The changes were saved.');
                                 },
                                 child: FormHelpers.saveButton(),
                               ),

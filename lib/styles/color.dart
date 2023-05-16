@@ -14,8 +14,8 @@ class AppColors {
   static Color inputBorder = Colors.blueGrey[800]!;
   static Color fadeText = Colors.blueGrey[300]!;
 
-  static Color gradientStart = const Color.fromRGBO(251, 233, 231, 1);
-  static Color gradientEnd = const Color.fromARGB(255, 150, 187, 196);
+  static Color gradientStart = const Color.fromARGB(255, 251, 233, 231);
+  static Color gradientEnd = const Color.fromARGB(255, 217, 227, 230);
 }
 
 MaterialColor createMaterialColor(Color color) {

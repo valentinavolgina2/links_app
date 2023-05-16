@@ -139,7 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [AppColors.gradientStart, AppColors.gradientEnd],
-                  stops: const [0.5, 0.9],
+                  stops: const [0.4, 0.8],
                 ),
               ),
             child: Padding(
