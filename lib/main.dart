@@ -64,8 +64,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   late DatabaseReference _listsRef;
 
-  late TextEditingController addListController;
-
   @override
   void initState() {
     init();
@@ -75,8 +73,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> init() async {
     DB.enableLogging(false);
-
-    addListController = TextEditingController();
 
     _listsRef = ListProvider.userlistsRef(userId: uid);
 
@@ -130,81 +126,6 @@ class _MyHomePageState extends State<MyHomePage> {
     _listsChangeSubscription.cancel();
   }
 
-  void _addList(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false, // user must tap button for close dialog!
-      builder: (BuildContext context) {
-        return Dialog(
-          child: Container(
-            constraints: FormHelpers.formMaxWidthConstraints(),
-            child: Padding(
-              padding: EdgeInsets.all(AppSizes.medium),
-              child: Form(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text('Adding new list', style: TextStyle(fontSize: AppSizes.textTitle)),
-                    SizedBox(height: AppSizes.medium),
-                    const Text('Name'),
-                    SizedBox(height: AppSizes.small),
-                    TextField(
-                      controller: addListController,
-                      decoration: FormHelpers.inputDecoration(hintText: 'Name'),
-                    ),
-                    SizedBox(height: AppSizes.medium),
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Flexible(
-                          flex: 1,
-                          child: Container(
-                            width: double.maxFinite,
-                            padding: EdgeInsets.only(left: AppSizes.small, right: AppSizes.small),
-                            child: FilledButton(
-                              style: FilledButton.styleFrom(backgroundColor: AppColors.secondaryColor),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: FormHelpers.cancelButton(),
-                            ),
-                          ),
-                        ),
-                        Flexible(
-                          flex: 1,
-                          child: Container(
-                            width: double.maxFinite,
-                            padding: EdgeInsets.only(left: AppSizes.small, right: AppSizes.small),
-                            child: FilledButton(
-                              onPressed: () {
-                                ListProvider.addList(
-                                    name: addListController.text, userId: uid!);
-
-                                Navigator.of(context).pop();
-
-                                SystemMessage.showSuccess(
-                                    context: context,
-                                    message: 'List ${addListController.text} was added.');
-
-                                addListController.clear();
-                              },
-                              child: FormHelpers.saveButton(),
-                            ),
-                          ),
-                        ),
-                      ])
-                  ],
-                    
-                  )),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
@@ -220,23 +141,18 @@ class _MyHomePageState extends State<MyHomePage> {
             constraints: BoxConstraints(maxWidth: AppSizes.listMaxWidth),
             child: uid == null 
             ? EmptyContainer.needLogin(context)
-            : Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded( 
-                  child: ListView(
-                      children:
-                          myLists.map((list) => ListCard(list: list)).toList()),
-                ),
-              ],
-            ),
+            : myLists.isEmpty
+              ? EmptyContainer.noListsAdded(context: context, userId: uid!)
+              : ListView(
+                  children: myLists.map((list) => ListCard(list: list)).toList(),
+                )
           ),
         ),
       )),
       floatingActionButton: uid == null
           ? null
           : FloatingActionButton(
-              onPressed: () => _addList(context),
+              onPressed: () => FormHelpers.addList(context: context, userId: uid!),
               tooltip: 'Add new list',
               child: const Icon(Icons.add)),
     );

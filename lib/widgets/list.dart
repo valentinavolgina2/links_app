@@ -10,6 +10,7 @@ import '../providers/link.dart';
 import '../styles/color.dart';
 import '../styles/size.dart';
 import 'link.dart';
+import 'no_content.dart';
 
 class ListContainer extends StatefulWidget {
   const ListContainer({super.key, required this.list, this.withName = true});
@@ -93,20 +94,30 @@ class _ListContainerState extends State<ListContainer> {
     final TextStyle titleStyle = TextStyle(
         color: AppColors.darkText, fontSize: AppSizes.textTitle);
 
-    return Center(
-      child: Container(
-        constraints: BoxConstraints(maxWidth: AppSizes.listMaxWidth),
-        child: ListTile(
-          contentPadding: const EdgeInsets.all(0.0),
-          title: Padding(
-              padding: EdgeInsets.symmetric(vertical: AppSizes.medium, horizontal: AppSizes.small),
-              child: Text(widget.list.name,
-                  style: TextStyle(fontSize: titleStyle.fontSize))),
-          subtitle: ListView(shrinkWrap: true, children: <Widget>[
-            ..._links.map((link) => LinkContainer(link: link)).toList(),
-          ]),
+    return _links.isEmpty
+      ? Center(
+        child: Container(
+          constraints: BoxConstraints(maxWidth: AppSizes.listMaxWidth),
+          child: EmptyContainer.noLinksAdded(context: context, list: widget.list)
         ),
-      ),
-    );
+      )
+    :SingleChildScrollView(
+      physics: const ScrollPhysics(),
+      child: Center(
+        child: Container(
+          constraints: BoxConstraints(maxWidth: AppSizes.listMaxWidth),
+          child: ListTile(
+            contentPadding: const EdgeInsets.all(0.0),
+            title: Padding(
+              padding: EdgeInsets.symmetric(vertical: AppSizes.medium, horizontal: AppSizes.small),
+              child: Text(widget.list.name, style: TextStyle(fontSize: titleStyle.fontSize))
+            ),
+            subtitle: ListView(shrinkWrap: true, children: <Widget>[
+              ..._links.map((link) => LinkContainer(link: link)).toList(),
+            ]),
+          ),
+        )
+      )
+    ); 
   }
 }
