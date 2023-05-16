@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:links_app/model/app.dart';
 import 'package:links_app/styles/color.dart';
 
 import '../../connection/authentication.dart';
@@ -73,6 +74,8 @@ class _SigninDialogState extends State<SigninDialog> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 SizedBox(height: AppSizes.medium),
+                Center(child: Text(AppData.title.toUpperCase(), style: TextStyle(color: AppColors.secondaryColor, fontWeight: FontWeight.w600, letterSpacing: 1.5))),
+                SizedBox(height: AppSizes.large),
                 const Text('Email address'),
                 SizedBox(height: AppSizes.medium),
                 TextField(

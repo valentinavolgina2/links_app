@@ -59,7 +59,7 @@ class _MyAppBarState extends State<MyAppBar> {
                   );
                 },
                 child: Text(AppData.title.toUpperCase(),
-                    style: TextStyle(color: AppColors.whiteText)),
+                    style: TextStyle(color: AppColors.whiteText, letterSpacing: 1.5)),
             )),
             InkWell(
                 onTap: userEmail == null

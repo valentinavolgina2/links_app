@@ -55,6 +55,10 @@ class FormHelpers {
     );
   }
 
+  static titleTextStyle() {
+    
+  }
+
   static addLink({required BuildContext context, required LinksList list}) {
     final TextEditingController linkNameController = TextEditingController();
     final TextEditingController linkUrlController = TextEditingController();
@@ -158,20 +162,21 @@ class FormHelpers {
             child: Padding(
               padding: EdgeInsets.all(AppSizes.medium),
               child: Form(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text('Adding new list', style: TextStyle(fontSize: AppSizes.textTitle)),
-                    SizedBox(height: AppSizes.medium),
-                    const Text('Name'),
-                    SizedBox(height: AppSizes.small),
-                    TextField(
-                      controller: addListController,
-                      decoration: FormHelpers.inputDecoration(hintText: 'Name'),
-                    ),
-                    SizedBox(height: AppSizes.medium),
-                    Row(
+                  child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Adding new list',
+                      style: TextStyle(fontSize: AppSizes.textTitle)),
+                  SizedBox(height: AppSizes.medium),
+                  const Text('Name'),
+                  SizedBox(height: AppSizes.small),
+                  TextField(
+                    controller: addListController,
+                    decoration: FormHelpers.inputDecoration(hintText: 'Name'),
+                  ),
+                  SizedBox(height: AppSizes.medium),
+                  Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -179,9 +184,11 @@ class FormHelpers {
                           flex: 1,
                           child: Container(
                             width: double.maxFinite,
-                            padding: EdgeInsets.only(left: AppSizes.small, right: AppSizes.small),
+                            padding: EdgeInsets.only(
+                                left: AppSizes.small, right: AppSizes.small),
                             child: FilledButton(
-                              style: FilledButton.styleFrom(backgroundColor: AppColors.secondaryColor),
+                              style: FilledButton.styleFrom(
+                                  backgroundColor: AppColors.secondaryColor),
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
@@ -193,17 +200,20 @@ class FormHelpers {
                           flex: 1,
                           child: Container(
                             width: double.maxFinite,
-                            padding: EdgeInsets.only(left: AppSizes.small, right: AppSizes.small),
+                            padding: EdgeInsets.only(
+                                left: AppSizes.small, right: AppSizes.small),
                             child: FilledButton(
                               onPressed: () {
                                 ListProvider.addList(
-                                    name: addListController.text, userId: userId);
+                                    name: addListController.text,
+                                    userId: userId);
 
                                 Navigator.of(context).pop();
 
                                 SystemMessage.showSuccess(
                                     context: context,
-                                    message: 'List ${addListController.text} was added.');
+                                    message:
+                                        'List ${addListController.text} was added.');
 
                                 addListController.clear();
                               },
@@ -212,9 +222,8 @@ class FormHelpers {
                           ),
                         ),
                       ])
-                  ],
-                    
-                  )),
+                ],
+              )),
             ),
           ),
         );
