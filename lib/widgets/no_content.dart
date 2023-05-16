@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:links_app/widgets/user/login.dart';
 import 'package:links_app/widgets/user/signup.dart';
 
 import '../main.dart';
@@ -18,20 +19,47 @@ class EmptyContainer {
           const Text(
               'Get started by creating a new profile. Only registered users can create list of links.'),
           SizedBox(height: AppSizes.medium),
-          FilledButton(
-              onPressed: () async {
-                await showDialog(
-                  context: context,
-                  builder: (context) => const SignupDialog(),
-                ).then((result) => {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const MyHomePage()),
-                      )
-                    });
-              },
-              child: const Text('Register'))
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                child: FilledButton(
+                  onPressed: () async {
+                    await showDialog(
+                      context: context,
+                      builder: (context) => const SigninDialog(),
+                    ).then((result) => {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const MyHomePage()),
+                          )
+                        });
+                  },
+                  child: const Text('Login'),
+                )
+              ),
+              SizedBox(width: AppSizes.medium),
+              Flexible(
+                child: FilledButton(
+                  onPressed: () async {
+                    await showDialog(
+                      context: context,
+                      builder: (context) => const SignupDialog(),
+                    ).then((result) => {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const MyHomePage()),
+                          )
+                        });
+                  },
+                  child: const Text('Register'),
+                )
+              )
+            ],
+          )
+          
         ]);
   }
 
