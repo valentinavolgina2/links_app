@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// An app colors grouped by widgets
 class AppColors {
   static MaterialColor? primaryColor =
       createMaterialColor(const Color(0xff1b434d));
@@ -14,6 +13,9 @@ class AppColors {
 
   static Color inputBorder = Colors.blueGrey[800]!;
   static Color fadeText = Colors.blueGrey[300]!;
+
+  static Color gradientStart = const Color.fromRGBO(251, 233, 231, 1);
+  static Color gradientEnd = const Color.fromARGB(255, 150, 187, 196);
 }
 
 MaterialColor createMaterialColor(Color color) {

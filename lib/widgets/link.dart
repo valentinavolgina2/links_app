@@ -27,8 +27,16 @@ class LinkContainer extends StatelessWidget {
     final TextStyle textStyle = TextStyle(color: AppColors.darkText);
 
     return Card(
-      color: AppColors.pinkBackground,
-      child: ListTile(
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [AppColors.gradientStart, AppColors.gradientEnd],
+            stops: const [0.5, 0.9],
+          ),
+        ),
+        child: ListTile(
           title: Text(
             link.name,
             style: textStyle,
@@ -36,7 +44,9 @@ class LinkContainer extends StatelessWidget {
           trailing: LinkPopupMenu(link: link),
           onTap: () async {
             await _launchURL(Uri.encodeFull(link.url));
-          }),
+          },
+        ),
+      ),
     );
   }
 }

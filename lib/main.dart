@@ -13,7 +13,6 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:links_app/widgets/message.dart';
 import 'package:links_app/widgets/no_content.dart';
 
 import 'connection/authentication.dart';
@@ -134,21 +133,31 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: PreferredSize(
           preferredSize: Size(screenSize.width, 1000), child: const MyAppBar()),
       body: SafeArea(
-          child: Padding(
-        padding: EdgeInsets.all(AppSizes.small),
-        child: Center(
           child: Container(
-            constraints: BoxConstraints(maxWidth: AppSizes.listMaxWidth),
-            child: uid == null 
-            ? EmptyContainer.needLogin(context)
-            : myLists.isEmpty
-              ? EmptyContainer.noListsAdded(context: context, userId: uid!)
-              : ListView(
-                  children: myLists.map((list) => ListCard(list: list)).toList(),
-                )
-          ),
-        ),
-      )),
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [AppColors.gradientStart, AppColors.gradientEnd],
+                  stops: const [0.5, 0.9],
+                ),
+              ),
+            child: Padding(
+                  padding: EdgeInsets.all(AppSizes.small),
+                  child: Center(
+            child: Container(
+              constraints: BoxConstraints(maxWidth: AppSizes.listMaxWidth),
+              child: uid == null 
+              ? EmptyContainer.needLogin(context)
+              : myLists.isEmpty
+                ? EmptyContainer.noListsAdded(context: context, userId: uid!)
+                : ListView(
+                    children: myLists.map((list) => ListCard(list: list)).toList(),
+                  )
+            ),
+                  ),
+                ),
+          )),
       floatingActionButton: uid == null
           ? null
           : FloatingActionButton(
