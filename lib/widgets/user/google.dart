@@ -58,7 +58,7 @@ class _GoogleButtonState extends State<GoogleButton> {
           });
         },
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+          padding: EdgeInsets.fromLTRB(0, AppSizes.small, 0, AppSizes.small),
           child: _isProcessing
               ? CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(
@@ -74,11 +74,10 @@ class _GoogleButtonState extends State<GoogleButton> {
                       height: AppSizes.large,
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: AppSizes.medium),
+                      padding: EdgeInsets.only(left: AppSizes.small),
                       child: Text(
                         'Continue with Google',
                         style: TextStyle(
-                          //fontSize: AppSizes.textSmall,
                           color: AppColors.secondaryColor,
                         ),
                       ),

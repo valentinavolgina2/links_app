@@ -5,6 +5,7 @@ import '../../connection/authentication.dart';
 import '../../styles/size.dart';
 import '../forms/helper.dart';
 import '../message.dart';
+import 'google.dart';
 
 class SignupDialog extends StatefulWidget {
   const SignupDialog({super.key});
@@ -159,7 +160,14 @@ class _SignupDialogState extends State<SignupDialog> {
                     ),
                   ],
                 ),
-                //Center(child: GoogleButton()),
+                Divider(
+                  height: AppSizes.large,
+                  thickness: AppSizes.googleBorderWidth,
+                  indent: AppSizes.medium,
+                  endIndent: AppSizes.medium,
+                  color: AppColors.secondaryColor,
+                ),
+                const Center(child: GoogleButton()),
               ],
             ),
           ),
