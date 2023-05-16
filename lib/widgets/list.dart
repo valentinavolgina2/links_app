@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:links_app/main.dart';
 
 import '../model/link.dart';
 import '../model/list.dart';
@@ -91,33 +92,43 @@ class _ListContainerState extends State<ListContainer> {
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle titleStyle = TextStyle(
-        color: AppColors.darkText, fontSize: AppSizes.textTitle);
+    final TextStyle titleStyle =
+        TextStyle(color: AppColors.darkText, fontSize: AppSizes.textTitle);
 
     return _links.isEmpty
-      ? Center(
-        child: Container(
-          constraints: BoxConstraints(maxWidth: AppSizes.listMaxWidth),
-          child: EmptyContainer.noLinksAdded(context: context, list: widget.list)
-        ),
-      )
-    :SingleChildScrollView(
-      physics: const ScrollPhysics(),
-      child: Center(
-        child: Container(
-          constraints: BoxConstraints(maxWidth: AppSizes.listMaxWidth),
-          child: ListTile(
-            contentPadding: const EdgeInsets.all(0.0),
-            title: Padding(
-              padding: EdgeInsets.symmetric(vertical: AppSizes.medium, horizontal: AppSizes.small),
-              child: Text(widget.list.name, style: TextStyle(fontSize: titleStyle.fontSize))
-            ),
-            subtitle: ListView(shrinkWrap: true, children: <Widget>[
-              ..._links.map((link) => LinkContainer(link: link)).toList(),
-            ]),
-          ),
-        )
-      )
-    ); 
+        ? Center(
+            child: Container(
+                constraints: BoxConstraints(maxWidth: AppSizes.listMaxWidth),
+                child: EmptyContainer.noLinksAdded(
+                    context: context, list: widget.list)),
+          )
+        : SingleChildScrollView(
+            physics: const ScrollPhysics(),
+            child: Center(
+                child: Container(
+              constraints: BoxConstraints(maxWidth: AppSizes.listMaxWidth),
+              child: ListTile(
+                contentPadding: const EdgeInsets.all(0.0),
+                title: Padding(
+                    padding: EdgeInsets.symmetric(
+                        vertical: AppSizes.medium, horizontal: AppSizes.small),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(widget.list.name,
+                              style:
+                                  TextStyle(fontSize: titleStyle.fontSize))),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Back to lists'))
+                      ],
+                    )),
+                subtitle: ListView(shrinkWrap: true, children: <Widget>[
+                  ..._links.map((link) => LinkContainer(link: link)).toList(),
+                ]),
+              ),
+            )));
   }
 }
