@@ -51,15 +51,16 @@ class _MyAppBarState extends State<MyAppBar> {
         child: Row(
           children: [
             Expanded(
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const MyHomePage()),
-                  );
-                },
-                child: Text(AppData.title.toUpperCase(),
-                    style: TextStyle(color: AppColors.whiteText, letterSpacing: 1.5)),
+                child: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MyHomePage()),
+                );
+              },
+              child: Text(AppData.title.toUpperCase(),
+                  style: TextStyle(
+                      color: AppColors.whiteText, letterSpacing: 1.5)),
             )),
             InkWell(
                 onTap: userEmail == null
@@ -137,5 +138,157 @@ class _MyAppBarState extends State<MyAppBar> {
         ),
       ),
     );
+  }
+}
+
+class MyDrawer extends StatefulWidget {
+  const MyDrawer({super.key});
+
+  @override
+  State<MyDrawer> createState() => _MyDrawerState();
+}
+
+class _MyDrawerState extends State<MyDrawer> {
+  Divider _divider() {
+    return Divider(
+      height: AppSizes.large,
+      thickness: AppSizes.googleBorderWidth,
+      indent: 0,
+      endIndent: 0,
+      color: AppColors.secondaryColor,
+    );
+  }
+
+  _signout() async {
+    await signOut().then((result) {
+      SystemMessage.showSuccess(
+          context: context, message: 'You have signed out successfully.');
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const MyHomePage()),
+      );
+    }).catchError((error) {
+      SystemMessage.showError(
+          context: context, message: 'Sign Out Error: $error');
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+        child: Container(
+            color: AppColors.primaryColor,
+            child: Padding(
+                padding: EdgeInsets.all(AppSizes.medium),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Align(
+                        alignment: Alignment.center,
+                        child: Text(AppData.title.toUpperCase(),
+                            style: TextStyle(
+                                color: AppColors.whiteText,
+                                letterSpacing: 1.5,
+                                fontSize: AppSizes.textTitle)),
+                      ),
+                      _divider(),
+                      userEmail == null
+                        ? Container(
+                            width: double.maxFinite,
+                            child: InkWell(
+                              onTap: () async {
+                                await showDialog(
+                                  context: context,
+                                  builder: (context) => const SigninDialog(),
+                                ).then((result) => {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const MyHomePage()),
+                                      )
+                                    });
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  top: AppSizes.small,
+                                  bottom: AppSizes.small,
+                                ),
+                                child: Text(
+                                  'Log in',
+                                  style: TextStyle(
+                                    fontSize: AppSizes.textTitle,
+                                    color: AppColors.whiteText,
+                                  ),
+                                ),
+                              ),
+                            ))
+                        : Row(children: [
+                            CircleAvatar(
+                              radius: 15,
+                              backgroundImage: imageUrl != null
+                                  ? NetworkImage(imageUrl!)
+                                  : null,
+                              child: imageUrl == null
+                                  ? const Icon(Icons.account_circle, size: 30)
+                                  : Container(),
+                            ),
+                            Text(userEmail!,
+                                style: TextStyle(
+                                  color: AppColors.whiteText,
+                                )),
+                          ]),
+                        _divider(),
+                        userEmail == null
+                        ? Container(
+                            width: double.maxFinite,
+                            child: InkWell(
+                              onTap: () async {
+                                await showDialog(
+                                  context: context,
+                                  builder: (context) => const SignupDialog(),
+                                ).then((result) => {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const MyHomePage()),
+                                  )
+                                });
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  top: AppSizes.small,
+                                  bottom: AppSizes.small,
+                                ),
+                                child: Text(
+                                  'Sign up',
+                                  style: TextStyle(
+                                    fontSize: AppSizes.textTitle,
+                                    color: AppColors.whiteText,
+                                  ),
+                                ),
+                              ),
+                            ))
+                        : Container(
+                            width: double.maxFinite,
+                            child: InkWell(
+                              onTap: () => _signout(),
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  top: AppSizes.small,
+                                  bottom: AppSizes.small,
+                                ),
+                                child: Text(
+                                  'Sign out',
+                                  style: TextStyle(
+                                    fontSize: AppSizes.textTitle,
+                                    color: AppColors.whiteText,
+                                  ),
+                                ),
+                              ),
+                            )),
+                    ]))));
   }
 }

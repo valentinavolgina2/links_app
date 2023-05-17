@@ -4,6 +4,7 @@ class AppColors {
   static MaterialColor? primaryColor =
       createMaterialColor(const Color(0xff1b434d));
   static Color secondaryColor = Colors.blueGrey;
+  static Color secondaryFade = Colors.blueGrey.shade100;
   static Color pinkBackground = Colors.deepOrange[50]!;
   static Color redBackground = Colors.red[400]!;
 

@@ -14,6 +14,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:links_app/widgets/no_content.dart';
+import 'package:links_app/widgets/responsive.dart';
 
 import 'connection/authentication.dart';
 import 'model/app.dart';
@@ -130,8 +131,24 @@ class _MyHomePageState extends State<MyHomePage> {
     var screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: PreferredSize(
-          preferredSize: Size(screenSize.width, 1000), child: const MyAppBar()),
+      appBar: ResponsiveWidget.isSmallScreen(context)
+      ? AppBar( // for smaller screen sizes
+          backgroundColor: AppColors.primaryColor,
+          elevation: 0,
+          title: Text(
+            AppData.title.toUpperCase(),
+            style: TextStyle(
+              color: AppColors.secondaryFade,
+              fontSize: AppSizes.textTitle,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 1.5,
+            ),
+          ),
+        )
+      : PreferredSize(
+          preferredSize: Size(screenSize.width, 1000), child: const MyAppBar()
+      ),
+      drawer: const MyDrawer(),
       body: SafeArea(
           child: Container(
             decoration: BoxDecoration(

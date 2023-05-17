@@ -11,13 +11,13 @@ class EmptyContainer {
   static Widget needLogin(BuildContext context) {
     return Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text('Welcome to My Links',
               style: TextStyle(fontSize: AppSizes.textTitle)),
           SizedBox(height: AppSizes.medium),
           const Text(
-              'Get started by creating a new profile. Only registered users can create list of links.'),
+              'Get started by creating a new profile. Only registered users can create list of links.',
+              textAlign: TextAlign.center,),
           SizedBox(height: AppSizes.medium),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

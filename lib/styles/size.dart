@@ -5,7 +5,7 @@ class AppSizes {
   static double large = 32.0;
 
   static double textSmall = 12;
-  static double textLable = 10;
+  static double textLable = 17;
   static double textTitle = 20;
 
   static double inputBorderRadius = 10.0;
