@@ -47,7 +47,7 @@ Future<User?> registerWithEmailPassword(String email, String password) async {
 
 Future<User?> signInWithEmailPassword(String email, String password) async {
   User? user;
-  
+
   try {
     UserCredential userCredential = await _auth.signInWithEmailAndPassword(
       email: email,
@@ -108,6 +108,10 @@ Future<User?> signInWithGoogle() async {
 }
 
 Future<String> signOut() async {
+  if (googleSignIn.clientId != null) {
+    await googleSignIn.signOut();
+  }
+
   await _auth.signOut();
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -119,21 +123,6 @@ Future<String> signOut() async {
   imageUrl = null;
 
   return 'User signed out';
-}
-
-void signOutGoogle() async {
-  await googleSignIn.signOut();
-  await _auth.signOut();
-
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setBool('auth', false);
-
-  uid = null;
-  name = null;
-  userEmail = null;
-  imageUrl = null;
-
-  debugPrint("User signed out of Google account");
 }
 
 Future getUser() async {
