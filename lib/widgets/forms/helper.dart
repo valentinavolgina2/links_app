@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:links_app/styles/color.dart';
+import 'package:links_app/widgets/forms/validation.dart';
 
 import '../../model/list.dart';
 import '../../providers/link.dart';
@@ -55,13 +56,13 @@ class FormHelpers {
     );
   }
 
-  static titleTextStyle() {
-    
-  }
+  static titleTextStyle() {}
 
   static addLink({required BuildContext context, required LinksList list}) {
     final TextEditingController linkNameController = TextEditingController();
     final TextEditingController linkUrlController = TextEditingController();
+
+    final addLinkFormKey = GlobalKey<FormState>();
 
     showDialog(
       context: context,
@@ -73,75 +74,87 @@ class FormHelpers {
             child: Padding(
               padding: EdgeInsets.all(AppSizes.medium),
               child: Form(
+                  key: addLinkFormKey,
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                    Text('Adding new link',
-                        style: TextStyle(fontSize: AppSizes.textTitle)),
-                    SizedBox(height: AppSizes.medium),
-                    const Text('Name'),
-                    SizedBox(height: AppSizes.small),
-                    TextField(
-                      controller: linkNameController,
-                      decoration: FormHelpers.inputDecoration(hintText: 'Name'),
-                    ),
-                    SizedBox(height: AppSizes.medium),
-                    const Text('Url'),
-                    SizedBox(height: AppSizes.small),
-                    TextField(
-                      controller: linkUrlController,
-                      decoration: FormHelpers.inputDecoration(hintText: 'Url'),
-                    ),
-                    SizedBox(height: AppSizes.medium),
-                    Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Flexible(
-                            flex: 1,
-                            child: Container(
-                              width: double.maxFinite,
-                              padding: EdgeInsets.only(
-                                  left: AppSizes.small, right: AppSizes.small),
-                              child: FilledButton(
-                                style: FilledButton.styleFrom(
-                                    backgroundColor: AppColors.secondaryColor),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: FormHelpers.cancelButton(),
+                        Text('Adding new link',
+                            style: TextStyle(fontSize: AppSizes.textTitle)),
+                        SizedBox(height: AppSizes.medium),
+                        const Text('Name'),
+                        SizedBox(height: AppSizes.small),
+                        TextFormField(
+                          controller: linkNameController,
+                          decoration:
+                              FormHelpers.inputDecoration(hintText: 'Name'),
+                          maxLength: linkNameMaxLength,
+                          validator: (value) => linkNameValidator(value),
+                        ),
+                        SizedBox(height: AppSizes.medium),
+                        const Text('Url'),
+                        SizedBox(height: AppSizes.small),
+                        TextFormField(
+                          controller: linkUrlController,
+                          decoration:
+                              FormHelpers.inputDecoration(hintText: 'Url'),
+                          validator: (value) => linkUrlValidator(value),
+                        ),
+                        SizedBox(height: AppSizes.medium),
+                        Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Flexible(
+                                flex: 1,
+                                child: Container(
+                                  width: double.maxFinite,
+                                  padding: EdgeInsets.only(
+                                      left: AppSizes.small,
+                                      right: AppSizes.small),
+                                  child: FilledButton(
+                                    style: FilledButton.styleFrom(
+                                        backgroundColor:
+                                            AppColors.secondaryColor),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: FormHelpers.cancelButton(),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          Flexible(
-                            flex: 1,
-                            child: Container(
-                              width: double.maxFinite,
-                              padding: EdgeInsets.only(
-                                  left: AppSizes.small, right: AppSizes.small),
-                              child: FilledButton(
-                                onPressed: () {
-                                  LinkProvider.addLink(
-                                      name: linkNameController.text,
-                                      url: linkUrlController.text,
-                                      listId: list.id);
+                              Flexible(
+                                flex: 1,
+                                child: Container(
+                                  width: double.maxFinite,
+                                  padding: EdgeInsets.only(
+                                      left: AppSizes.small,
+                                      right: AppSizes.small),
+                                  child: FilledButton(
+                                    onPressed: () {
+                                      if (addLinkFormKey.currentState!
+                                          .validate()) {
+                                        LinkProvider.addLink(
+                                            name: linkNameController.text,
+                                            url: linkUrlController.text,
+                                            listId: list.id);
 
-                                  Navigator.of(context).pop();
+                                        Navigator.of(context).pop();
 
-                                  SystemMessage.showSuccess(
-                                      context: context,
-                                      message: 'Link was added.');
+                                        SystemMessage.showSuccess(
+                                            context: context,
+                                            message: 'Link was added.');
 
-                                  linkNameController.clear();
-                                  linkUrlController.clear();
-                                },
-                                child: FormHelpers.saveButton(),
+                                        linkNameController.clear();
+                                        linkUrlController.clear();
+                                      }
+                                    },
+                                    child: FormHelpers.saveButton(),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ])
-                  ])),
+                            ])
+                      ])),
             ),
           ),
         );
@@ -151,6 +164,7 @@ class FormHelpers {
 
   static addList({required BuildContext context, required String userId}) {
     final TextEditingController addListController = TextEditingController();
+    final addListFormKey = GlobalKey<FormState>();
 
     showDialog(
       context: context,
@@ -162,68 +176,78 @@ class FormHelpers {
             child: Padding(
               padding: EdgeInsets.all(AppSizes.medium),
               child: Form(
+                  key: addListFormKey,
                   child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text('Adding new list',
-                      style: TextStyle(fontSize: AppSizes.textTitle)),
-                  SizedBox(height: AppSizes.medium),
-                  const Text('Name'),
-                  SizedBox(height: AppSizes.small),
-                  TextField(
-                    controller: addListController,
-                    decoration: FormHelpers.inputDecoration(hintText: 'Name'),
-                  ),
-                  SizedBox(height: AppSizes.medium),
-                  Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Flexible(
-                          flex: 1,
-                          child: Container(
-                            width: double.maxFinite,
-                            padding: EdgeInsets.only(
-                                left: AppSizes.small, right: AppSizes.small),
-                            child: FilledButton(
-                              style: FilledButton.styleFrom(
-                                  backgroundColor: AppColors.secondaryColor),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: FormHelpers.cancelButton(),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('Adding new list',
+                          style: TextStyle(fontSize: AppSizes.textTitle)),
+                      SizedBox(height: AppSizes.medium),
+                      const Text('Name'),
+                      SizedBox(height: AppSizes.small),
+                      TextFormField(
+                        controller: addListController,
+                        decoration:
+                            FormHelpers.inputDecoration(hintText: 'Name'),
+                            maxLength: listNameMaxLength,
+                        validator: (value) => listNameValidator(value),
+                      ),
+                      SizedBox(height: AppSizes.medium),
+                      Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Flexible(
+                              flex: 1,
+                              child: Container(
+                                width: double.maxFinite,
+                                padding: EdgeInsets.only(
+                                    left: AppSizes.small,
+                                    right: AppSizes.small),
+                                child: FilledButton(
+                                  style: FilledButton.styleFrom(
+                                      backgroundColor:
+                                          AppColors.secondaryColor),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: FormHelpers.cancelButton(),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        Flexible(
-                          flex: 1,
-                          child: Container(
-                            width: double.maxFinite,
-                            padding: EdgeInsets.only(
-                                left: AppSizes.small, right: AppSizes.small),
-                            child: FilledButton(
-                              onPressed: () {
-                                ListProvider.addList(
-                                    name: addListController.text,
-                                    userId: userId);
+                            Flexible(
+                              flex: 1,
+                              child: Container(
+                                width: double.maxFinite,
+                                padding: EdgeInsets.only(
+                                    left: AppSizes.small,
+                                    right: AppSizes.small),
+                                child: FilledButton(
+                                  onPressed: () {
+                                    if (addListFormKey.currentState!
+                                        .validate()) {
+                                      ListProvider.addList(
+                                          name: addListController.text,
+                                          userId: userId);
 
-                                Navigator.of(context).pop();
+                                      Navigator.of(context).pop();
 
-                                SystemMessage.showSuccess(
-                                    context: context,
-                                    message:
-                                        'List ${addListController.text} was added.');
+                                      SystemMessage.showSuccess(
+                                          context: context,
+                                          message:
+                                              'List ${addListController.text} was added.');
 
-                                addListController.clear();
-                              },
-                              child: FormHelpers.saveButton(),
+                                      addListController.clear();
+                                    }
+                                  },
+                                  child: FormHelpers.saveButton(),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ])
-                ],
-              )),
+                          ])
+                    ],
+                  )),
             ),
           ),
         );

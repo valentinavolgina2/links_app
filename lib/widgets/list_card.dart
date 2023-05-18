@@ -6,6 +6,7 @@ import '../providers/list.dart';
 import '../styles/color.dart';
 import '../styles/size.dart';
 import 'forms/helper.dart';
+import 'forms/validation.dart';
 import 'message.dart';
 
 class ListCard extends StatelessWidget {
@@ -71,6 +72,8 @@ class ListPopupMenu extends StatelessWidget {
   void _editList(BuildContext context) {
     editListController.text = list.name;
 
+    final editListFormKey = GlobalKey<FormState>();
+
     showDialog(
       context: context,
       barrierDismissible: false, // user must tap button for close dialog!
@@ -81,58 +84,73 @@ class ListPopupMenu extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.all(AppSizes.medium),
               child: Form(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text('Editing ${list.name}', style: TextStyle(fontSize: AppSizes.textTitle)),
-                    SizedBox(height: AppSizes.medium),
-                    const Text('Name'),
-                    SizedBox(height: AppSizes.small),
-                    TextField(
-                      controller: editListController,
-                      decoration: FormHelpers.inputDecoration(hintText: 'Name'),
-                    ),
-                    SizedBox(height: AppSizes.medium),
-                    Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Flexible(
-                            flex: 1,
-                            child: Container(
-                              width: double.maxFinite,
-                              padding: EdgeInsets.only(left: AppSizes.small, right: AppSizes.small),
-                              child: FilledButton(
-                                style: FilledButton.styleFrom(backgroundColor: AppColors.secondaryColor),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: FormHelpers.cancelButton(),
+                  key: editListFormKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('Editing ${list.name}',
+                          style: TextStyle(fontSize: AppSizes.textTitle)),
+                      SizedBox(height: AppSizes.medium),
+                      const Text('Name'),
+                      SizedBox(height: AppSizes.small),
+                      TextFormField(
+                        controller: editListController,
+                        decoration:
+                            FormHelpers.inputDecoration(hintText: 'Name'),
+                        maxLength: listNameMaxLength,
+                        validator: (value) => listNameValidator(value),
+                      ),
+                      SizedBox(height: AppSizes.medium),
+                      Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Flexible(
+                              flex: 1,
+                              child: Container(
+                                width: double.maxFinite,
+                                padding: EdgeInsets.only(
+                                    left: AppSizes.small,
+                                    right: AppSizes.small),
+                                child: FilledButton(
+                                  style: FilledButton.styleFrom(
+                                      backgroundColor:
+                                          AppColors.secondaryColor),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: FormHelpers.cancelButton(),
+                                ),
                               ),
                             ),
-                          ),
-                          Flexible(
-                            flex: 1,
-                            child: Container(
-                              width: double.maxFinite,
-                              padding: EdgeInsets.only(left: AppSizes.small, right: AppSizes.small),
-                              child: FilledButton(
-                                onPressed: () {
-                                  ListProvider.updateList(list: list, newName: editListController.text);
-                                  Navigator.of(context).pop();
+                            Flexible(
+                              flex: 1,
+                              child: Container(
+                                width: double.maxFinite,
+                                padding: EdgeInsets.only(
+                                    left: AppSizes.small,
+                                    right: AppSizes.small),
+                                child: FilledButton(
+                                  onPressed: () {
+                                    if (editListFormKey.currentState!.validate()) {
+                                      ListProvider.updateList(
+                                        list: list,
+                                        newName: editListController.text);
+                                      Navigator.of(context).pop();
 
-                                  SystemMessage.showSuccess(
-                                      context: context, message: 'The changes were saved.');
-                                },
-                                child: FormHelpers.saveButton(),
+                                      SystemMessage.showSuccess(
+                                          context: context,
+                                          message: 'The changes were saved.');
+                                    }
+                                  },
+                                  child: FormHelpers.saveButton(),
+                                ),
                               ),
                             ),
-                          ),
-                        ])
-                  ],
-                )
-              ),
+                          ])
+                    ],
+                  )),
             ),
           ),
         );

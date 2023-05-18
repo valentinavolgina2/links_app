@@ -7,6 +7,7 @@ import '../providers/link.dart';
 import '../styles/color.dart';
 import '../styles/size.dart';
 import 'forms/helper.dart';
+import 'forms/validation.dart';
 import 'message.dart';
 
 class LinkContainer extends StatelessWidget {
@@ -101,6 +102,8 @@ class LinkPopupMenu extends StatelessWidget {
     editLinkNameController.text = link.name;
     editLinkUrlController.text = link.url;
 
+    final editLinkFormKey = GlobalKey<FormState>();
+
     showDialog(
       context: context,
       barrierDismissible: false, // user must tap button for close dialog!
@@ -111,71 +114,82 @@ class LinkPopupMenu extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.all(AppSizes.medium),
               child: Form(
+                  key: editLinkFormKey,
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                    Text('Editing ${link.name}',
-                        style: TextStyle(fontSize: AppSizes.textTitle)),
-                    SizedBox(height: AppSizes.medium),
-                    const Text('Name'),
-                    SizedBox(height: AppSizes.small),
-                    TextField(
-                      controller: editLinkNameController,
-                      decoration: FormHelpers.inputDecoration(hintText: 'Name'),
-                    ),
-                    SizedBox(height: AppSizes.medium),
-                    const Text('Url'),
-                    SizedBox(height: AppSizes.small),
-                    TextField(
-                      controller: editLinkUrlController,
-                      decoration: FormHelpers.inputDecoration(hintText: 'Url'),
-                    ),
-                    SizedBox(height: AppSizes.medium),
-                    Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Flexible(
-                            flex: 1,
-                            child: Container(
-                              width: double.maxFinite,
-                              padding: EdgeInsets.only(
-                                  left: AppSizes.small, right: AppSizes.small),
-                              child: FilledButton(
-                                style: FilledButton.styleFrom(
-                                    backgroundColor: AppColors.secondaryColor),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: FormHelpers.cancelButton(),
+                        Text('Editing ${link.name}',
+                            style: TextStyle(fontSize: AppSizes.textTitle)),
+                        SizedBox(height: AppSizes.medium),
+                        const Text('Name'),
+                        SizedBox(height: AppSizes.small),
+                        TextFormField(
+                            controller: editLinkNameController,
+                            decoration:
+                                FormHelpers.inputDecoration(hintText: 'Name'),
+                            maxLength: linkNameMaxLength,
+                            validator: (value) =>
+                                linkNameValidator(value)),
+                        SizedBox(height: AppSizes.medium),
+                        const Text('Url'),
+                        SizedBox(height: AppSizes.small),
+                        TextFormField(
+                            controller: editLinkUrlController,
+                            decoration:
+                                FormHelpers.inputDecoration(hintText: 'Url'),
+                            validator: (value) =>
+                                linkUrlValidator(value)),
+                        SizedBox(height: AppSizes.medium),
+                        Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Flexible(
+                                flex: 1,
+                                child: Container(
+                                  width: double.maxFinite,
+                                  padding: EdgeInsets.only(
+                                      left: AppSizes.small,
+                                      right: AppSizes.small),
+                                  child: FilledButton(
+                                    style: FilledButton.styleFrom(
+                                        backgroundColor:
+                                            AppColors.secondaryColor),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: FormHelpers.cancelButton(),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          Flexible(
-                            flex: 1,
-                            child: Container(
-                              width: double.maxFinite,
-                              padding: EdgeInsets.only(
-                                  left: AppSizes.small, right: AppSizes.small),
-                              child: FilledButton(
-                                onPressed: () {
-                                  LinkProvider.updateLink(
-                                      link: link,
-                                      newName: editLinkNameController.text,
-                                      newUrl: editLinkUrlController.text);
-                                  Navigator.of(context).pop();
+                              Flexible(
+                                flex: 1,
+                                child: Container(
+                                  width: double.maxFinite,
+                                  padding: EdgeInsets.only(
+                                      left: AppSizes.small,
+                                      right: AppSizes.small),
+                                  child: FilledButton(
+                                    onPressed: () {
+                                      if (editLinkFormKey.currentState!.validate()) {
+                                        LinkProvider.updateLink(
+                                          link: link,
+                                          newName: editLinkNameController.text,
+                                          newUrl: editLinkUrlController.text);
+                                        Navigator.of(context).pop();
 
-                                  SystemMessage.showSuccess(
-                                      context: context,
-                                      message: 'The changes were saved.');
-                                },
-                                child: FormHelpers.saveButton(),
+                                        SystemMessage.showSuccess(
+                                            context: context,
+                                            message: 'The changes were saved.');
+                                      }
+                                    },
+                                    child: FormHelpers.saveButton(),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ])
-                  ])),
+                            ])
+                      ])),
             ),
           ),
         );
