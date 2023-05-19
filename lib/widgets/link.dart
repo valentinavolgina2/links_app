@@ -22,14 +22,15 @@ class LinkContainer extends StatelessWidget {
     final Map<String, Alignment> randomGardient = randomGradient();
 
     launchURL(url) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
-    } else {
-      SystemMessage.showError(context: context, message: 'Could not launch $url');
-      debugPrint('Could not launch $url');
+      final uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
+      } else {
+        SystemMessage.showError(
+            context: context, message: 'Could not launch $url');
+        debugPrint('Could not launch $url');
+      }
     }
-  }
 
     return Card(
       child: Container(
@@ -45,6 +46,8 @@ class LinkContainer extends StatelessWidget {
           ),
         ),
         child: ListTile(
+          leading: link.completed
+            ? const Icon(Icons.done) : null,
           title: Text(
             link.name,
             style: textStyle,
@@ -177,7 +180,8 @@ class LinkPopupMenu extends StatelessWidget {
                                             link: link,
                                             newName:
                                                 editLinkNameController.text,
-                                            newUrl: editLinkUrlController.text);
+                                            newUrl: editLinkUrlController.text,
+                                            completed: link.completed);
                                         Navigator.of(context).pop();
 
                                         SystemMessage.showSuccess(
@@ -206,9 +210,9 @@ class LinkPopupMenu extends StatelessWidget {
           value: 1,
           child: Row(
             children: [
-              const Icon(Icons.delete),
+              const Icon(Icons.done),
               SizedBox(width: AppSizes.small),
-              const Text("Delete link")
+              link.completed ? const Text("Mark as not done") : const Text("Mark as done")
             ],
           ),
         ),
@@ -226,6 +230,16 @@ class LinkPopupMenu extends StatelessWidget {
           value: 3,
           child: Row(
             children: [
+              const Icon(Icons.delete),
+              SizedBox(width: AppSizes.small),
+              const Text("Delete link")
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 4,
+          child: Row(
+            children: [
               const Icon(Icons.close),
               SizedBox(width: AppSizes.small),
               const Text("Cancel")
@@ -235,9 +249,11 @@ class LinkPopupMenu extends StatelessWidget {
       ],
       onSelected: (value) async {
         if (value == 1) {
-          _deleteLink(context);
+          LinkProvider.complete(link: link, completed: !link.completed);
         } else if (value == 2) {
           _editLink(context);
+        } else if (value == 3) {
+          _deleteLink(context);
         }
       },
     );

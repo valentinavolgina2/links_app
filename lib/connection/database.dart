@@ -5,25 +5,28 @@ import 'package:firebase_database/firebase_database.dart';
 import '../firebase_options.dart';
 
 class DB {
-  static const _useDatabaseEmulator = true;
+  static const _useEmulator = true;
   // The port we've set the Firebase Database emulator to run on via the
   // `firebase.json` configuration file.
-  static const _emulatorPort = 9000;
+  static const _dbEmulatorPort = 9000;
   // Android device emulators consider localhost of the host machine as 10.0.2.2
   // so let's use that if running on Android.
-  static const _emulatorHost = '127.0.0.1';
+  static const _dbEmulatorHost = '127.0.0.1';
+
+  static const _authEmulatorPort = 9099;
+  static const _authEmulatorHost = 'localhost';
 
   static Future<void> connect() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
 
-    if (_useDatabaseEmulator) {
+    if (_useEmulator) {
       FirebaseDatabase.instance
-          .useDatabaseEmulator(_emulatorHost, _emulatorPort);
-    }
+          .useDatabaseEmulator(_dbEmulatorHost, _dbEmulatorPort);
 
-    await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+      await FirebaseAuth.instance.useAuthEmulator(_authEmulatorHost, _authEmulatorPort);
+    }
   }
 
   static void enableLogging(state) {
