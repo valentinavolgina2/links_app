@@ -28,14 +28,19 @@ String? linkUrlValidator(value) {
 
 String? emailValidator(value) {
   if (value == null || value.isEmpty) {
-    return 'Url is required';
+    return 'Email is required';
+  } else if (!isEmail(value)) {
+    return 'Not valid email';
+  } else if (!value.contains(RegExp(
+      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+"))) {
+    return 'Enter a correct email address';
   }
   return null;
 }
 
 String? passwordValidator(value) {
   if (value == null || value.isEmpty) {
-    return 'Url is required';
+    return 'Password is required';
   }
   return null;
 }

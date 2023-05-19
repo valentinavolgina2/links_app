@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../widgets/forms/validation.dart';
+
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
 
@@ -13,6 +15,18 @@ String? imageUrl;
 
 Future<User?> registerWithEmailPassword(String email, String password) async {
   User? user;
+
+  final emailValidationResult = emailValidator(email);
+  if (emailValidationResult != null) {
+    debugPrint(emailValidationResult);
+    throw emailValidationResult;
+  }
+
+  final passwordValidationResult = passwordValidator(password);
+  if (passwordValidationResult != null) {
+    debugPrint(passwordValidationResult);
+    throw passwordValidationResult;
+  }
 
   try {
     UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
@@ -48,11 +62,24 @@ Future<User?> registerWithEmailPassword(String email, String password) async {
 Future<User?> signInWithEmailPassword(String email, String password) async {
   User? user;
 
+  final emailValidationResult = emailValidator(email);
+  if (emailValidationResult != null) {
+    debugPrint(emailValidationResult);
+    throw emailValidationResult;
+  }
+
+  final passwordValidationResult = passwordValidator(password);
+  if (passwordValidationResult != null) {
+    debugPrint(passwordValidationResult);
+    throw passwordValidationResult;
+  }
+
   try {
     UserCredential userCredential = await _auth.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
+
     user = userCredential.user;
 
     if (user != null) {
@@ -67,7 +94,7 @@ Future<User?> signInWithEmailPassword(String email, String password) async {
         (e.message != null && e.message!.contains('user-not-found'))) {
       debugPrint('No user found for that email.');
       throw 'No user found for that email.';
-    } else if (e.code == 'wrong-password') {
+    } else if (e.code == 'wrong-password' || (e.message != null && e.message!.contains('password is invalid'))) {
       debugPrint('Wrong password provided.');
       throw 'Wrong password provided.';
     } else {

@@ -15,20 +15,21 @@ class LinkContainer extends StatelessWidget {
 
   final Link link;
 
-  _launchURL(url) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
-    } else {
-      debugPrint('Could not launch $url');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final TextStyle textStyle = TextStyle(color: AppColors.darkText);
     final double randomStart = randomGradientStart();
     final Map<String, Alignment> randomGardient = randomGradient();
+
+    launchURL(url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      SystemMessage.showError(context: context, message: 'Could not launch $url');
+      debugPrint('Could not launch $url');
+    }
+  }
 
     return Card(
       child: Container(
@@ -50,7 +51,7 @@ class LinkContainer extends StatelessWidget {
           ),
           trailing: LinkPopupMenu(link: link),
           onTap: () async {
-            await _launchURL(Uri.encodeFull(link.url));
+            await launchURL(Uri.encodeFull(link.url));
           },
         ),
       ),
@@ -129,8 +130,7 @@ class LinkPopupMenu extends StatelessWidget {
                             decoration:
                                 FormHelpers.inputDecoration(hintText: 'Name'),
                             maxLength: linkNameMaxLength,
-                            validator: (value) =>
-                                linkNameValidator(value)),
+                            validator: (value) => linkNameValidator(value)),
                         SizedBox(height: AppSizes.medium),
                         const Text('Url'),
                         SizedBox(height: AppSizes.small),
@@ -138,8 +138,7 @@ class LinkPopupMenu extends StatelessWidget {
                             controller: editLinkUrlController,
                             decoration:
                                 FormHelpers.inputDecoration(hintText: 'Url'),
-                            validator: (value) =>
-                                linkUrlValidator(value)),
+                            validator: (value) => linkUrlValidator(value)),
                         SizedBox(height: AppSizes.medium),
                         Row(
                             mainAxisSize: MainAxisSize.max,
@@ -172,11 +171,13 @@ class LinkPopupMenu extends StatelessWidget {
                                       right: AppSizes.small),
                                   child: FilledButton(
                                     onPressed: () {
-                                      if (editLinkFormKey.currentState!.validate()) {
+                                      if (editLinkFormKey.currentState!
+                                          .validate()) {
                                         LinkProvider.updateLink(
-                                          link: link,
-                                          newName: editLinkNameController.text,
-                                          newUrl: editLinkUrlController.text);
+                                            link: link,
+                                            newName:
+                                                editLinkNameController.text,
+                                            newUrl: editLinkUrlController.text);
                                         Navigator.of(context).pop();
 
                                         SystemMessage.showSuccess(

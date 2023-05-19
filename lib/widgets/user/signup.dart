@@ -22,7 +22,6 @@ class _SignupDialogState extends State<SignupDialog> {
   TextEditingController textControllerPassword = TextEditingController();
   FocusNode textFocusNodePassword = FocusNode();
 
-  bool _isEditingEmail = false;
   bool _isRegistering = false;
 
   String _error = '';
@@ -30,21 +29,6 @@ class _SignupDialogState extends State<SignupDialog> {
   @override
   void initState() {
     super.initState();
-  }
-
-  String? _validateEmail(String value) {
-    value = value.trim();
-
-    if (textControllerEmail.text.isNotEmpty) {
-      if (value.isEmpty) {
-        return 'Email can\'t be empty';
-      } else if (!value.contains(RegExp(
-          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+"))) {
-        return 'Enter a correct email address';
-      }
-    }
-
-    return null;
   }
 
   void _signup(BuildContext context) async {
@@ -63,7 +47,7 @@ class _SignupDialogState extends State<SignupDialog> {
       }
     }).catchError((error) {
       setState(() {
-        _error = 'Error occured while registering: $error';
+        _error = error;
       });
     });
 
@@ -95,11 +79,6 @@ class _SignupDialogState extends State<SignupDialog> {
                   textInputAction: TextInputAction.next,
                   controller: textControllerEmail,
                   autofocus: false,
-                  onChanged: (value) {
-                    setState(() {
-                      _isEditingEmail = true;
-                    });
-                  },
                   onSubmitted: (value) {
                     textFocusNodeEmail.unfocus();
                     FocusScope.of(context).requestFocus(textFocusNodePassword);
@@ -107,9 +86,7 @@ class _SignupDialogState extends State<SignupDialog> {
                   style: TextStyle(color: AppColors.darkText),
                   decoration: FormHelpers.inputDecoration(
                     hintText: 'Email', 
-                    errorText: _isEditingEmail
-                        ? _validateEmail(textControllerEmail.text)
-                        : null),
+                  ),
                 ),
                 SizedBox(height: AppSizes.large),
                 const Text('Password'),

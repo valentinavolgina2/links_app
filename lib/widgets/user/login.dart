@@ -18,7 +18,6 @@ class SigninDialog extends StatefulWidget {
 class _SigninDialogState extends State<SigninDialog> {
   TextEditingController textControllerEmail = TextEditingController();
   FocusNode textFocusNodeEmail = FocusNode();
-  bool _isEditingEmail = false;
 
   TextEditingController textControllerPassword = TextEditingController();
   FocusNode textFocusNodePassword = FocusNode();
@@ -28,21 +27,6 @@ class _SigninDialogState extends State<SigninDialog> {
   @override
   void initState() {
     super.initState();
-  }
-
-  String? _validateEmail(String value) {
-    value = value.trim();
-
-    if (textControllerEmail.text.isNotEmpty) {
-      if (value.isEmpty) {
-        return 'Email can\'t be empty';
-      } else if (!value.contains(RegExp(
-          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+"))) {
-        return 'Enter a correct email address';
-      }
-    }
-
-    return null;
   }
 
   void _signin(BuildContext context) async {
@@ -56,7 +40,7 @@ class _SigninDialogState extends State<SigninDialog> {
       }
     }).catchError((error) {
       setState(() {
-        _error = 'Authentication Error: $error';
+        _error = error;
       });
     });
   }
@@ -84,11 +68,6 @@ class _SigninDialogState extends State<SigninDialog> {
                   textInputAction: TextInputAction.next,
                   controller: textControllerEmail,
                   autofocus: false,
-                  onChanged: (value) {
-                    setState(() {
-                      _isEditingEmail = true;
-                    });
-                  },
                   onSubmitted: (value) {
                     textFocusNodeEmail.unfocus();
                     FocusScope.of(context).requestFocus(textFocusNodePassword);
@@ -96,9 +75,7 @@ class _SigninDialogState extends State<SigninDialog> {
                   style: TextStyle(color: AppColors.darkText),
                   decoration: FormHelpers.inputDecoration(
                     hintText: 'Email', 
-                    errorText: _isEditingEmail
-                        ? _validateEmail(textControllerEmail.text)
-                        : null),
+                  ),
                 ),
                 SizedBox(height: AppSizes.large),
                 const Text('Password'),
