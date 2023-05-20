@@ -29,6 +29,8 @@ class _ListContainerState extends State<ListContainer> {
   late StreamSubscription<DatabaseEvent> _linksDeleteSubscription;
   late StreamSubscription<DatabaseEvent> _linksUpdateSubscription;
 
+  List<String> _allTags = [];
+
   @override
   void initState() {
     init();
@@ -41,8 +43,12 @@ class _ListContainerState extends State<ListContainer> {
     _linksSubscription = _linksRef.onChildAdded.listen(
       (DatabaseEvent event) {
         setState(() {
-          _links.add(Link.fromSnapshot(
-              snapshot: event.snapshot, listId: widget.list.id));
+          Link newLink = Link.fromSnapshot(
+              snapshot: event.snapshot, listId: widget.list.id);
+
+          _links.add(newLink);
+
+          _updateAllTags();
         });
       },
       onError: (Object o) {
@@ -57,6 +63,8 @@ class _ListContainerState extends State<ListContainer> {
           final linkToRemove =
               _links.where((link) => link.id == event.snapshot.key).first;
           _links.remove(linkToRemove);
+
+          _updateAllTags();
         });
       },
       onError: (Object o) {
@@ -72,6 +80,8 @@ class _ListContainerState extends State<ListContainer> {
               _links.where((link) => link.id == event.snapshot.key).first;
 
           linkToUpdate.updateFromSnapshot(event.snapshot);
+
+          _updateAllTags();
         });
       },
       onError: (Object o) {
@@ -79,6 +89,16 @@ class _ListContainerState extends State<ListContainer> {
         debugPrint('Error: ${error.code} ${error.message}');
       },
     );
+  }
+
+  _updateAllTags() {
+    _allTags = [];
+
+    for (final link in _links) {
+      _allTags.addAll(link.tags);
+    }
+
+    _allTags = _allTags.toSet().toList();
   }
 
   @override
@@ -111,17 +131,30 @@ class _ListContainerState extends State<ListContainer> {
                 title: Padding(
                     padding: EdgeInsets.symmetric(
                         vertical: AppSizes.medium, horizontal: AppSizes.small),
-                    child: Row(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Expanded(
-                          child: Text(widget.list.name,
-                              style:
-                                  TextStyle(fontSize: titleStyle.fontSize))),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Text('Back to lists'))
+                        Row(
+                          children: [
+                            Expanded(
+                                child: Text(widget.list.name,
+                                    style:
+                                        TextStyle(fontSize: titleStyle.fontSize))),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Back to lists'))
+                          ],
+                        ),
+                        SizedBox(height: AppSizes.medium),
+                        Align
+                        (
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            Link.hashStrFromTagsList(_allTags)
+                          ),
+                        ),
                       ],
                     )),
                 subtitle: ListView(shrinkWrap: true, children: <Widget>[

@@ -7,6 +7,7 @@ import '../../providers/link.dart';
 import '../../providers/list.dart';
 import '../../styles/size.dart';
 import '../message.dart';
+import '../tags.dart';
 
 class FormHelpers {
   static InputDecoration inputDecoration(
@@ -62,6 +63,8 @@ class FormHelpers {
     final TextEditingController linkNameController = TextEditingController();
     final TextEditingController linkUrlController = TextEditingController();
 
+    ValueNotifier<List<String>?> tags = ValueNotifier([]);
+
     final addLinkFormKey = GlobalKey<FormState>();
 
     showDialog(
@@ -100,6 +103,10 @@ class FormHelpers {
                               FormHelpers.inputDecoration(hintText: 'Url'),
                           validator: (value) => linkUrlValidator(value),
                         ),
+                        SizedBox(height: AppSizes.small),
+                        LinkTags(
+                            tagOptions: const [],
+                            selectedTags: tags),
                         SizedBox(height: AppSizes.medium),
                         Row(
                             mainAxisSize: MainAxisSize.max,
@@ -137,7 +144,9 @@ class FormHelpers {
                                         LinkProvider.addLink(
                                             name: linkNameController.text,
                                             url: linkUrlController.text,
-                                            listId: list.id);
+                                            listId: list.id,
+                                            tags: tags.value
+                                        );
 
                                         Navigator.of(context).pop();
 
@@ -190,7 +199,7 @@ class FormHelpers {
                         controller: addListController,
                         decoration:
                             FormHelpers.inputDecoration(hintText: 'Name'),
-                            maxLength: listNameMaxLength,
+                        maxLength: listNameMaxLength,
                         validator: (value) => listNameValidator(value),
                       ),
                       SizedBox(height: AppSizes.medium),

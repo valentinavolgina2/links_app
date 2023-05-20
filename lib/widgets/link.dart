@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:links_app/widgets/tags.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../helpers/gradient.dart';
@@ -51,6 +52,9 @@ class LinkContainer extends StatelessWidget {
           title: Text(
             link.name,
             style: textStyle,
+          ),
+          subtitle: Text(
+            Link.hashStrFromTagsList(link.tags)
           ),
           trailing: LinkPopupMenu(link: link),
           onTap: () async {
@@ -106,6 +110,8 @@ class LinkPopupMenu extends StatelessWidget {
     editLinkNameController.text = link.name;
     editLinkUrlController.text = link.url;
 
+    ValueNotifier<List<String>?> tags = ValueNotifier(link.tags);
+
     final editLinkFormKey = GlobalKey<FormState>();
 
     showDialog(
@@ -142,6 +148,11 @@ class LinkPopupMenu extends StatelessWidget {
                             decoration:
                                 FormHelpers.inputDecoration(hintText: 'Url'),
                             validator: (value) => linkUrlValidator(value)),
+                            SizedBox(height: AppSizes.small),
+                        LinkTags(
+                            initialTags: link.tags,
+                            tagOptions: link.tags,
+                            selectedTags: tags),
                         SizedBox(height: AppSizes.medium),
                         Row(
                             mainAxisSize: MainAxisSize.max,
@@ -181,6 +192,7 @@ class LinkPopupMenu extends StatelessWidget {
                                             newName:
                                                 editLinkNameController.text,
                                             newUrl: editLinkUrlController.text,
+                                            newTags: tags.value,
                                             completed: link.completed);
                                         Navigator.of(context).pop();
 

@@ -10,13 +10,22 @@ class LinkProvider {
     return FirebaseDatabase.instance.ref('$_linksRoot/$listId');
   }
 
-  static Future<void> addLink({required String name, required String url, required String listId}) async {
+  static Future<void> addLink(
+      {required String name,
+      required String url,
+      required String listId,
+      List<String>? tags}) async {
     name = escape(name); //replace <, >, &, ' and " with HTML entities
     url = escape(url);
-    
+
     final DatabaseReference newLink = listLinksRef(listId: listId).push();
 
-    await newLink.set({'name': name, 'url': url, 'completed': false});
+    await newLink.set({
+      'name': name,
+      'url': url,
+      'completed': false,
+      'tags': Link.strFromTagsList(tags)
+    });
   }
 
   static Future<void> deleteLink(Link link) async {
@@ -24,16 +33,32 @@ class LinkProvider {
     await linkRef.remove();
   }
 
-  static Future<void> updateLink({required Link link, required String newName, required String newUrl, required bool completed}) async {
+  static Future<void> updateLink(
+      {required Link link,
+      required String newName,
+      required String newUrl,
+      List<String>? newTags,
+      required bool completed}) async {
     newName = escape(newName); //replace <, >, &, ' and " with HTML entities
     newUrl = escape(newUrl);
 
     final linkRef = listLinksRef(listId: link.listId).child(link.id);
-    await linkRef.set({'name': newName, 'url': newUrl, 'completed': completed});
+    await linkRef.set({
+      'name': newName, 
+      'url': newUrl, 
+      'completed': completed, 
+      'tags': Link.strFromTagsList(newTags)
+    });
   }
 
-  static Future<void> complete({required Link link, required bool completed}) async {
+  static Future<void> complete(
+      {required Link link, required bool completed}) async {
     final linkRef = listLinksRef(listId: link.listId).child(link.id);
-    await linkRef.set({'name': link.name, 'url': link.url, 'completed': completed});
+    await linkRef.set({
+      'name': link.name,
+      'url': link.url,
+      'completed': completed,
+      'tags': Link.strFromTagsList(link.tags)
+    });
   }
 }
