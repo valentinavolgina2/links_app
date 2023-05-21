@@ -30,6 +30,7 @@ class _ListContainerState extends State<ListContainer> {
   late StreamSubscription<DatabaseEvent> _linksUpdateSubscription;
 
   List<String> _allTags = [];
+  Set<String> tagFilters = <String>{};
 
   @override
   void initState() {
@@ -147,18 +148,39 @@ class _ListContainerState extends State<ListContainer> {
                                 child: const Text('Back to lists'))
                           ],
                         ),
+                        SizedBox(height: AppSizes.large),
+                        const Text('Filter links by tags'),
                         SizedBox(height: AppSizes.medium),
-                        Align
-                        (
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            Link.hashStrFromTagsList(_allTags)
-                          ),
+                        Wrap(
+                          spacing: AppSizes.xsmall,
+                          children: _allTags.isEmpty ? [const Text('no tags added for this list')] :
+                          _allTags.map((String tag) {
+                            return FilterChip(
+                              label: Text(tag),
+                              selected: tagFilters.contains(tag),
+                              onSelected: (bool selected) {
+                                setState(() {
+                                  if (selected) {
+                                    tagFilters.add(tag);
+                                  } else {
+                                    tagFilters.remove(tag);
+                                  }
+                                });
+                              },
+                            );
+                          }).toList(),
                         ),
+                        SizedBox(height: AppSizes.medium),
                       ],
                     )),
-                subtitle: ListView(shrinkWrap: true, children: <Widget>[
-                  ..._links.map((link) => LinkContainer(link: link)).toList(),
+                subtitle: ListView(
+                  shrinkWrap: true, 
+                  children: tagFilters.isEmpty 
+                  ? <Widget>[
+                    ..._links.map((link) => LinkContainer(link: link)).toList(),
+                  ] 
+                  : <Widget>[
+                  ..._links.where((link) => link.tags.where((tag)=>tagFilters.contains(tag)).isNotEmpty).map((link) => LinkContainer(link: link)).toList(),
                 ]),
               ),
             )));

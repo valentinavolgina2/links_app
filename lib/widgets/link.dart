@@ -53,8 +53,11 @@ class LinkContainer extends StatelessWidget {
             link.name,
             style: textStyle,
           ),
-          subtitle: Text(
-            Link.hashStrFromTagsList(link.tags)
+          subtitle: link.tags.isEmpty ? null : Padding(
+            padding: EdgeInsets.only(top: AppSizes.small),
+            child: Text(
+              Link.hashStrFromTagsList(link.tags)
+            ),
           ),
           trailing: LinkPopupMenu(link: link),
           onTap: () async {
