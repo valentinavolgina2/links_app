@@ -59,7 +59,7 @@ class FormHelpers {
 
   static titleTextStyle() {}
 
-  static addLink({required BuildContext context, required LinksList list}) {
+  static addLink({required BuildContext context, required LinksList list, List<String> listTags = const []}) {
     final TextEditingController linkNameController = TextEditingController();
     final TextEditingController linkUrlController = TextEditingController();
 
@@ -105,7 +105,7 @@ class FormHelpers {
                         ),
                         SizedBox(height: AppSizes.small),
                         LinkTags(
-                            tagOptions: const [],
+                            tagOptions: listTags,
                             selectedTags: tags),
                         SizedBox(height: AppSizes.medium),
                         Row(

@@ -12,9 +12,10 @@ import 'forms/validation.dart';
 import 'message.dart';
 
 class LinkContainer extends StatelessWidget {
-  const LinkContainer({super.key, required this.link});
+  const LinkContainer({super.key, required this.link, required this.listTags});
 
   final Link link;
+  final List<String> listTags;
 
   @override
   Widget build(BuildContext context) {
@@ -47,19 +48,18 @@ class LinkContainer extends StatelessWidget {
           ),
         ),
         child: ListTile(
-          leading: link.completed
-            ? const Icon(Icons.done) : null,
+          leading: link.completed ? const Icon(Icons.done) : null,
           title: Text(
             link.name,
             style: textStyle,
           ),
-          subtitle: link.tags.isEmpty ? null : Padding(
-            padding: EdgeInsets.only(top: AppSizes.small),
-            child: Text(
-              Link.hashStrFromTagsList(link.tags)
-            ),
-          ),
-          trailing: LinkPopupMenu(link: link),
+          subtitle: link.tags.isEmpty
+              ? null
+              : Padding(
+                  padding: EdgeInsets.only(top: AppSizes.small),
+                  child: Text(Link.hashStrFromTagsList(link.tags)),
+                ),
+          trailing: LinkPopupMenu(link: link, listTags: listTags),
           onTap: () async {
             await launchURL(Uri.encodeFull(link.url));
           },
@@ -70,9 +70,10 @@ class LinkContainer extends StatelessWidget {
 }
 
 class LinkPopupMenu extends StatelessWidget {
-  LinkPopupMenu({super.key, required this.link});
+  LinkPopupMenu({super.key, required this.link, required this.listTags});
 
   final Link link;
+  final List<String> listTags;
 
   final TextEditingController editLinkNameController = TextEditingController();
   final TextEditingController editLinkUrlController = TextEditingController();
@@ -151,10 +152,10 @@ class LinkPopupMenu extends StatelessWidget {
                             decoration:
                                 FormHelpers.inputDecoration(hintText: 'Url'),
                             validator: (value) => linkUrlValidator(value)),
-                            SizedBox(height: AppSizes.small),
+                        SizedBox(height: AppSizes.small),
                         LinkTags(
                             initialTags: link.tags,
-                            tagOptions: link.tags,
+                            tagOptions: listTags,
                             selectedTags: tags),
                         SizedBox(height: AppSizes.medium),
                         Row(
@@ -227,7 +228,9 @@ class LinkPopupMenu extends StatelessWidget {
             children: [
               const Icon(Icons.done),
               SizedBox(width: AppSizes.small),
-              link.completed ? const Text("Mark as not done") : const Text("Mark as done")
+              link.completed
+                  ? const Text("Mark as not done")
+                  : const Text("Mark as done")
             ],
           ),
         ),

@@ -10,9 +10,10 @@ import '../../widgets/list.dart';
 import '../../widgets/responsive.dart';
 
 class ListPage extends StatelessWidget {
-  const ListPage({super.key, required this.list});
+  ListPage({super.key, required this.list});
 
   final LinksList list;
+  final ValueNotifier<List<String>> _listTags = ValueNotifier([]);
 
   @override
   Widget build(BuildContext context) {
@@ -20,32 +21,33 @@ class ListPage extends StatelessWidget {
 
     return Scaffold(
       appBar: ResponsiveWidget.isSmallScreen(context)
-      ? AppBar( // for smaller screen sizes
-          backgroundColor: AppColors.primaryColor,
-          elevation: 0,
-          title: Text(
-            AppData.title.toUpperCase(),
-            style: TextStyle(
-              color: AppColors.secondaryFade,
-              fontSize: AppSizes.textTitle,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 1.5,
-            ),
-          ),
-        )
-      : PreferredSize(
-          preferredSize: Size(screenSize.width, 1000), child: const MyAppBar()
-      ),
+          ? AppBar(
+              // for smaller screen sizes
+              backgroundColor: AppColors.primaryColor,
+              elevation: 0,
+              title: Text(
+                AppData.title.toUpperCase(),
+                style: TextStyle(
+                  color: AppColors.secondaryFade,
+                  fontSize: AppSizes.textTitle,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 1.5,
+                ),
+              ),
+            )
+          : PreferredSize(
+              preferredSize: Size(screenSize.width, 1000),
+              child: const MyAppBar()),
       drawer: const MyDrawer(),
       body: LayoutBuilder(builder: (context, constraints) {
         return SafeArea(
           child: Padding(
               padding: EdgeInsets.all(AppSizes.small),
-              child: ListContainer(list: list, withName: false)),
+              child: ListContainer(list: list, withName: false, allTags: _listTags)),
         );
       }),
       floatingActionButton: FloatingActionButton(
-          onPressed: () => FormHelpers.addLink(context: context, list: list),
+          onPressed: () => FormHelpers.addLink(context: context, list: list, listTags: _listTags.value),
           tooltip: 'Add new link',
           child: const Icon(Icons.add)),
     );

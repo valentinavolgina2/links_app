@@ -13,10 +13,15 @@ import 'link.dart';
 import 'no_content.dart';
 
 class ListContainer extends StatefulWidget {
-  const ListContainer({super.key, required this.list, this.withName = true});
+  const ListContainer(
+      {super.key,
+      required this.list,
+      this.withName = true,
+      required this.allTags});
 
   final LinksList list;
   final bool withName;
+  final ValueNotifier<List<String>> allTags;
 
   @override
   State<ListContainer> createState() => _ListContainerState();
@@ -29,7 +34,6 @@ class _ListContainerState extends State<ListContainer> {
   late StreamSubscription<DatabaseEvent> _linksDeleteSubscription;
   late StreamSubscription<DatabaseEvent> _linksUpdateSubscription;
 
-  List<String> _allTags = [];
   Set<String> tagFilters = <String>{};
 
   @override
@@ -93,13 +97,13 @@ class _ListContainerState extends State<ListContainer> {
   }
 
   _updateAllTags() {
-    _allTags = [];
+    widget.allTags.value = [];
 
     for (final link in _links) {
-      _allTags.addAll(link.tags);
+      widget.allTags.value.addAll(link.tags);
     }
 
-    _allTags = _allTags.toSet().toList();
+    widget.allTags.value = widget.allTags.value.toSet().toList();
   }
 
   @override
@@ -139,8 +143,8 @@ class _ListContainerState extends State<ListContainer> {
                           children: [
                             Expanded(
                                 child: Text(widget.list.name,
-                                    style:
-                                        TextStyle(fontSize: titleStyle.fontSize))),
+                                    style: TextStyle(
+                                        fontSize: titleStyle.fontSize))),
                             TextButton(
                                 onPressed: () {
                                   Navigator.pop(context);
@@ -153,35 +157,43 @@ class _ListContainerState extends State<ListContainer> {
                         SizedBox(height: AppSizes.medium),
                         Wrap(
                           spacing: AppSizes.xsmall,
-                          children: _allTags.isEmpty ? [const Text('no tags added for this list')] :
-                          _allTags.map((String tag) {
-                            return FilterChip(
-                              label: Text(tag),
-                              selected: tagFilters.contains(tag),
-                              onSelected: (bool selected) {
-                                setState(() {
-                                  if (selected) {
-                                    tagFilters.add(tag);
-                                  } else {
-                                    tagFilters.remove(tag);
-                                  }
-                                });
-                              },
-                            );
-                          }).toList(),
+                          children: widget.allTags.value.isEmpty
+                              ? [const Text('no tags added for this list')]
+                              : widget.allTags.value.map((String tag) {
+                                  return FilterChip(
+                                    label: Text(tag),
+                                    selected: tagFilters.contains(tag),
+                                    onSelected: (bool selected) {
+                                      setState(() {
+                                        if (selected) {
+                                          tagFilters.add(tag);
+                                        } else {
+                                          tagFilters.remove(tag);
+                                        }
+                                      });
+                                    },
+                                  );
+                                }).toList(),
                         ),
                         SizedBox(height: AppSizes.medium),
                       ],
                     )),
                 subtitle: ListView(
-                  shrinkWrap: true, 
-                  children: tagFilters.isEmpty 
-                  ? <Widget>[
-                    ..._links.map((link) => LinkContainer(link: link)).toList(),
-                  ] 
-                  : <Widget>[
-                  ..._links.where((link) => link.tags.where((tag)=>tagFilters.contains(tag)).isNotEmpty).map((link) => LinkContainer(link: link)).toList(),
-                ]),
+                    shrinkWrap: true,
+                    children: tagFilters.isEmpty
+                        ? <Widget>[
+                            ..._links
+                                .map((link) => LinkContainer(link: link, listTags: widget.allTags.value))
+                                .toList(),
+                          ]
+                        : <Widget>[
+                            ..._links
+                                .where((link) => link.tags
+                                    .where((tag) => tagFilters.contains(tag))
+                                    .isNotEmpty)
+                                .map((link) => LinkContainer(link: link, listTags: widget.allTags.value))
+                                .toList(),
+                          ]),
               ),
             )));
   }
