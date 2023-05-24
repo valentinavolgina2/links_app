@@ -67,8 +67,6 @@ class FormHelpers {
       List<String> listCategories = const []}) {
     final TextEditingController linkNameController = TextEditingController();
     final TextEditingController linkUrlController = TextEditingController();
-    final TextEditingController linkCalegoryController =
-        TextEditingController();
 
     ValueNotifier<List<String>?> tags = ValueNotifier([]);
     final ValueNotifier<String> selectedCategory = ValueNotifier('');

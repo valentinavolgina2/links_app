@@ -23,12 +23,9 @@ class _LinkCategoryState extends State<LinkCategory> {
   double optionsListMaxHeight = 200;
   double optionsListMaxWidth = AppSizes.dialogMaxWidth - 2 * AppSizes.small;
 
-  late double _distanceToField = 0;
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _distanceToField = MediaQuery.of(context).size.width;
   }
 
   @override

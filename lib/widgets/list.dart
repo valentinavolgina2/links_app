@@ -29,6 +29,16 @@ class ListContainer extends StatefulWidget {
   State<ListContainer> createState() => _ListContainerState();
 }
 
+class CategoryExpansionPanel {
+  CategoryExpansionPanel({
+    required this.header,
+    this.isExpanded = false,
+  });
+
+  String header;
+  bool isExpanded;
+}
+
 class _ListContainerState extends State<ListContainer> {
   final List<Link> _links = [];
   late DatabaseReference _linksRef;
@@ -37,7 +47,7 @@ class _ListContainerState extends State<ListContainer> {
   late StreamSubscription<DatabaseEvent> _linksUpdateSubscription;
 
   Set<String> tagFilters = <String>{};
-  final List<String> categoriesWithEmpty = [''];
+  final List<CategoryExpansionPanel> categoriesWithEmpty = [];
 
   @override
   void initState() {
@@ -57,7 +67,7 @@ class _ListContainerState extends State<ListContainer> {
           _links.add(newLink);
 
           _updateAllTags();
-          _updateAllCtegories();
+          _updateAllCategories();
         });
       },
       onError: (Object o) {
@@ -74,7 +84,7 @@ class _ListContainerState extends State<ListContainer> {
           _links.remove(linkToRemove);
 
           _updateAllTags();
-          _updateAllCtegories();
+          _updateAllCategories();
         });
       },
       onError: (Object o) {
@@ -92,7 +102,7 @@ class _ListContainerState extends State<ListContainer> {
           linkToUpdate.updateFromSnapshot(event.snapshot);
 
           _updateAllTags();
-          _updateAllCtegories();
+          _updateAllCategories();
         });
       },
       onError: (Object o) {
@@ -112,20 +122,32 @@ class _ListContainerState extends State<ListContainer> {
     widget.allTags.value = widget.allTags.value.toSet().toList();
   }
 
-  _updateAllCtegories() {
+  _updateAllCategories() {
     widget.allCategories.value = [];
 
     for (final link in _links) {
-      if (link.category != '') {
-        widget.allCategories.value.add(link.category);
-      }
+      widget.allCategories.value.add(link.category);
     }
 
     widget.allCategories.value = widget.allCategories.value.toSet().toList();
+    widget.allCategories.value.sort();
+
+    _updateAllCategoriesPanels();
+  }
+
+  _updateAllCategoriesPanels() {
+    Map<String, bool> expandedValues = <String, bool>{};
+    for (var categoryPanel in categoriesWithEmpty) {
+      expandedValues[categoryPanel.header] = categoryPanel.isExpanded;
+    }
 
     categoriesWithEmpty.clear();
-    categoriesWithEmpty.add('');
-    categoriesWithEmpty.addAll(widget.allCategories.value);
+    categoriesWithEmpty.addAll(widget.allCategories.value.map((category) =>
+        CategoryExpansionPanel(
+            header: category,
+            isExpanded: expandedValues[category] == null
+                ? false
+                : expandedValues[category]!)));
   }
 
   @override
@@ -199,40 +221,46 @@ class _ListContainerState extends State<ListContainer> {
                         ),
                       ],
                     )),
-                subtitle: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    ...categoriesWithEmpty.map((category) => Container(
-                          alignment: Alignment.centerLeft,
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                category == '' ? const Text('') : Padding(
-                                  padding: EdgeInsets.fromLTRB(AppSizes.medium, AppSizes.large, AppSizes.medium, AppSizes.medium),
-                                  child: Text(category),
-                                ),
-                                ListView(shrinkWrap: true, children: <Widget>[
-                                  ..._links
-                                      .where(
-                                          (link) => link.category == category)
-                                      .where((link) => tagFilters.isEmpty
-                                          ? true
-                                          : link.tags
-                                              .where((tag) =>
-                                                  tagFilters.contains(tag))
-                                              .isNotEmpty)
-                                      .map((link) => LinkContainer(
-                                          link: link,
-                                          listTags: widget.allTags.value,
-                                          listCategories:
-                                              widget.allCategories.value))
-                                      .toList(),
+                subtitle: ExpansionPanelList(
+                    expansionCallback: (int index, bool isExpanded) {
+                      setState(() {
+                        categoriesWithEmpty[index].isExpanded = !isExpanded;
+                      });
+                    },
+                    children: categoriesWithEmpty
+                        .map<ExpansionPanel>((category) => ExpansionPanel(
+                            headerBuilder: (context, isExpanded) {
+                              return Padding(
+                                padding: EdgeInsets.all(AppSizes.medium),
+                                child: category.header == ''
+                                    ? const Text('No category')
+                                    : Text(category.header),
+                              );
+                            },
+                            body: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ListView(shrinkWrap: true, children: <Widget>[
+                                    ..._links
+                                        .where((link) =>
+                                            link.category == category.header)
+                                        .where((link) => tagFilters.isEmpty
+                                            ? true
+                                            : link.tags
+                                                .where((tag) =>
+                                                    tagFilters.contains(tag))
+                                                .isNotEmpty)
+                                        .map((link) => LinkContainer(
+                                            link: link,
+                                            listTags: widget.allTags.value,
+                                            listCategories:
+                                                widget.allCategories.value))
+                                        .toList(),
+                                  ]),
                                 ]),
-                              ]),
-                        ))
-                  ],
-                ),
+                            isExpanded: category.isExpanded))
+                        .toList()),
               ),
             )));
   }
