@@ -57,7 +57,7 @@ class _LinkTagsState extends State<LinkTags> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(
-          vertical: AppSizes.medium, horizontal: AppSizes.xsmall),
+          vertical: 0, horizontal: AppSizes.xsmall),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -106,7 +106,7 @@ class _LinkTagsState extends State<LinkTags> {
             },
             optionsBuilder: (TextEditingValue textEditingValue) {
               if (textEditingValue.text == '') {
-                return const Iterable<String>.empty();
+                return widget.tagOptions;
               }
               return widget.tagOptions.where((String option) {
                 return option.contains(textEditingValue.text.toLowerCase());

@@ -6,6 +6,7 @@ const String columnURL = 'url';
 const String columnName = 'name';
 const String columnCompleted = 'completed';
 const String columnTags = 'tags';
+const String columnCategory = 'category';
 const String columnList = 'list_id';
 
 class Link {
@@ -14,6 +15,7 @@ class Link {
   String name;
   bool completed;
   List<String> tags;
+  String category;
   final String listId;
 
   Link(
@@ -22,6 +24,7 @@ class Link {
       required this.url,
       this.completed = false,
       this.tags = const [],
+      this.category = '',
       required this.listId});
 
   Link.fromSnapshot({required DataSnapshot snapshot, required this.listId})
@@ -30,6 +33,7 @@ class Link {
         name = ((snapshot.value!) as Map<String, dynamic>)[columnName]!,
         tags = tagsFromString(
             ((snapshot.value!) as Map<String, dynamic>)[columnTags]!),
+        category = ((snapshot.value!) as Map<String, dynamic>)[columnCategory] == null ? '' : ((snapshot.value!) as Map<String, dynamic>)[columnCategory]!,
         completed =
             ((snapshot.value!) as Map<String, dynamic>)[columnCompleted]!;
 
@@ -38,6 +42,7 @@ class Link {
     name = ((snapshot.value!) as Map<String, dynamic>)[columnName]!;
     tags = tagsFromString(
         ((snapshot.value!) as Map<String, dynamic>)[columnTags]!);
+    category = ((snapshot.value!) as Map<String, dynamic>)[columnCategory] == null ? '' : ((snapshot.value!) as Map<String, dynamic>)[columnCategory]!;
     completed = ((snapshot.value!) as Map<String, dynamic>)[columnCompleted]!;
   }
 

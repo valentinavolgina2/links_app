@@ -7,15 +7,21 @@ import '../model/link.dart';
 import '../providers/link.dart';
 import '../styles/color.dart';
 import '../styles/size.dart';
+import 'category.dart';
 import 'forms/helper.dart';
 import 'forms/validation.dart';
 import 'message.dart';
 
 class LinkContainer extends StatelessWidget {
-  const LinkContainer({super.key, required this.link, required this.listTags});
+  const LinkContainer(
+      {super.key,
+      required this.link,
+      required this.listTags,
+      required this.listCategories});
 
   final Link link;
   final List<String> listTags;
+  final List<String> listCategories;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +65,8 @@ class LinkContainer extends StatelessWidget {
                   padding: EdgeInsets.only(top: AppSizes.small),
                   child: Text(Link.hashStrFromTagsList(link.tags)),
                 ),
-          trailing: LinkPopupMenu(link: link, listTags: listTags),
+          trailing: LinkPopupMenu(
+              link: link, listTags: listTags, listCategories: listCategories),
           onTap: () async {
             await launchURL(Uri.encodeFull(link.url));
           },
@@ -70,13 +77,20 @@ class LinkContainer extends StatelessWidget {
 }
 
 class LinkPopupMenu extends StatelessWidget {
-  LinkPopupMenu({super.key, required this.link, required this.listTags});
+  LinkPopupMenu(
+      {super.key,
+      required this.link,
+      required this.listTags,
+      required this.listCategories});
 
   final Link link;
   final List<String> listTags;
+  final List<String> listCategories;
 
   final TextEditingController editLinkNameController = TextEditingController();
   final TextEditingController editLinkUrlController = TextEditingController();
+  final TextEditingController editLinkCategoryController =
+      TextEditingController();
 
   void _deleteLink(BuildContext context) {
     showDialog(
@@ -113,8 +127,10 @@ class LinkPopupMenu extends StatelessWidget {
   void _editLink(BuildContext context) {
     editLinkNameController.text = link.name;
     editLinkUrlController.text = link.url;
+    editLinkCategoryController.text = link.category;
 
     ValueNotifier<List<String>?> tags = ValueNotifier(link.tags);
+    final ValueNotifier<String> selectedCategory = ValueNotifier('');
 
     final editLinkFormKey = GlobalKey<FormState>();
 
@@ -152,6 +168,14 @@ class LinkPopupMenu extends StatelessWidget {
                             decoration:
                                 FormHelpers.inputDecoration(hintText: 'Url'),
                             validator: (value) => linkUrlValidator(value)),
+                        SizedBox(height: AppSizes.medium),
+                        const Text('Category'),
+                        SizedBox(height: AppSizes.small),
+                        LinkCategory(
+                          categoryOptions: listCategories,
+                          selectedCategory: selectedCategory,
+                          initialCategory: link.category,
+                        ),
                         SizedBox(height: AppSizes.small),
                         LinkTags(
                             initialTags: link.tags,
@@ -197,7 +221,8 @@ class LinkPopupMenu extends StatelessWidget {
                                                 editLinkNameController.text,
                                             newUrl: editLinkUrlController.text,
                                             newTags: tags.value,
-                                            completed: link.completed);
+                                            completed: link.completed,
+                                            newCategory: selectedCategory.value);
                                         Navigator.of(context).pop();
 
                                         SystemMessage.showSuccess(

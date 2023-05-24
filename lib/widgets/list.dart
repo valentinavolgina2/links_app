@@ -17,11 +17,13 @@ class ListContainer extends StatefulWidget {
       {super.key,
       required this.list,
       this.withName = true,
-      required this.allTags});
+      required this.allTags,
+      required this.allCategories});
 
   final LinksList list;
   final bool withName;
   final ValueNotifier<List<String>> allTags;
+  final ValueNotifier<List<String>> allCategories;
 
   @override
   State<ListContainer> createState() => _ListContainerState();
@@ -35,6 +37,7 @@ class _ListContainerState extends State<ListContainer> {
   late StreamSubscription<DatabaseEvent> _linksUpdateSubscription;
 
   Set<String> tagFilters = <String>{};
+  final List<String> categoriesWithEmpty = [''];
 
   @override
   void initState() {
@@ -54,6 +57,7 @@ class _ListContainerState extends State<ListContainer> {
           _links.add(newLink);
 
           _updateAllTags();
+          _updateAllCtegories();
         });
       },
       onError: (Object o) {
@@ -70,6 +74,7 @@ class _ListContainerState extends State<ListContainer> {
           _links.remove(linkToRemove);
 
           _updateAllTags();
+          _updateAllCtegories();
         });
       },
       onError: (Object o) {
@@ -87,6 +92,7 @@ class _ListContainerState extends State<ListContainer> {
           linkToUpdate.updateFromSnapshot(event.snapshot);
 
           _updateAllTags();
+          _updateAllCtegories();
         });
       },
       onError: (Object o) {
@@ -104,6 +110,22 @@ class _ListContainerState extends State<ListContainer> {
     }
 
     widget.allTags.value = widget.allTags.value.toSet().toList();
+  }
+
+  _updateAllCtegories() {
+    widget.allCategories.value = [];
+
+    for (final link in _links) {
+      if (link.category != '') {
+        widget.allCategories.value.add(link.category);
+      }
+    }
+
+    widget.allCategories.value = widget.allCategories.value.toSet().toList();
+
+    categoriesWithEmpty.clear();
+    categoriesWithEmpty.add('');
+    categoriesWithEmpty.addAll(widget.allCategories.value);
   }
 
   @override
@@ -175,25 +197,42 @@ class _ListContainerState extends State<ListContainer> {
                                   );
                                 }).toList(),
                         ),
-                        SizedBox(height: AppSizes.medium),
                       ],
                     )),
-                subtitle: ListView(
-                    shrinkWrap: true,
-                    children: tagFilters.isEmpty
-                        ? <Widget>[
-                            ..._links
-                                .map((link) => LinkContainer(link: link, listTags: widget.allTags.value))
-                                .toList(),
-                          ]
-                        : <Widget>[
-                            ..._links
-                                .where((link) => link.tags
-                                    .where((tag) => tagFilters.contains(tag))
-                                    .isNotEmpty)
-                                .map((link) => LinkContainer(link: link, listTags: widget.allTags.value))
-                                .toList(),
-                          ]),
+                subtitle: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    ...categoriesWithEmpty.map((category) => Container(
+                          alignment: Alignment.centerLeft,
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                category == '' ? const Text('') : Padding(
+                                  padding: EdgeInsets.fromLTRB(AppSizes.medium, AppSizes.large, AppSizes.medium, AppSizes.medium),
+                                  child: Text(category),
+                                ),
+                                ListView(shrinkWrap: true, children: <Widget>[
+                                  ..._links
+                                      .where(
+                                          (link) => link.category == category)
+                                      .where((link) => tagFilters.isEmpty
+                                          ? true
+                                          : link.tags
+                                              .where((tag) =>
+                                                  tagFilters.contains(tag))
+                                              .isNotEmpty)
+                                      .map((link) => LinkContainer(
+                                          link: link,
+                                          listTags: widget.allTags.value,
+                                          listCategories:
+                                              widget.allCategories.value))
+                                      .toList(),
+                                ]),
+                              ]),
+                        ))
+                  ],
+                ),
               ),
             )));
   }

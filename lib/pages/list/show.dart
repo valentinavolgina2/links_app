@@ -14,6 +14,7 @@ class ListPage extends StatelessWidget {
 
   final LinksList list;
   final ValueNotifier<List<String>> _listTags = ValueNotifier([]);
+  final ValueNotifier<List<String>> _listCategories = ValueNotifier([]);
 
   @override
   Widget build(BuildContext context) {
@@ -42,12 +43,12 @@ class ListPage extends StatelessWidget {
       body: LayoutBuilder(builder: (context, constraints) {
         return SafeArea(
           child: Padding(
-              padding: EdgeInsets.all(AppSizes.small),
-              child: ListContainer(list: list, withName: false, allTags: _listTags)),
+              padding: EdgeInsets.fromLTRB(AppSizes.small, AppSizes.small, AppSizes.small, AppSizes.large),
+              child: ListContainer(list: list, withName: false, allTags: _listTags, allCategories: _listCategories,)),
         );
       }),
       floatingActionButton: FloatingActionButton(
-          onPressed: () => FormHelpers.addLink(context: context, list: list, listTags: _listTags.value),
+          onPressed: () => FormHelpers.addLink(context: context, list: list, listTags: _listTags.value, listCategories: _listCategories.value),
           tooltip: 'Add new link',
           child: const Icon(Icons.add)),
     );

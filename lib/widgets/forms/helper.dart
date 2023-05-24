@@ -6,6 +6,7 @@ import '../../model/list.dart';
 import '../../providers/link.dart';
 import '../../providers/list.dart';
 import '../../styles/size.dart';
+import '../category.dart';
 import '../message.dart';
 import '../tags.dart';
 
@@ -24,7 +25,7 @@ class FormHelpers {
         hintStyle: TextStyle(
           color: AppColors.darkText,
         ),
-        hintText: hintText,
+        hintText: '', //hintText,
         fillColor: AppColors.whiteText,
         errorText: errorText,
         errorStyle: TextStyle(
@@ -59,11 +60,18 @@ class FormHelpers {
 
   static titleTextStyle() {}
 
-  static addLink({required BuildContext context, required LinksList list, List<String> listTags = const []}) {
+  static addLink(
+      {required BuildContext context,
+      required LinksList list,
+      List<String> listTags = const [],
+      List<String> listCategories = const []}) {
     final TextEditingController linkNameController = TextEditingController();
     final TextEditingController linkUrlController = TextEditingController();
+    final TextEditingController linkCalegoryController =
+        TextEditingController();
 
     ValueNotifier<List<String>?> tags = ValueNotifier([]);
+    final ValueNotifier<String> selectedCategory = ValueNotifier('');
 
     final addLinkFormKey = GlobalKey<FormState>();
 
@@ -102,6 +110,13 @@ class FormHelpers {
                           decoration:
                               FormHelpers.inputDecoration(hintText: 'Url'),
                           validator: (value) => linkUrlValidator(value),
+                        ),
+                        SizedBox(height: AppSizes.medium),
+                        const Text('Category'),
+                        SizedBox(height: AppSizes.small),
+                        LinkCategory(
+                          categoryOptions: listCategories,
+                          selectedCategory: selectedCategory,
                         ),
                         SizedBox(height: AppSizes.small),
                         LinkTags(
@@ -145,8 +160,9 @@ class FormHelpers {
                                             name: linkNameController.text,
                                             url: linkUrlController.text,
                                             listId: list.id,
-                                            tags: tags.value
-                                        );
+                                            tags: tags.value,
+                                            category:
+                                                selectedCategory.value);
 
                                         Navigator.of(context).pop();
 

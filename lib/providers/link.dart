@@ -14,9 +14,11 @@ class LinkProvider {
       {required String name,
       required String url,
       required String listId,
-      List<String>? tags}) async {
+      List<String>? tags,
+      String category = ''}) async {
     name = escape(name); //replace <, >, &, ' and " with HTML entities
     url = escape(url);
+    category = escape(category);
 
     final DatabaseReference newLink = listLinksRef(listId: listId).push();
 
@@ -24,7 +26,8 @@ class LinkProvider {
       'name': name,
       'url': url,
       'completed': false,
-      'tags': Link.strFromTagsList(tags)
+      'tags': Link.strFromTagsList(tags),
+      'category': category
     });
   }
 
@@ -38,16 +41,19 @@ class LinkProvider {
       required String newName,
       required String newUrl,
       List<String>? newTags,
+      required String newCategory,
       required bool completed}) async {
     newName = escape(newName); //replace <, >, &, ' and " with HTML entities
     newUrl = escape(newUrl);
+    newCategory = escape(newCategory);
 
     final linkRef = listLinksRef(listId: link.listId).child(link.id);
     await linkRef.set({
-      'name': newName, 
-      'url': newUrl, 
-      'completed': completed, 
-      'tags': Link.strFromTagsList(newTags)
+      'name': newName,
+      'url': newUrl,
+      'completed': completed,
+      'tags': Link.strFromTagsList(newTags),
+      'category': newCategory
     });
   }
 
@@ -58,7 +64,8 @@ class LinkProvider {
       'name': link.name,
       'url': link.url,
       'completed': completed,
-      'tags': Link.strFromTagsList(link.tags)
+      'tags': Link.strFromTagsList(link.tags),
+      'category': link.category,
     });
   }
 }
