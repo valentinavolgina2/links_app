@@ -6,6 +6,7 @@ import 'package:links_app/providers/list.dart';
 import 'package:links_app/styles/color.dart';
 import 'package:links_app/styles/size.dart';
 import 'package:links_app/widgets/app_bar.dart';
+import 'package:links_app/widgets/app_bar/helper.dart';
 import 'package:links_app/widgets/forms/helper.dart';
 import 'package:links_app/widgets/list_card.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -126,6 +127,15 @@ class _MyHomePageState extends State<MyHomePage> {
     _listsChangeSubscription.cancel();
   }
 
+  LinearGradient _homePageGradient() {
+    return LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [AppColors.gradientStart, AppColors.gradientEnd],
+      stops: const [0.4, 0.8],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
@@ -134,66 +144,54 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: ResponsiveWidget.isSmallScreen(context)
-      ? AppBar( // for smaller screen sizes
-          backgroundColor: AppColors.primaryColor,
-          elevation: 0,
-          title: Text(
-            AppData.title.toUpperCase(),
-            style: TextStyle(
-              color: AppColors.secondaryFade,
-              fontSize: AppSizes.textTitle,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 1.5,
-            ),
-          ),
-        )
-      : PreferredSize(
-          preferredSize: Size(screenSize.width, 1000), child: const MyAppBar()
-      ),
+        ? smallScreenAppBar()
+        : PreferredSize(
+            preferredSize: Size(screenSize.width, 1000),
+            child: const MyAppBar()),
       drawer: const MyDrawer(),
       body: SafeArea(
           child: Container(
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [AppColors.gradientStart, AppColors.gradientEnd],
-                  stops: const [0.4, 0.8],
-                ),
-              ),
-            child: Padding(
-                  padding: EdgeInsets.all(AppSizes.small),
-                  child: Center(
+        decoration: BoxDecoration(
+          gradient: _homePageGradient(),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(AppSizes.small),
+          child: Center(
             child: Container(
               constraints: BoxConstraints(maxWidth: AppSizes.listMaxWidth),
-              child: uid == null 
-              ? EmptyContainer.needLogin(context)
-              : myLists.isEmpty
-                ? EmptyContainer.noListsAdded(context: context, userId: uid!)
-                : ListTile(
-                  title: Padding(
-                    padding: EdgeInsets.symmetric(vertical: AppSizes.medium, horizontal: AppSizes.small),
-                    child: Row(
-                      children: [
-                        Expanded(
-                            child: Text('My lists',
+              child: uid == null
+                ? EmptyContainer.needLogin(context)
+                : myLists.isEmpty
+                    ? EmptyContainer.noListsAdded(
+                        context: context, userId: uid!)
+                    : ListTile(
+                      title: Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: AppSizes.medium,
+                          horizontal: AppSizes.small),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text('My lists',
                                 style: TextStyle(
-                                    fontSize: titleStyle.fontSize))),
-                        ElevatedButton(
-                              onPressed: () => FormHelpers.addList(context: context, userId: uid!), 
-                              child: const Text('New list')
-                            ),
-                      ],
-                    ),
-                  ),
-                  subtitle: ListView(
-                      children: myLists.map((list) => ListCard(list: list)).toList(),
-                    ),
-                )
+                                  fontSize: titleStyle.fontSize))),
+                            ElevatedButton(
+                              onPressed: () => FormHelpers.addList(
+                                  context: context, userId: uid!),
+                              child: const Text('New list')),
+                          ],
+                        ),
+                      ),
+                      subtitle: ListView(
+                        children: myLists
+                            .map((list) => ListCard(list: list))
+                            .toList(),
+                      ),
+                    )
             ),
-                  ),
-                ),
-          )),
+          ),
+        ),
+      )),
     );
   }
 }
