@@ -9,6 +9,7 @@ import '../model/list.dart';
 import '../providers/link.dart';
 import '../styles/color.dart';
 import '../styles/size.dart';
+import 'forms/helper.dart';
 import 'link.dart';
 import 'no_content.dart';
 
@@ -219,6 +220,14 @@ class _ListContainerState extends State<ListContainer> {
                                   );
                                 }).toList(),
                         ),
+                        SizedBox(height: AppSizes.large),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: ElevatedButton(
+                            onPressed: () => FormHelpers.addLink(context: context, list: widget.list, listTags: widget.allTags.value, listCategories: widget.allCategories.value), 
+                            child: const Text('New link')
+                          ),
+                        )
                       ],
                     )),
                 subtitle: ExpansionPanelList(

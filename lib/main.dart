@@ -129,6 +129,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
+    final TextStyle titleStyle =
+        TextStyle(color: AppColors.darkText, fontSize: AppSizes.textTitle);
 
     return Scaffold(
       appBar: ResponsiveWidget.isSmallScreen(context)
@@ -168,19 +170,30 @@ class _MyHomePageState extends State<MyHomePage> {
               ? EmptyContainer.needLogin(context)
               : myLists.isEmpty
                 ? EmptyContainer.noListsAdded(context: context, userId: uid!)
-                : ListView(
-                    children: myLists.map((list) => ListCard(list: list)).toList(),
-                  )
+                : ListTile(
+                  title: Padding(
+                    padding: EdgeInsets.symmetric(vertical: AppSizes.medium, horizontal: AppSizes.small),
+                    child: Row(
+                      children: [
+                        Expanded(
+                            child: Text('My lists',
+                                style: TextStyle(
+                                    fontSize: titleStyle.fontSize))),
+                        ElevatedButton(
+                              onPressed: () => FormHelpers.addList(context: context, userId: uid!), 
+                              child: const Text('New list')
+                            ),
+                      ],
+                    ),
+                  ),
+                  subtitle: ListView(
+                      children: myLists.map((list) => ListCard(list: list)).toList(),
+                    ),
+                )
             ),
                   ),
                 ),
           )),
-      floatingActionButton: uid == null
-          ? null
-          : FloatingActionButton(
-              onPressed: () => FormHelpers.addList(context: context, userId: uid!),
-              tooltip: 'Add new list',
-              child: const Icon(Icons.add)),
     );
   }
 }
