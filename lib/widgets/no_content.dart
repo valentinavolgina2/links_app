@@ -9,61 +9,58 @@ import 'forms/helper.dart';
 
 class EmptyContainer {
   static Widget needLogin(BuildContext context) {
-    return Column(
-        mainAxisSize: MainAxisSize.min,
+    return Column(mainAxisSize: MainAxisSize.min, children: [
+      Text('Welcome to My Links',
+          style: TextStyle(fontSize: AppSizes.textTitle)),
+      SizedBox(height: AppSizes.medium),
+      const Text(
+        'Get started by creating a new profile. Only registered users can create list of links.',
+        textAlign: TextAlign.center,
+      ),
+      SizedBox(height: AppSizes.medium),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Welcome to My Links',
-              style: TextStyle(fontSize: AppSizes.textTitle)),
-          SizedBox(height: AppSizes.medium),
-          const Text(
-              'Get started by creating a new profile. Only registered users can create list of links.',
-              textAlign: TextAlign.center,),
-          SizedBox(height: AppSizes.medium),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Flexible(
-                child: FilledButton(
-                  onPressed: () async {
-                    await showDialog(
-                      context: context,
-                      builder: (context) => const SigninDialog(),
-                    ).then((result) => {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const MyHomePage()),
-                          )
-                        });
-                  },
-                  child: const Text('Login'),
-                )
-              ),
-              SizedBox(width: AppSizes.medium),
-              Flexible(
-                child: FilledButton(
-                  onPressed: () async {
-                    await showDialog(
-                      context: context,
-                      builder: (context) => const SignupDialog(),
-                    ).then((result) => {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const MyHomePage()),
-                          )
-                        });
-                  },
-                  child: const Text('Register'),
-                )
-              )
-            ],
-          )
-          
-        ]);
+          Flexible(
+              child: FilledButton(
+            onPressed: () async {
+              await showDialog(
+                context: context,
+                builder: (context) => const SigninDialog(),
+              ).then((result) => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MyHomePage()),
+                    )
+                  });
+            },
+            child: const Text('Login'),
+          )),
+          SizedBox(width: AppSizes.medium),
+          Flexible(
+              child: FilledButton(
+            onPressed: () async {
+              await showDialog(
+                context: context,
+                builder: (context) => const SignupDialog(),
+              ).then((result) => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MyHomePage()),
+                    )
+                  });
+            },
+            child: const Text('Register'),
+          ))
+        ],
+      )
+    ]);
   }
 
-  static Widget noLinksAdded({required BuildContext context, required LinksList list}) {
+  static Widget noLinksAdded(
+      {required BuildContext context, required LinksList list}) {
     return Column(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -73,14 +70,29 @@ class EmptyContainer {
           SizedBox(height: AppSizes.medium),
           const Text('There are no links added to this list'),
           SizedBox(height: AppSizes.medium),
-          FilledButton(
-              onPressed: () =>
-                  FormHelpers.addLink(context: context, list: list),
-              child: const Text('Add Link'))
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                child: FilledButton(
+                    onPressed: () =>
+                        FormHelpers.addLink(context: context, list: list),
+                    child: const Text('Add Link')),
+              ),
+              SizedBox(width: AppSizes.medium),
+              Flexible(
+                child: TextButton(
+                  onPressed: () => Navigator.pop(context), 
+                  child: const Text('Back to lists'),
+                ),
+              ),
+            ],
+          )
         ]);
   }
 
-  static Widget noListsAdded({required BuildContext context, required String userId}) {
+  static Widget noListsAdded(
+      {required BuildContext context, required String userId}) {
     return Column(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.center,
