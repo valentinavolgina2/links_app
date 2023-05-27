@@ -205,21 +205,26 @@ class _ListContainerState extends State<ListContainer> {
     return ExpansionPanel(
         headerBuilder: (context, isExpanded) {
           final filteredLinksCount = linksFilteredByCategoryAndTags.length;
+          final completedLinksCount = linksFilteredByCategoryAndTags
+              .where((link) => link.completed)
+              .toList().length;
+
+          final categoryName =
+              category.header == '' ? 'No category' : category.header;
+
           return Padding(
             padding: EdgeInsets.all(AppSizes.medium),
-            child: category.header == ''
-                ? Text('No category ($filteredLinksCount)')
-                : Text('${category.header} ($filteredLinksCount)'),
+            child: Text('$categoryName ($completedLinksCount/$filteredLinksCount done)'),
           );
         },
         body: ListView(shrinkWrap: true, children: <Widget>[
-                ...linksFilteredByCategoryAndTags
-                    .map((link) => LinkContainer(
-                        link: link,
-                        listTags: widget.allTags.value,
-                        listCategories: widget.allCategories.value))
-                    .toList(),
-              ]),
+          ...linksFilteredByCategoryAndTags
+              .map((link) => LinkContainer(
+                  link: link,
+                  listTags: widget.allTags.value,
+                  listCategories: widget.allCategories.value))
+              .toList(),
+        ]),
         isExpanded: category.isExpanded);
   }
 
