@@ -64,12 +64,13 @@ class FormHelpers {
       {required BuildContext context,
       required LinksList list,
       List<String> listTags = const [],
-      List<String> listCategories = const []}) {
+      List<String> listCategories = const [],
+      String category = ''}) {
     final TextEditingController linkNameController = TextEditingController();
     final TextEditingController linkUrlController = TextEditingController();
 
     ValueNotifier<List<String>?> tags = ValueNotifier([]);
-    final ValueNotifier<String> selectedCategory = ValueNotifier('');
+    final ValueNotifier<String> selectedCategory = ValueNotifier(category);
 
     final addLinkFormKey = GlobalKey<FormState>();
 
@@ -113,13 +114,12 @@ class FormHelpers {
                         const Text('Category'),
                         SizedBox(height: AppSizes.small),
                         LinkCategory(
-                          categoryOptions: listCategories,
+                          categoryOptions: listCategories.where((category) => category != '').toList(),
                           selectedCategory: selectedCategory,
+                          initialCategory: category,
                         ),
                         SizedBox(height: AppSizes.small),
-                        LinkTags(
-                            tagOptions: listTags,
-                            selectedTags: tags),
+                        LinkTags(tagOptions: listTags, selectedTags: tags),
                         SizedBox(height: AppSizes.medium),
                         Row(
                             mainAxisSize: MainAxisSize.max,
@@ -159,8 +159,7 @@ class FormHelpers {
                                             url: linkUrlController.text,
                                             listId: list.id,
                                             tags: tags.value,
-                                            category:
-                                                selectedCategory.value);
+                                            category: selectedCategory.value);
 
                                         Navigator.of(context).pop();
 

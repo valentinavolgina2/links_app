@@ -7,9 +7,7 @@ import 'package:flutter/material.dart';
 import '../model/link.dart';
 import '../model/list.dart';
 import '../providers/link.dart';
-import '../styles/color.dart';
 import '../styles/size.dart';
-import 'forms/helper.dart';
 import 'link.dart';
 import 'no_content.dart';
 
@@ -147,65 +145,54 @@ class _ListContainerState extends State<ListContainer> {
         CategoryExpansionPanel(
             header: category,
             isExpanded: expandedValues[category] == null
-                ? false
+                ? true
                 : expandedValues[category]!)));
   }
 
   Widget _listViewHeader() {
     return Padding(
-      padding: EdgeInsets.symmetric(
-          vertical: AppSizes.medium, horizontal: AppSizes.small),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(widget.list.name,
-                  style: TextStyle(fontSize: AppSizes.textTitle))),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Back to lists'))
-            ],
-          ),
-          SizedBox(height: AppSizes.large),
-          const Text('Filter links by tags'),
-          SizedBox(height: AppSizes.medium),
-          Wrap(
-            spacing: AppSizes.xsmall,
-            children: widget.allTags.value.isEmpty
-              ? [const Text('no tags added for this list')]
-              : widget.allTags.value.map((String tag) {
-                  return FilterChip(
-                    label: Text(tag),
-                    selected: tagFilters.contains(tag),
-                    onSelected: (bool selected) {
-                      setState(() {
-                        if (selected) {
-                          tagFilters.add(tag);
-                        } else {
-                          tagFilters.remove(tag);
-                        }
-                      });
+        padding: EdgeInsets.symmetric(
+            vertical: AppSizes.medium, horizontal: AppSizes.small),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                    child: Text(widget.list.name,
+                        style: TextStyle(fontSize: AppSizes.textTitle))),
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
                     },
-                  );
-                }).toList(),
-          ),
-          SizedBox(height: AppSizes.large),
-          Align(
-            alignment: Alignment.centerRight,
-            child: ElevatedButton(
-              onPressed: () => FormHelpers.addLink(
-                context: context,
-                list: widget.list,
-                listTags: widget.allTags.value,
-                listCategories: widget.allCategories.value),
-              child: const Text('New link')),
-          )
-        ],
-      ));
+                    child: const Text('Back to lists'))
+              ],
+            ),
+            SizedBox(height: AppSizes.large),
+            const Text('Filter links by tags'),
+            SizedBox(height: AppSizes.medium),
+            Wrap(
+              spacing: AppSizes.xsmall,
+              children: widget.allTags.value.isEmpty
+                  ? [const Text('no tags added for this list')]
+                  : widget.allTags.value.map((String tag) {
+                      return FilterChip(
+                        label: Text(tag),
+                        selected: tagFilters.contains(tag),
+                        onSelected: (bool selected) {
+                          setState(() {
+                            if (selected) {
+                              tagFilters.add(tag);
+                            } else {
+                              tagFilters.remove(tag);
+                            }
+                          });
+                        },
+                      );
+                    }).toList(),
+            ),
+          ],
+        ));
   }
 
   ExpansionPanel _categoryPanel(CategoryExpansionPanel category) {
@@ -213,7 +200,7 @@ class _ListContainerState extends State<ListContainer> {
         .where((link) => link.category == category.header)
         .where((link) => tagFilters.isEmpty
             ? true
-            : link.tags.where((tag) => tagFilters.contains(tag)).isNotEmpty);
+            : link.tags.toSet().containsAll(tagFilters));
 
     return ExpansionPanel(
         headerBuilder: (context, isExpanded) {
@@ -225,11 +212,7 @@ class _ListContainerState extends State<ListContainer> {
                 : Text('${category.header} ($filteredLinksCount)'),
           );
         },
-        body: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListView(shrinkWrap: true, children: <Widget>[
+        body: ListView(shrinkWrap: true, children: <Widget>[
                 ...linksFilteredByCategoryAndTags
                     .map((link) => LinkContainer(
                         link: link,
@@ -237,7 +220,6 @@ class _ListContainerState extends State<ListContainer> {
                         listCategories: widget.allCategories.value))
                     .toList(),
               ]),
-            ]),
         isExpanded: category.isExpanded);
   }
 

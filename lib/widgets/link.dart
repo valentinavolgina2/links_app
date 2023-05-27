@@ -172,7 +172,7 @@ class LinkPopupMenu extends StatelessWidget {
                         const Text('Category'),
                         SizedBox(height: AppSizes.small),
                         LinkCategory(
-                          categoryOptions: listCategories,
+                          categoryOptions: listCategories.where((category) => category != '').toList(),
                           selectedCategory: selectedCategory,
                           initialCategory: link.category,
                         ),
