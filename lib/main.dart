@@ -169,18 +169,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         padding: EdgeInsets.symmetric(
                           vertical: AppSizes.medium,
                           horizontal: AppSizes.small),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Text('My lists',
+                        child: Text('My lists',
                                 style: TextStyle(
-                                  fontSize: titleStyle.fontSize))),
-                            ElevatedButton(
-                              onPressed: () => FormHelpers.addList(
-                                  context: context, userId: uid!),
-                              child: const Text('New list')),
-                          ],
-                        ),
+                                  fontSize: titleStyle.fontSize))
                       ),
                       subtitle: ListView(
                         children: myLists
@@ -192,6 +183,12 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       )),
+      floatingActionButton: uid == null
+          ? null
+          : FloatingActionButton(
+              onPressed: () => FormHelpers.addList(context: context, userId: uid!),
+              tooltip: 'Add new list',
+              child: const Icon(Icons.add)),
     );
   }
 }

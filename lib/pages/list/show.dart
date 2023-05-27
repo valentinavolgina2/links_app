@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../model/app.dart';
 import '../../model/list.dart';
-import '../../styles/color.dart';
 import '../../styles/size.dart';
 import '../../widgets/app_bar.dart';
 import '../../widgets/app_bar/helper.dart';
@@ -35,6 +33,15 @@ class ListPage extends StatelessWidget {
               child: ListContainer(list: list, withName: false, allTags: _listTags, allCategories: _listCategories,)),
         );
       }),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () => FormHelpers.addLink(
+            context: context, 
+            list: list,
+            listTags: _listTags.value,
+            listCategories: _listCategories.value
+          ),
+          tooltip: 'Add new link',
+          child: const Icon(Icons.add)),
     );
   }
 }
