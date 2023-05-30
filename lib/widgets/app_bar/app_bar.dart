@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../connection/authentication.dart';
-import '../main.dart';
-import '../model/app.dart';
-import '../styles/color.dart';
-import '../styles/size.dart';
-import 'user/signup.dart';
-import 'user/login.dart';
-import 'message.dart';
+import '../../connection/authentication.dart';
+import '../../main.dart';
+import '../../model/app.dart';
+import '../../styles/color.dart';
+import '../../styles/size.dart';
+import '../user/signup.dart';
+import '../user/login.dart';
+import '../message.dart';
 
 class MyAppBar extends StatefulWidget {
   const MyAppBar({super.key});

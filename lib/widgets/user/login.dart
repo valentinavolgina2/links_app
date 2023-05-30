@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:links_app/model/app.dart';
 import 'package:links_app/styles/color.dart';
+import 'package:links_app/widgets/user/signup.dart';
 
 import '../../connection/authentication.dart';
+import '../../main.dart';
 import '../../styles/size.dart';
 import '../forms/helper.dart';
 import '../message.dart';
@@ -58,7 +60,12 @@ class _SigninDialogState extends State<SigninDialog> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 SizedBox(height: AppSizes.medium),
-                Center(child: Text(AppData.title.toUpperCase(), style: TextStyle(color: AppColors.secondaryColor, fontWeight: FontWeight.w600, letterSpacing: 1.5))),
+                Center(
+                    child: Text(AppData.title.toUpperCase(),
+                        style: TextStyle(
+                            color: AppColors.secondaryColor,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 1.5))),
                 SizedBox(height: AppSizes.large),
                 const Text('Email address'),
                 SizedBox(height: AppSizes.medium),
@@ -74,7 +81,7 @@ class _SigninDialogState extends State<SigninDialog> {
                   },
                   style: TextStyle(color: AppColors.darkText),
                   decoration: FormHelpers.inputDecoration(
-                    hintText: 'Email', 
+                    hintText: 'Email',
                   ),
                 ),
                 SizedBox(height: AppSizes.large),
@@ -90,10 +97,15 @@ class _SigninDialogState extends State<SigninDialog> {
                   decoration: FormHelpers.inputDecoration(hintText: 'Password'),
                 ),
                 SizedBox(height: AppSizes.medium),
-                _error == '' ? const SizedBox() : Padding(
-                  padding: EdgeInsets.only(top: AppSizes.medium, bottom: AppSizes.medium),
-                  child: Center(child: Text(_error, style: TextStyle(color: AppColors.redText))),
-                ),
+                _error == ''
+                    ? const SizedBox()
+                    : Padding(
+                        padding: EdgeInsets.only(
+                            top: AppSizes.medium, bottom: AppSizes.medium),
+                        child: Center(
+                            child: Text(_error,
+                                style: TextStyle(color: AppColors.redText))),
+                      ),
                 SizedBox(height: AppSizes.medium),
                 Row(
                   mainAxisSize: MainAxisSize.max,
@@ -103,7 +115,8 @@ class _SigninDialogState extends State<SigninDialog> {
                       flex: 1,
                       child: Container(
                         width: double.maxFinite,
-                        padding: EdgeInsets.only(left: AppSizes.small, right: AppSizes.small),
+                        padding: EdgeInsets.only(
+                            left: AppSizes.small, right: AppSizes.small),
                         child: FilledButton(
                           onPressed: () => _signin(context),
                           child: Padding(
@@ -111,7 +124,7 @@ class _SigninDialogState extends State<SigninDialog> {
                               top: AppSizes.medium,
                               bottom: AppSizes.medium,
                             ),
-                            child: const Text('Sign in'),
+                            child: const Text('Log in'),
                           ),
                         ),
                       ),
@@ -126,6 +139,29 @@ class _SigninDialogState extends State<SigninDialog> {
                   color: AppColors.secondaryColor,
                 ),
                 const Center(child: GoogleButton()),
+                // SizedBox(height: AppSizes.medium),
+                // Row(
+                //     mainAxisSize: MainAxisSize.max,
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     children: [
+                //       const Text("Don't have an account?"),
+                //       SizedBox(width: AppSizes.small),
+                //       TextButton(
+                //         onPressed: () async {
+                //         await showDialog(
+                //           context: context,
+                //           builder: (context) => const SignupDialog(),
+                //         ).then((result) => {
+                //               Navigator.push(
+                //                 context,
+                //                 MaterialPageRoute(
+                //                     builder: (context) => const MyHomePage()),
+                //               )
+                //             });
+                //       }, 
+                //         child: const Text('Register')
+                //       )
+                //     ])
               ],
             ),
           ),

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../model/list.dart';
-import '../pages/list/show.dart';
-import '../providers/list.dart';
-import '../styles/color.dart';
-import '../styles/size.dart';
-import 'forms/helper.dart';
-import 'forms/validation.dart';
-import 'message.dart';
+import '../../model/list.dart';
+import '../../pages/list/show.dart';
+import '../../providers/list.dart';
+import '../../styles/color.dart';
+import '../../styles/size.dart';
+import '../forms/helper.dart';
+import '../forms/validation.dart';
+import '../message.dart';
 
 class ListCard extends StatelessWidget {
   const ListCard({super.key, required this.list});

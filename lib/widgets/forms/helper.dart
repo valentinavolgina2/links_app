@@ -6,9 +6,9 @@ import '../../model/list.dart';
 import '../../providers/link.dart';
 import '../../providers/list.dart';
 import '../../styles/size.dart';
-import '../category.dart';
+import '../category/category.dart';
 import '../message.dart';
-import '../tags.dart';
+import '../tag/tags.dart';
 
 class FormHelpers {
   static InputDecoration inputDecoration(

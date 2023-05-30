@@ -5,10 +5,10 @@ import 'package:links_app/connection/database.dart';
 import 'package:links_app/providers/list.dart';
 import 'package:links_app/styles/color.dart';
 import 'package:links_app/styles/size.dart';
-import 'package:links_app/widgets/app_bar.dart';
+import 'package:links_app/widgets/app_bar/app_bar.dart';
 import 'package:links_app/widgets/app_bar/helper.dart';
 import 'package:links_app/widgets/forms/helper.dart';
-import 'package:links_app/widgets/list_card.dart';
+import 'package:links_app/widgets/list/list_card.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'package:firebase_core/firebase_core.dart';

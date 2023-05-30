@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:links_app/styles/color.dart';
 import 'package:links_app/styles/size.dart';
 
-import 'forms/helper.dart';
+import '../forms/helper.dart';
 
 class LinkCategory extends StatefulWidget {
   const LinkCategory(

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:links_app/widgets/tags.dart';
+import 'package:links_app/widgets/tag/tags.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../helpers/gradient.dart';
-import '../model/link.dart';
-import '../providers/link.dart';
-import '../styles/color.dart';
-import '../styles/size.dart';
-import 'category.dart';
-import 'forms/helper.dart';
-import 'forms/validation.dart';
-import 'message.dart';
+import '../../helpers/gradient.dart';
+import '../../model/link.dart';
+import '../../providers/link.dart';
+import '../../styles/color.dart';
+import '../../styles/size.dart';
+import '../category/category.dart';
+import '../forms/helper.dart';
+import '../forms/validation.dart';
+import '../message.dart';
 
 class LinkContainer extends StatelessWidget {
   const LinkContainer(
