@@ -4,7 +4,7 @@ import '../../model/list.dart';
 import '../../styles/size.dart';
 import '../../widgets/app_bar/app_bar.dart';
 import '../../widgets/app_bar/helper.dart';
-import '../../widgets/forms/helper.dart';
+import '../../widgets/link/add_dialog.dart';
 import '../../widgets/list/list.dart';
 import '../../widgets/responsive.dart';
 
@@ -34,12 +34,20 @@ class ListPage extends StatelessWidget {
         );
       }),
       floatingActionButton: FloatingActionButton(
-          onPressed: () => FormHelpers.addLink(
-            context: context, 
-            list: list,
-            listTags: _listTags.value,
-            listCategories: _listCategories.value
-          ),
+
+          onPressed: () {
+            showDialog(
+              context: context,
+              barrierDismissible: false, // user must tap button for close dialog!
+              builder: (BuildContext context) {
+                return LinkAddDialog(
+                  list: list,
+                  listTags: _listTags.value,
+                  listCategories: _listCategories.value
+                );
+              }
+            );
+          },
           tooltip: 'Add new link',
           child: const Icon(Icons.add)),
     );

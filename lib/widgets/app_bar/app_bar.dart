@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../connection/authentication.dart';
-import '../../main.dart';
 import '../../model/app.dart';
 import '../../styles/color.dart';
 import '../../styles/size.dart';
-import '../user/signup.dart';
-import '../user/login.dart';
-import '../message.dart';
+import 'helper.dart';
+import 'menu.dart';
 
 class MyAppBar extends StatefulWidget {
   const MyAppBar({super.key});
@@ -17,123 +15,20 @@ class MyAppBar extends StatefulWidget {
 }
 
 class _MyAppBarState extends State<MyAppBar> {
-  bool _isProcessing = false;
-
-  _signout() async {
-    setState(() {
-      _isProcessing = true;
-    });
-
-    await signOut().then((result) {
-      SystemMessage.showSuccess(
-          context: context, message: 'You have signed out successfully.');
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const MyHomePage()),
-      );
-    }).catchError((error) {
-      SystemMessage.showError(
-          context: context, message: 'Sign Out Error: $error');
-    });
-
-    setState(() {
-      _isProcessing = false;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
       color: AppColors.primaryColor,
       child: Padding(
         padding: EdgeInsets.all(AppSizes.medium),
-        child: Row(
+        child: const Row(
           children: [
             Expanded(
-                child: InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MyHomePage()),
-                );
-              },
-              child: Text(AppData.title.toUpperCase(),
-                  style: TextStyle(
-                      color: AppColors.whiteText, letterSpacing: 1.5)),
-            )),
-            InkWell(
-                onTap: userEmail == null
-                    ? () async {
-                        await showDialog(
-                          context: context,
-                          builder: (context) => const SigninDialog(),
-                        ).then((result) => {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const MyHomePage()),
-                              )
-                            });
-                      }
-                    : null,
-                child: userEmail == null
-                    ? Padding(
-                        padding: EdgeInsets.only(right: AppSizes.medium),
-                        child: Text('Login',
-                            style: TextStyle(
-                              color: AppColors.whiteText,
-                            )),
-                      )
-                    : const SizedBox(width: 0)),
-            InkWell(
-                onTap: userEmail == null
-                    ? () async {
-                        await showDialog(
-                          context: context,
-                          builder: (context) => const SignupDialog(),
-                        ).then((result) => {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const MyHomePage()),
-                              )
-                            });
-                      }
-                    : null,
-                child: userEmail == null
-                    ? Text('Sign up',
-                        style: TextStyle(
-                          color: AppColors.whiteText,
-                        ))
-                    : Row(children: [
-                        CircleAvatar(
-                          radius: 15,
-                          backgroundImage:
-                              imageUrl != null ? NetworkImage(imageUrl!) : null,
-                          child: imageUrl == null
-                              ? const Icon(Icons.account_circle, size: 30)
-                              : Container(),
-                        ),
-                        Text(userEmail!,
-                            style: TextStyle(
-                              color: AppColors.whiteText,
-                            )),
-                        SizedBox(width: AppSizes.medium),
-                        TextButton(
-                            style: TextButton.styleFrom(
-                              backgroundColor: AppColors.secondaryColor,
-                            ),
-                            onPressed: _isProcessing ? null : () => _signout(),
-                            child: _isProcessing
-                                ? const CircularProgressIndicator()
-                                : Text(
-                                    'Sign out',
-                                    style: TextStyle(
-                                      color: AppColors.whiteText,
-                                    ),
-                                  ))
-                      ])),
+              child: MainPageMenu()
+            ),
+            LoginMenu(),
+            RegisterMenu(),
+            LoggedInUserMenu(),
           ],
         ),
       ),
@@ -159,21 +54,6 @@ class _MyDrawerState extends State<MyDrawer> {
     );
   }
 
-  _signout() async {
-    await signOut().then((result) {
-      SystemMessage.showSuccess(
-          context: context, message: 'You have signed out successfully.');
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const MyHomePage()),
-      );
-    }).catchError((error) {
-      SystemMessage.showError(
-          context: context, message: 'Sign Out Error: $error');
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -197,98 +77,15 @@ class _MyDrawerState extends State<MyDrawer> {
                       userEmail == null
                         ? Container(
                             width: double.maxFinite,
-                            child: InkWell(
-                              onTap: () async {
-                                await showDialog(
-                                  context: context,
-                                  builder: (context) => const SigninDialog(),
-                                ).then((result) => {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const MyHomePage()),
-                                      )
-                                    });
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                  top: AppSizes.small,
-                                  bottom: AppSizes.small,
-                                ),
-                                child: Text(
-                                  'Log in',
-                                  style: TextStyle(
-                                    fontSize: AppSizes.textTitle,
-                                    color: AppColors.whiteText,
-                                  ),
-                                ),
-                              ),
-                            ))
+                            child: const LoginMenu(mobile: true))
                         : Row(children: [
-                            CircleAvatar(
-                              radius: 15,
-                              backgroundImage: imageUrl != null
-                                  ? NetworkImage(imageUrl!)
-                                  : null,
-                              child: imageUrl == null
-                                  ? const Icon(Icons.account_circle, size: 30)
-                                  : Container(),
-                            ),
-                            Text(userEmail!,
-                                style: TextStyle(
-                                  color: AppColors.whiteText,
-                                )),
+                            avatar(),
+                            const UsernameMenu(),
                           ]),
                         _divider(),
-                        userEmail == null
-                        ? Container(
+                        Container(
                             width: double.maxFinite,
-                            child: InkWell(
-                              onTap: () async {
-                                await showDialog(
-                                  context: context,
-                                  builder: (context) => const SignupDialog(),
-                                ).then((result) => {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => const MyHomePage()),
-                                  )
-                                });
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                  top: AppSizes.small,
-                                  bottom: AppSizes.small,
-                                ),
-                                child: Text(
-                                  'Sign up',
-                                  style: TextStyle(
-                                    fontSize: AppSizes.textTitle,
-                                    color: AppColors.whiteText,
-                                  ),
-                                ),
-                              ),
-                            ))
-                        : Container(
-                            width: double.maxFinite,
-                            child: InkWell(
-                              onTap: () => _signout(),
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                  top: AppSizes.small,
-                                  bottom: AppSizes.small,
-                                ),
-                                child: Text(
-                                  'Sign out',
-                                  style: TextStyle(
-                                    fontSize: AppSizes.textTitle,
-                                    color: AppColors.whiteText,
-                                  ),
-                                ),
-                              ),
-                            )),
+                            child: userEmail == null ? const RegisterMenu(mobile: true) : const SignOutMenu(mobile: true))
                     ]))));
   }
 }

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:links_app/model/app.dart';
 import 'package:links_app/styles/color.dart';
-import 'package:links_app/widgets/user/signup.dart';
 
 import '../../connection/authentication.dart';
-import '../../main.dart';
 import '../../styles/size.dart';
 import '../forms/helper.dart';
 import '../message.dart';

@@ -7,14 +7,15 @@ import 'package:links_app/styles/color.dart';
 import 'package:links_app/styles/size.dart';
 import 'package:links_app/widgets/app_bar/app_bar.dart';
 import 'package:links_app/widgets/app_bar/helper.dart';
-import 'package:links_app/widgets/forms/helper.dart';
+import 'package:links_app/widgets/emty_content/need_login.dart';
+import 'package:links_app/widgets/emty_content/no_lists.dart';
+import 'package:links_app/widgets/list/add_dialog.dart';
 import 'package:links_app/widgets/list/list_card.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:links_app/widgets/no_content.dart';
 import 'package:links_app/widgets/responsive.dart';
 
 import 'connection/authentication.dart';
@@ -160,10 +161,9 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Container(
               constraints: BoxConstraints(maxWidth: AppSizes.listMaxWidth),
               child: uid == null
-                ? EmptyContainer.needLogin(context)
+                ? const NeedLoginPage()
                 : myLists.isEmpty
-                    ? EmptyContainer.noListsAdded(
-                        context: context, userId: uid!)
+                    ? const NoListsPage()
                     : ListTile(
                       title: Padding(
                         padding: EdgeInsets.symmetric(
@@ -186,7 +186,15 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: uid == null
           ? null
           : FloatingActionButton(
-              onPressed: () => FormHelpers.addList(context: context, userId: uid!),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return const AddListDialog();
+                  }
+                );
+              },
               tooltip: 'Add new list',
               child: const Icon(Icons.add)),
     );

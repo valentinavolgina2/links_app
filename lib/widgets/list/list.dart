@@ -8,8 +8,19 @@ import '../../model/link.dart';
 import '../../model/list.dart';
 import '../../providers/link.dart';
 import '../../styles/size.dart';
-import '../link/link.dart';
-import '../no_content.dart';
+import '../emty_content/no_links.dart';
+import '../link/link_category_panel.dart';
+import 'header.dart';
+
+class CategoryExpansionPanel {
+  CategoryExpansionPanel({
+    required this.header,
+    this.isExpanded = false,
+  });
+
+  String header;
+  bool isExpanded;
+}
 
 class ListContainer extends StatefulWidget {
   const ListContainer(
@@ -28,16 +39,6 @@ class ListContainer extends StatefulWidget {
   State<ListContainer> createState() => _ListContainerState();
 }
 
-class CategoryExpansionPanel {
-  CategoryExpansionPanel({
-    required this.header,
-    this.isExpanded = false,
-  });
-
-  String header;
-  bool isExpanded;
-}
-
 class _ListContainerState extends State<ListContainer> {
   final List<Link> _links = [];
   late DatabaseReference _linksRef;
@@ -45,8 +46,10 @@ class _ListContainerState extends State<ListContainer> {
   late StreamSubscription<DatabaseEvent> _linksDeleteSubscription;
   late StreamSubscription<DatabaseEvent> _linksUpdateSubscription;
 
-  Set<String> tagFilters = <String>{};
+  final ValueNotifier<Set<String>> tagFilters = ValueNotifier(<String>{});
   final List<CategoryExpansionPanel> categoriesWithEmpty = [];
+  int _count = 0;
+  late Key _panelKey;
 
   @override
   void initState() {
@@ -55,6 +58,8 @@ class _ListContainerState extends State<ListContainer> {
   }
 
   Future<void> init() async {
+    _panelKey = Key('$_count');
+
     _linksRef = LinkProvider.listLinksRef(listId: widget.list.id);
 
     _linksSubscription = _linksRef.onChildAdded.listen(
@@ -67,6 +72,7 @@ class _ListContainerState extends State<ListContainer> {
 
           _updateAllTags();
           _updateAllCategories();
+          _updatePanelKey();
         });
       },
       onError: (Object o) {
@@ -84,6 +90,7 @@ class _ListContainerState extends State<ListContainer> {
 
           _updateAllTags();
           _updateAllCategories();
+          _updatePanelKey();
         });
       },
       onError: (Object o) {
@@ -102,6 +109,7 @@ class _ListContainerState extends State<ListContainer> {
 
           _updateAllTags();
           _updateAllCategories();
+          _updatePanelKey();
         });
       },
       onError: (Object o) {
@@ -109,6 +117,10 @@ class _ListContainerState extends State<ListContainer> {
         debugPrint('Error: ${error.code} ${error.message}');
       },
     );
+  }
+
+  _updatePanelKey() {
+    _panelKey = Key("${++_count}");
   }
 
   _updateAllTags() {
@@ -149,85 +161,6 @@ class _ListContainerState extends State<ListContainer> {
                 : expandedValues[category]!)));
   }
 
-  Widget _listViewHeader() {
-    return Padding(
-        padding: EdgeInsets.symmetric(
-            vertical: AppSizes.medium, horizontal: AppSizes.small),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                    child: Text(widget.list.name,
-                        style: TextStyle(fontSize: AppSizes.textTitle))),
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Back to lists'))
-              ],
-            ),
-            SizedBox(height: AppSizes.large),
-            const Text('Filter links by tags'),
-            SizedBox(height: AppSizes.medium),
-            Wrap(
-              spacing: AppSizes.xsmall,
-              children: widget.allTags.value.isEmpty
-                  ? [const Text('no tags added for this list')]
-                  : widget.allTags.value.map((String tag) {
-                      return FilterChip(
-                        label: Text(tag),
-                        selected: tagFilters.contains(tag),
-                        onSelected: (bool selected) {
-                          setState(() {
-                            if (selected) {
-                              tagFilters.add(tag);
-                            } else {
-                              tagFilters.remove(tag);
-                            }
-                          });
-                        },
-                      );
-                    }).toList(),
-            ),
-          ],
-        ));
-  }
-
-  ExpansionPanel _categoryPanel(CategoryExpansionPanel category) {
-    final linksFilteredByCategoryAndTags = _links
-        .where((link) => link.category == category.header)
-        .where((link) => tagFilters.isEmpty
-            ? true
-            : link.tags.toSet().containsAll(tagFilters));
-
-    return ExpansionPanel(
-        headerBuilder: (context, isExpanded) {
-          final filteredLinksCount = linksFilteredByCategoryAndTags.length;
-          final completedLinksCount = linksFilteredByCategoryAndTags
-              .where((link) => link.completed)
-              .toList().length;
-
-          final categoryName =
-              category.header == '' ? 'No category' : category.header;
-
-          return Padding(
-            padding: EdgeInsets.all(AppSizes.medium),
-            child: Text('$categoryName ($completedLinksCount/$filteredLinksCount done)'),
-          );
-        },
-        body: ListView(shrinkWrap: true, children: <Widget>[
-          ...linksFilteredByCategoryAndTags
-              .map((link) => LinkContainer(
-                  link: link,
-                  listTags: widget.allTags.value,
-                  listCategories: widget.allCategories.value))
-              .toList(),
-        ]),
-        isExpanded: category.isExpanded);
-  }
-
   @override
   void dispose() {
     super.dispose();
@@ -242,8 +175,7 @@ class _ListContainerState extends State<ListContainer> {
         ? Center(
             child: Container(
                 constraints: BoxConstraints(maxWidth: AppSizes.listMaxWidth),
-                child: EmptyContainer.noLinksAdded(
-                    context: context, list: widget.list)),
+                child: NoLinksPage(list: widget.list)),
           )
         : SingleChildScrollView(
             physics: const ScrollPhysics(),
@@ -252,16 +184,25 @@ class _ListContainerState extends State<ListContainer> {
               constraints: BoxConstraints(maxWidth: AppSizes.listMaxWidth),
               child: ListTile(
                 contentPadding: const EdgeInsets.all(0.0),
-                title: _listViewHeader(),
+                title: ListPageHeader(
+                    list: widget.list,
+                    allTags: widget.allTags,
+                    tagFilters: tagFilters),
                 subtitle: ExpansionPanelList(
+                  key: _panelKey,
                     expansionCallback: (int index, bool isExpanded) {
                       setState(() {
                         categoriesWithEmpty[index].isExpanded = !isExpanded;
                       });
                     },
                     children: categoriesWithEmpty
-                        .map<ExpansionPanel>(
-                            (category) => _categoryPanel(category))
+                        .map<ExpansionPanel>((category) =>
+                            categoryExpansionPanel(
+                                category: category,
+                                links: _links,
+                                tagFilters: tagFilters.value,
+                                allTags: widget.allTags.value,
+                                allCategories: widget.allCategories.value))
                         .toList()),
               ),
             )));

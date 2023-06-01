@@ -40,7 +40,7 @@ class _LinkCategoryState extends State<LinkCategory> {
                 return widget.categoryOptions;
               }
               return widget.categoryOptions.where((String option) {
-                return option.contains(textEditingValue.text.toLowerCase());
+                return option.toLowerCase().contains(textEditingValue.text.toLowerCase());
               });
             },
             fieldViewBuilder:
