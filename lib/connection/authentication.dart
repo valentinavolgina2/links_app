@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 import '../widgets/forms/validation.dart';
 
@@ -137,6 +138,40 @@ Future<User?> signInWithGoogle() async {
 
   return user;
 }
+
+Future<User?> signInWithFacebook() async {
+  User? user;
+
+  // Create a new provider
+  FacebookAuthProvider facebookProvider = FacebookAuthProvider();
+
+  facebookProvider.addScope('email');
+  facebookProvider.setCustomParameters({
+    'display': 'popup',
+  });
+
+  try {
+    final UserCredential userCredential =
+        await _auth.signInWithPopup(facebookProvider);
+
+    user = userCredential.user;
+  } catch (e) {
+    debugPrint(e.toString());
+  }
+
+  if (user != null) {
+    uid = user.uid;
+    name = user.displayName;
+    userEmail = user.email;
+    imageUrl = user.photoURL;
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('auth', true);
+  }
+
+  return user;
+}
+
 
 Future<String> signOut() async {
   if (googleSignIn.clientId != null) {

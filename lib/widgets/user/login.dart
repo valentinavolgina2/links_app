@@ -9,6 +9,7 @@ import '../../styles/size.dart';
 import '../forms/helper.dart';
 import '../message.dart';
 import 'divider.dart';
+import 'facebook.dart';
 import 'google.dart';
 import 'header.dart';
 
@@ -50,6 +51,8 @@ class SigninDialog extends StatelessWidget {
                       passwordController: textControllerPassword),
                   const LoginDivider(),
                   const Center(child: GoogleButton()),
+                  SizedBox(height: AppSizes.small),
+                  const Center(child: FacebookButton()),
                   SizedBox(height: AppSizes.small),
                   const RegisterInsteadSign()
                 ],
