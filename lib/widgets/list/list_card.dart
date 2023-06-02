@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:links_app/widgets/list/popup_menu.dart';
 
 import '../../model/list.dart';
-import '../../pages/list/show.dart';
+import '../../pages/list.dart';
 
 class ListCard extends StatelessWidget {
   const ListCard({super.key, required this.list});

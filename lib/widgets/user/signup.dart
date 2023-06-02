@@ -1,35 +1,79 @@
 import 'package:flutter/material.dart';
+import 'package:links_app/pages/login.dart';
 import 'package:links_app/styles/color.dart';
+import 'package:links_app/widgets/user/text_field.dart';
 
 import '../../connection/authentication.dart';
-import '../../model/app.dart';
+import '../../main.dart';
 import '../../styles/size.dart';
 import '../forms/helper.dart';
 import '../message.dart';
-import 'google.dart';
+import 'header.dart';
 
-class SignupDialog extends StatefulWidget {
-  const SignupDialog({super.key});
+class SignupDialog extends StatelessWidget {
+  SignupDialog({super.key});
+
+  final TextEditingController textControllerEmail = TextEditingController();
+  final TextEditingController textControllerPassword = TextEditingController();
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
-  State<SignupDialog> createState() => _SignupDialogState();
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        constraints: FormHelpers.formMaxWidthConstraints(),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(AppSizes.medium),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const AuthHeader(headerText: 'Create account'),
+                  AuthTextField(
+                      label: 'Email',
+                      fieldType: TextInputType.emailAddress,
+                      controller: textControllerEmail),
+
+                  SizedBox(height: AppSizes.medium),
+                  AuthTextField(
+                      label: 'Password',
+                      fieldType: TextInputType.visiblePassword,
+                      controller: textControllerPassword),
+                  SizedBox(height: AppSizes.medium),
+                  SignupButton(emailController: textControllerEmail,
+                      passwordController: textControllerPassword),
+                  SizedBox(height: AppSizes.small),
+                  const LoginInsteadSign()
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
-class _SignupDialogState extends State<SignupDialog> {
-  TextEditingController textControllerEmail = TextEditingController();
-  FocusNode textFocusNodeEmail = FocusNode();
+class SignupButton extends StatefulWidget {
+  const SignupButton(
+      {super.key,
+      required this.emailController,
+      required this.passwordController});
 
-  TextEditingController textControllerPassword = TextEditingController();
-  FocusNode textFocusNodePassword = FocusNode();
-
-  bool _isRegistering = false;
-
-  String _error = '';
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
 
   @override
-  void initState() {
-    super.initState();
-  }
+  State<SignupButton> createState() => _SignupButtonState();
+}
+
+class _SignupButtonState extends State<SignupButton> {
+  String _error = '';
+  bool _isRegistering = false;
 
   void _signup(BuildContext context) async {
     setState(() {
@@ -37,10 +81,13 @@ class _SignupDialogState extends State<SignupDialog> {
     });
 
     await registerWithEmailPassword(
-            textControllerEmail.text, textControllerPassword.text)
+            widget.emailController.text, widget.passwordController.text)
         .then((result) {
       if (result != null) {
-        Navigator.of(context).pop();
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const MyHomePage()),
+        );
 
         SystemMessage.showSuccess(
             context: context, message: 'You have registered successfully.');
@@ -58,101 +105,73 @@ class _SignupDialogState extends State<SignupDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      child: Container(
-        constraints: FormHelpers.formMaxWidthConstraints(),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(AppSizes.medium),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(height: AppSizes.medium),
-                Center(child: Text(AppData.title.toUpperCase(), style: TextStyle(color: AppColors.secondaryColor, fontWeight: FontWeight.w600, letterSpacing: 1.5))),
-                SizedBox(height: AppSizes.large),
-                const Text('Email address'),
-                SizedBox(height: AppSizes.medium),
-                TextField(
-                  focusNode: textFocusNodeEmail,
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                  controller: textControllerEmail,
-                  autofocus: false,
-                  onSubmitted: (value) {
-                    textFocusNodeEmail.unfocus();
-                    FocusScope.of(context).requestFocus(textFocusNodePassword);
-                  },
-                  style: TextStyle(color: AppColors.darkText),
-                  decoration: FormHelpers.inputDecoration(
-                    hintText: 'Email', 
-                  ),
-                ),
-                SizedBox(height: AppSizes.large),
-                const Text('Password'),
-                SizedBox(height: AppSizes.medium),
-                TextField(
-                  focusNode: textFocusNodePassword,
-                  keyboardType: TextInputType.visiblePassword,
-                  textInputAction: TextInputAction.next,
-                  controller: textControllerPassword,
-                  autofocus: false,
-                  style: TextStyle(color: AppColors.darkText),
-                  decoration: FormHelpers.inputDecoration(hintText: 'Password'),
-                ),
-                SizedBox(height: AppSizes.medium),
-                _error == '' ? const SizedBox() : Padding(
-                  padding: EdgeInsets.only(top: AppSizes.medium, bottom: AppSizes.medium),
-                  child: Center(child: Text(_error, style: TextStyle(color: AppColors.redText))),
-                ),
-                SizedBox(height: AppSizes.medium),
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Flexible(
-                      flex: 1,
-                      child: Container(
-                        width: double.maxFinite,
-                        padding: EdgeInsets.only(left: AppSizes.small, right: AppSizes.small),
-                        child: FilledButton(
-                          onPressed: () => _signup(context),
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              top: AppSizes.medium,
-                              bottom: AppSizes.medium,
-                            ),
-                            child: _isRegistering
-                                ? SizedBox(
-                                    height: AppSizes.medium,
-                                    width: AppSizes.medium,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                        AppColors.whiteText,
-                                      ),
-                                    ),
-                                  )
-                                : const Text('Sign up'),
-                          ),
+    return Column(
+      mainAxisSize: MainAxisSize.min, 
+      children: [
+        _error == ''
+          ? const SizedBox()
+          : Padding(
+              padding: EdgeInsets.only(
+                  top: AppSizes.medium, bottom: AppSizes.medium),
+              child: Center(
+                  child: Text(_error,
+                      style: TextStyle(color: AppColors.redText))),
+            ),
+        SizedBox(
+          width: double.maxFinite,
+          child: FilledButton(
+            onPressed: () => _signup(context),
+            child: Padding(
+              padding: EdgeInsets.only(
+                top: AppSizes.medium,
+                bottom: AppSizes.medium,
+              ),
+              child: _isRegistering
+                  ? SizedBox(
+                      height: AppSizes.medium,
+                      width: AppSizes.medium,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(
+                          AppColors.whiteText,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                Divider(
-                  height: AppSizes.large,
-                  thickness: AppSizes.googleBorderWidth,
-                  indent: AppSizes.medium,
-                  endIndent: AppSizes.medium,
-                  color: AppColors.secondaryColor,
-                ),
-                const Center(child: GoogleButton()),
-              ],
+                    )
+                  : const Text('Sign up'),
             ),
           ),
         ),
-      ),
+      ]);
+  }
+}
+
+class LoginInsteadSign extends StatelessWidget {
+  const LoginInsteadSign({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        const Text('Already have an account?'),
+        SizedBox(width: AppSizes.small),
+        TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+              );
+            },
+            child: Text(
+              'Log in',
+              style: TextStyle(
+                color: AppColors.secondaryColor,
+                fontWeight: FontWeight.w600)
+            )
+        )
+      ]
     );
   }
 }

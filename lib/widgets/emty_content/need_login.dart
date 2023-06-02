@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../main.dart';
+import '../../pages/login.dart';
+import '../../pages/register.dart';
 import '../../styles/size.dart';
-import '../user/login.dart';
-import '../user/signup.dart';
 
 class NeedLoginPage extends StatelessWidget {
   const NeedLoginPage({super.key});
@@ -24,37 +23,26 @@ class NeedLoginPage extends StatelessWidget {
         children: [
           Flexible(
               child: FilledButton(
-            onPressed: () async {
-              await showDialog(
-                context: context,
-                builder: (context) => const SigninDialog(),
-              ).then((result) => {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const MyHomePage()),
-                    )
-                  });
+            onPressed: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+              );
             },
             child: const Text('Login'),
           )),
           SizedBox(width: AppSizes.medium),
           Flexible(
-              child: FilledButton(
-            onPressed: () async {
-              await showDialog(
-                context: context,
-                builder: (context) => const SignupDialog(),
-              ).then((result) => {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const MyHomePage()),
-                    )
-                  });
-            },
-            child: const Text('Register'),
-          ))
+            child: FilledButton(
+              onPressed: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const RegisterPage()),
+                );
+              },
+              child: const Text('Register'),
+            )
+          )
         ],
       )
     ]);

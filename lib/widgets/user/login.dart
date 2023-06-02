@@ -1,40 +1,92 @@
 import 'package:flutter/material.dart';
-import 'package:links_app/model/app.dart';
+import 'package:links_app/main.dart';
 import 'package:links_app/styles/color.dart';
+import 'package:links_app/widgets/user/text_field.dart';
 
 import '../../connection/authentication.dart';
+import '../../pages/register.dart';
 import '../../styles/size.dart';
 import '../forms/helper.dart';
 import '../message.dart';
+import 'divider.dart';
 import 'google.dart';
+import 'header.dart';
 
-class SigninDialog extends StatefulWidget {
-  const SigninDialog({super.key});
+class SigninDialog extends StatelessWidget {
+  SigninDialog({super.key});
+
+  final _formKey = GlobalKey<FormState>();
+
+  final TextEditingController textControllerEmail = TextEditingController();
+  final TextEditingController textControllerPassword = TextEditingController();
 
   @override
-  State<SigninDialog> createState() => _SigninDialogState();
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        constraints: FormHelpers.formMaxWidthConstraints(),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(AppSizes.medium),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const AuthHeader(headerText: 'Welcome back!'),
+                  AuthTextField(
+                      label: 'Email',
+                      fieldType: TextInputType.emailAddress,
+                      controller: textControllerEmail),
+                  SizedBox(height: AppSizes.medium),
+                  AuthTextField(
+                      label: 'Password',
+                      fieldType: TextInputType.visiblePassword,
+                      controller: textControllerPassword),
+                  SizedBox(height: AppSizes.medium),
+                  LoginButton(
+                      emailController: textControllerEmail,
+                      passwordController: textControllerPassword),
+                  const LoginDivider(),
+                  const Center(child: GoogleButton()),
+                  SizedBox(height: AppSizes.small),
+                  const RegisterInsteadSign()
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
-class _SigninDialogState extends State<SigninDialog> {
-  TextEditingController textControllerEmail = TextEditingController();
-  FocusNode textFocusNodeEmail = FocusNode();
+class LoginButton extends StatefulWidget {
+  const LoginButton(
+      {super.key,
+      required this.emailController,
+      required this.passwordController});
 
-  TextEditingController textControllerPassword = TextEditingController();
-  FocusNode textFocusNodePassword = FocusNode();
-
-  String _error = '';
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
 
   @override
-  void initState() {
-    super.initState();
-  }
+  State<LoginButton> createState() => _LoginButtonState();
+}
+
+class _LoginButtonState extends State<LoginButton> {
+  String _error = '';
 
   void _signin(BuildContext context) async {
     await signInWithEmailPassword(
-            textControllerEmail.text, textControllerPassword.text)
+            widget.emailController.text, widget.passwordController.text)
         .then((result) {
       if (result != null) {
-        Navigator.of(context).pop();
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const MyHomePage()),
+        );
 
         SystemMessage.showSuccess(context: context, message: 'Welcome back!');
       }
@@ -47,124 +99,58 @@ class _SigninDialogState extends State<SigninDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      child: Container(
-        constraints: FormHelpers.formMaxWidthConstraints(),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(AppSizes.medium),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(height: AppSizes.medium),
-                Center(
-                    child: Text(AppData.title.toUpperCase(),
-                        style: TextStyle(
-                            color: AppColors.secondaryColor,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 1.5))),
-                SizedBox(height: AppSizes.large),
-                const Text('Email address'),
-                SizedBox(height: AppSizes.medium),
-                TextField(
-                  focusNode: textFocusNodeEmail,
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                  controller: textControllerEmail,
-                  autofocus: false,
-                  onSubmitted: (value) {
-                    textFocusNodeEmail.unfocus();
-                    FocusScope.of(context).requestFocus(textFocusNodePassword);
-                  },
-                  style: TextStyle(color: AppColors.darkText),
-                  decoration: FormHelpers.inputDecoration(
-                    hintText: 'Email',
-                  ),
-                ),
-                SizedBox(height: AppSizes.large),
-                const Text('Password'),
-                SizedBox(height: AppSizes.medium),
-                TextField(
-                  focusNode: textFocusNodePassword,
-                  keyboardType: TextInputType.visiblePassword,
-                  textInputAction: TextInputAction.next,
-                  controller: textControllerPassword,
-                  autofocus: false,
-                  style: TextStyle(color: AppColors.darkText),
-                  decoration: FormHelpers.inputDecoration(hintText: 'Password'),
-                ),
-                SizedBox(height: AppSizes.medium),
-                _error == ''
-                    ? const SizedBox()
-                    : Padding(
-                        padding: EdgeInsets.only(
-                            top: AppSizes.medium, bottom: AppSizes.medium),
-                        child: Center(
-                            child: Text(_error,
-                                style: TextStyle(color: AppColors.redText))),
-                      ),
-                SizedBox(height: AppSizes.medium),
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Flexible(
-                      flex: 1,
-                      child: Container(
-                        width: double.maxFinite,
-                        padding: EdgeInsets.only(
-                            left: AppSizes.small, right: AppSizes.small),
-                        child: FilledButton(
-                          onPressed: () => _signin(context),
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              top: AppSizes.medium,
-                              bottom: AppSizes.medium,
-                            ),
-                            child: const Text('Log in'),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Divider(
-                  height: AppSizes.large,
-                  thickness: AppSizes.googleBorderWidth,
-                  indent: AppSizes.medium,
-                  endIndent: AppSizes.medium,
-                  color: AppColors.secondaryColor,
-                ),
-                const Center(child: GoogleButton()),
-                // SizedBox(height: AppSizes.medium),
-                // Row(
-                //     mainAxisSize: MainAxisSize.max,
-                //     mainAxisAlignment: MainAxisAlignment.center,
-                //     children: [
-                //       const Text("Don't have an account?"),
-                //       SizedBox(width: AppSizes.small),
-                //       TextButton(
-                //         onPressed: () async {
-                //         await showDialog(
-                //           context: context,
-                //           builder: (context) => const SignupDialog(),
-                //         ).then((result) => {
-                //               Navigator.push(
-                //                 context,
-                //                 MaterialPageRoute(
-                //                     builder: (context) => const MyHomePage()),
-                //               )
-                //             });
-                //       }, 
-                //         child: const Text('Register')
-                //       )
-                //     ])
-              ],
+    return Column(mainAxisSize: MainAxisSize.min, children: [
+      _error == ''
+          ? const SizedBox()
+          : Padding(
+              padding: EdgeInsets.only(
+                  top: AppSizes.medium, bottom: AppSizes.medium),
+              child: Center(
+                  child:
+                      Text(_error, style: TextStyle(color: AppColors.redText))),
             ),
+      SizedBox(
+        width: double.maxFinite,
+        child: FilledButton(
+          onPressed: () => _signin(context),
+          child: Padding(
+            padding: EdgeInsets.only(
+              top: AppSizes.medium,
+              bottom: AppSizes.medium,
+            ),
+            child: const Text('Log in'),
           ),
         ),
       ),
-    );
+    ]);
+  }
+}
+
+class RegisterInsteadSign extends StatelessWidget {
+  const RegisterInsteadSign({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const Text("Don't have an account?"),
+          SizedBox(width: AppSizes.small),
+          TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const RegisterPage()),
+                );
+              },
+              child: Text(
+                'Register',
+                style: TextStyle(
+                  color: AppColors.secondaryColor,
+                  fontWeight: FontWeight.w600)
+              )
+          )
+        ]);
   }
 }

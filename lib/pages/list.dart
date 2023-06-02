@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../model/list.dart';
-import '../../styles/size.dart';
-import '../../widgets/app_bar/app_bar.dart';
-import '../../widgets/app_bar/helper.dart';
-import '../../widgets/link/add_dialog.dart';
-import '../../widgets/list/list.dart';
-import '../../widgets/responsive.dart';
+import '../model/list.dart';
+import '../styles/size.dart';
+import '../widgets/app_bar/app_bar.dart';
+import '../widgets/app_bar/helper.dart';
+import '../widgets/link/add_dialog.dart';
+import '../widgets/list/list.dart';
+import '../widgets/responsive.dart';
 
 class ListPage extends StatelessWidget {
   ListPage({super.key, required this.list});

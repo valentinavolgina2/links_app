@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import '../../connection/authentication.dart';
 import '../../main.dart';
 import '../../model/app.dart';
+import '../../pages/login.dart';
+import '../../pages/register.dart';
 import '../../styles/color.dart';
 import '../../styles/size.dart';
 import '../message.dart';
-import '../user/login.dart';
-import '../user/signup.dart';
 import 'helper.dart';
 
 class MainPageMenu extends StatelessWidget {
@@ -45,18 +45,12 @@ class LoginMenu extends StatelessWidget {
 
     return InkWell(
         onTap: userEmail == null
-            ? () async {
-                await showDialog(
-                  context: context,
-                  builder: (context) => const SigninDialog(),
-                ).then((result) => {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const MyHomePage()),
-                      )
-                    });
-              }
+            ? (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+              );
+            }
             : null,
         child: userEmail == null
             ? Padding(
@@ -84,17 +78,11 @@ class RegisterMenu extends StatelessWidget {
 
     return InkWell(
         onTap: userEmail == null
-            ? () async {
-                await showDialog(
-                  context: context,
-                  builder: (context) => const SignupDialog(),
-                ).then((result) => {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const MyHomePage()),
-                      )
-                    });
+            ? () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const RegisterPage()),
+                );
               }
             : null,
         child: userEmail == null

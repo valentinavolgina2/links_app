@@ -5,8 +5,7 @@ import 'package:links_app/styles/size.dart';
 import '../../connection/authentication.dart';
 import '../../main.dart';
 
-class GoogleButton
- extends StatefulWidget {
+class GoogleButton extends StatefulWidget {
   const GoogleButton({super.key});
 
   @override
@@ -19,19 +18,19 @@ class _GoogleButtonState extends State<GoogleButton> {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
-      decoration: ShapeDecoration(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSizes.googleButtonRadius),
-          side: BorderSide(color: AppColors.secondaryColor, width: AppSizes.googleBorderWidth),
-        ),
-        color: AppColors.whiteText,
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.whiteText),
+        borderRadius: BorderRadius.circular(AppSizes.googleButtonRadius),
+        color: AppColors.lightGrey
       ),
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.secondaryColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSizes.googleButtonRadius),
-            side: BorderSide(color: AppColors.secondaryColor, width: AppSizes.googleBorderWidth),
+            side: BorderSide(
+                color: AppColors.secondaryColor,
+                width: AppSizes.googleBorderWidth),
           ),
           elevation: 0,
         ),
@@ -66,8 +65,8 @@ class _GoogleButtonState extends State<GoogleButton> {
                   ),
                 )
               : Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Image(
                       image: const AssetImage("assets/images/google_logo.png"),
