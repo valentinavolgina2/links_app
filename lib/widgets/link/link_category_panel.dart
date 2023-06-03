@@ -5,13 +5,12 @@ import '../../styles/size.dart';
 import '../list/list.dart';
 import 'link.dart';
 
-ExpansionPanel categoryExpansionPanel({
-    required CategoryExpansionPanel category, 
-    required List<Link> links, 
-    required Set<String> tagFilters, 
-    required List<String> allTags, 
-    required List<String> allCategories
-  }) {
+ExpansionPanel categoryExpansionPanel(
+    {required CategoryExpansionPanel category,
+    required List<Link> links,
+    required Set<String> tagFilters,
+    required List<String> allTags,
+    required List<String> allCategories}) {
   final linksFilteredByCategoryAndTags = links
       .where((link) => link.category == category.header)
       .where((link) => tagFilters.isEmpty
@@ -38,9 +37,7 @@ ExpansionPanel categoryExpansionPanel({
       body: ListView(shrinkWrap: true, children: <Widget>[
         ...linksFilteredByCategoryAndTags
             .map((link) => LinkContainer(
-                link: link,
-                listTags: allTags,
-                listCategories: allCategories))
+                link: link, listTags: allTags, listCategories: allCategories))
             .toList(),
       ]),
       isExpanded: category.isExpanded);

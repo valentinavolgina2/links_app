@@ -46,7 +46,7 @@ class _ListContainerState extends State<ListContainer> {
   late StreamSubscription<DatabaseEvent> _linksDeleteSubscription;
   late StreamSubscription<DatabaseEvent> _linksUpdateSubscription;
 
-  final ValueNotifier<Set<String>> tagFilters = ValueNotifier(<String>{});
+  ValueNotifier<Set<String>> tagFilters = ValueNotifier(<String>{});
   final List<CategoryExpansionPanel> categoriesWithEmpty = [];
   int _count = 0;
   late Key _panelKey;
@@ -117,6 +117,10 @@ class _ListContainerState extends State<ListContainer> {
         debugPrint('Error: ${error.code} ${error.message}');
       },
     );
+
+    tagFilters.addListener(() {
+      setState(() {});
+    });
   }
 
   _updatePanelKey() {
@@ -189,7 +193,7 @@ class _ListContainerState extends State<ListContainer> {
                     allTags: widget.allTags,
                     tagFilters: tagFilters),
                 subtitle: ExpansionPanelList(
-                  key: _panelKey,
+                    key: _panelKey,
                     expansionCallback: (int index, bool isExpanded) {
                       setState(() {
                         categoriesWithEmpty[index].isExpanded = !isExpanded;
