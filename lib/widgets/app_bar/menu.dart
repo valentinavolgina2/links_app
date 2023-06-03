@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../connection/authentication.dart';
 import '../../main.dart';
 import '../../model/app.dart';
+import '../../pages/account.dart';
 import '../../pages/login.dart';
 import '../../pages/register.dart';
 import '../../styles/color.dart';
@@ -45,12 +46,12 @@ class LoginMenu extends StatelessWidget {
 
     return InkWell(
         onTap: userEmail == null
-            ? (){
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const LoginPage()),
-              );
-            }
+            ? () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                );
+              }
             : null,
         child: userEmail == null
             ? Padding(
@@ -97,24 +98,6 @@ class RegisterMenu extends StatelessWidget {
 class LoggedInUserMenu extends StatelessWidget {
   const LoggedInUserMenu({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return userEmail == null
-        ? const SizedBox(width: 0)
-        : Row(children: [
-            avatar(),
-            const UsernameMenu(),
-            SizedBox(width: AppSizes.medium),
-            const SignOutMenu()
-          ]);
-  }
-}
-
-class SignOutMenu extends StatelessWidget {
-  const SignOutMenu({super.key, this.mobile = false});
-
-  final bool mobile;
-
   _signout(BuildContext context) async {
     await signOut().then((result) {
       SystemMessage.showSuccess(
@@ -130,36 +113,53 @@ class SignOutMenu extends StatelessWidget {
     });
   }
 
+  _openProfile(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const UserPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final textStyle = mobile
-        ? TextStyle(fontSize: AppSizes.textTitle, color: AppColors.whiteText)
-        : TextStyle(color: AppColors.whiteText);
-        
-    return mobile
-    ? InkWell(
-      onTap: () => _signout(context),
-      child: Padding(
-        padding: EdgeInsets.only(
-          top: AppSizes.small,
-          bottom: AppSizes.small,
-        ),
-        child: Text(
-          'Sign out',
-          style: textStyle,
-        ),
-      ),
-    )
-    : TextButton(
-      style: TextButton.styleFrom(
-        backgroundColor: AppColors.secondaryColor,
-      ),
-      onPressed: () => _signout(context),
-      child: Text(
-        'Sign out',
-        style: textStyle,
-      ));
+    return userEmail == null
+        ? const SizedBox(width: 0)
+        : PopupMenuButton(
+            itemBuilder: (context) {
+              return const [
+                PopupMenuItem<int>(
+                  value: 1,
+                  child: Text("Change password"),
+                ),
+                PopupMenuItem<int>(
+                  value: 2,
+                  child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [Text('Sign out'), Icon(Icons.logout_rounded)]),
+                ),
+              ];
+            },
+            onSelected: (value) {
+              if (value == 1) {
+                _openProfile(context);
+              } else if (value == 2) {
+                _signout(context);
+              }
+            },
+            child: Directionality(
+              textDirection: TextDirection.rtl,
+              child: TextButton.icon(
+                label: Row(mainAxisSize: MainAxisSize.min, children: [
+                  avatar(),
+                  const UsernameMenu(),
+                ]),
+                icon: Icon(
+                  Icons.arrow_drop_down_outlined,
+                  color: AppColors.whiteText,
+                ),
+                onPressed: null,
+              ),
+            ),
+          );
   }
 }
-
-

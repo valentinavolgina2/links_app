@@ -4,7 +4,6 @@ import '../../connection/authentication.dart';
 import '../../model/app.dart';
 import '../../styles/color.dart';
 import '../../styles/size.dart';
-import 'helper.dart';
 import 'menu.dart';
 
 class MyAppBar extends StatefulWidget {
@@ -23,9 +22,7 @@ class _MyAppBarState extends State<MyAppBar> {
         padding: EdgeInsets.all(AppSizes.medium),
         child: const Row(
           children: [
-            Expanded(
-              child: MainPageMenu()
-            ),
+            Expanded(child: MainPageMenu()),
             LoginMenu(),
             RegisterMenu(),
             LoggedInUserMenu(),
@@ -54,6 +51,8 @@ class _MyDrawerState extends State<MyDrawer> {
     );
   }
 
+  List<String> userMenu = <String>['Edit profile', 'Sign out'];
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -75,17 +74,16 @@ class _MyDrawerState extends State<MyDrawer> {
                       ),
                       _divider(),
                       userEmail == null
-                        ? Container(
-                            width: double.maxFinite,
-                            child: const LoginMenu(mobile: true))
-                        : Row(children: [
-                            avatar(),
-                            const UsernameMenu(),
-                          ]),
-                        _divider(),
-                        Container(
-                            width: double.maxFinite,
-                            child: userEmail == null ? const RegisterMenu(mobile: true) : const SignOutMenu(mobile: true))
+                          ? const SizedBox(
+                              width: double.maxFinite,
+                              child: LoginMenu(mobile: true))
+                          : const LoggedInUserMenu(),
+                      _divider(),
+                      SizedBox(
+                          width: double.maxFinite,
+                          child: userEmail == null
+                              ? const RegisterMenu(mobile: true)
+                              : null)
                     ]))));
   }
 }

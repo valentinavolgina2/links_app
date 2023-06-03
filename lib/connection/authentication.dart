@@ -45,13 +45,16 @@ Future<User?> registerWithEmailPassword(String email, String password) async {
       await prefs.setBool('auth', true);
     }
   } on FirebaseAuthException catch (e) {
-    if (e.code == 'weak-password' || (e.message != null && e.message!.contains('weak-password'))) {
-      debugPrint('The password provided is too weak. Password should be at least 6 characters.');
+    if (e.code == 'weak-password' ||
+        (e.message != null && e.message!.contains('weak-password'))) {
+      debugPrint(
+          'The password provided is too weak. Password should be at least 6 characters.');
       throw 'The password provided is too weak.\nPassword should be at least 6 characters.';
-    } else if (e.code == 'email-already-in-use' || (e.message != null && e.message!.contains('email-already-in-use'))) {
+    } else if (e.code == 'email-already-in-use' ||
+        (e.message != null && e.message!.contains('email-already-in-use'))) {
       debugPrint('An account already exists for that email.');
       throw 'An account already exists for that email.';
-    } else if(e.message != null) {
+    } else if (e.message != null) {
       debugPrint(e.message);
       throw e.message!;
     }
@@ -172,6 +175,59 @@ Future<User?> signInWithFacebook() async {
   return user;
 }
 
+Future<User?> changePassword(
+    {required String currentPassword, required String newPassword}) async {
+  final User? user = _auth.currentUser;
+
+  if (user == null) {
+    debugPrint('User is null when trying to change password');
+    throw 'User is not defined';
+  }
+
+  final passwordValidationResult = passwordValidator(newPassword);
+  if (passwordValidationResult != null) {
+    debugPrint(passwordValidationResult);
+    throw passwordValidationResult;
+  }
+
+  final cred = EmailAuthProvider.credential(
+      email: user.email!, password: currentPassword);
+
+  try {
+    await user.reauthenticateWithCredential(cred);
+
+    try {
+      await user.updatePassword(newPassword);
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('auth', true);
+
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password' ||
+        (e.message != null && e.message!.contains('weak-password'))) {
+        debugPrint(
+            'The new password provided is too weak. Password should be at least 6 characters.');
+        throw 'The new password provided is too weak.\nPassword should be at least 6 characters.';
+      } else {
+        throw 'Unknown error occurred during the authetication.';
+      }
+    }
+  } on FirebaseAuthException catch (e) {
+    if (e.code == 'user-not-found' ||
+        (e.message != null && e.message!.contains('user-not-found'))) {
+      debugPrint('No user found for that email.');
+      throw 'No user found for that email.';
+    } else if (e.code == 'wrong-password' ||
+        (e.message != null && e.message!.contains('password is invalid'))) {
+      debugPrint('Wrong current password provided.');
+      throw 'Wrong current password provided.';
+    } else {
+      throw 'Unknown error occurred during the authetication.';
+    }
+  }
+
+  return user;
+}
 
 Future<String> signOut() async {
   if (googleSignIn.clientId != null) {

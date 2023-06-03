@@ -51,8 +51,8 @@ class SigninDialog extends StatelessWidget {
                       passwordController: textControllerPassword),
                   const LoginDivider(),
                   const Center(child: GoogleButton()),
-                  SizedBox(height: AppSizes.small),
-                  const Center(child: FacebookButton()),
+                  // SizedBox(height: AppSizes.small),
+                  // const Center(child: FacebookButton()),
                   SizedBox(height: AppSizes.small),
                   const RegisterInsteadSign()
                 ],

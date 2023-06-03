@@ -145,10 +145,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: ResponsiveWidget.isSmallScreen(context)
-        ? smallScreenAppBar()
-        : PreferredSize(
-            preferredSize: Size(screenSize.width, 1000),
-            child: const MyAppBar()),
+          ? smallScreenAppBar()
+          : PreferredSize(
+              preferredSize: Size(screenSize.width, 1000),
+              child: const MyAppBar()),
       drawer: const MyDrawer(),
       body: SafeArea(
           child: Container(
@@ -159,27 +159,25 @@ class _MyHomePageState extends State<MyHomePage> {
           padding: EdgeInsets.all(AppSizes.small),
           child: Center(
             child: Container(
-              constraints: BoxConstraints(maxWidth: AppSizes.listMaxWidth),
-              child: uid == null
-                ? const NeedLoginPage()
-                : myLists.isEmpty
-                    ? const NoListsPage()
-                    : ListTile(
-                      title: Padding(
-                        padding: EdgeInsets.symmetric(
-                          vertical: AppSizes.medium,
-                          horizontal: AppSizes.small),
-                        child: Text('My lists',
-                                style: TextStyle(
-                                  fontSize: titleStyle.fontSize))
-                      ),
-                      subtitle: ListView(
-                        children: myLists
-                            .map((list) => ListCard(list: list))
-                            .toList(),
-                      ),
-                    )
-            ),
+                constraints: BoxConstraints(maxWidth: AppSizes.listMaxWidth),
+                child: uid == null
+                    ? const NeedLoginPage()
+                    : myLists.isEmpty
+                        ? const NoListsPage()
+                        : ListTile(
+                            title: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: AppSizes.medium,
+                                    horizontal: AppSizes.small),
+                                child: Text('My lists',
+                                    style: TextStyle(
+                                        fontSize: titleStyle.fontSize))),
+                            subtitle: ListView(
+                              children: myLists
+                                  .map((list) => ListCard(list: list))
+                                  .toList(),
+                            ),
+                          )),
           ),
         ),
       )),
@@ -188,12 +186,11 @@ class _MyHomePageState extends State<MyHomePage> {
           : FloatingActionButton(
               onPressed: () {
                 showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (BuildContext context) {
-                    return const AddListDialog();
-                  }
-                );
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return const AddListDialog();
+                    });
               },
               tooltip: 'Add new list',
               child: const Icon(Icons.add)),

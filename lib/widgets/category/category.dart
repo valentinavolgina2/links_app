@@ -30,7 +30,7 @@ class _LinkCategoryState extends State<LinkCategory> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
