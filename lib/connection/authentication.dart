@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 import '../widgets/forms/validation.dart';
 
@@ -13,6 +12,7 @@ String? uid;
 String? userEmail;
 String? name;
 String? imageUrl;
+bool signedInWithSocial = false;
 
 Future<User?> registerWithEmailPassword(String email, String password) async {
   User? user;
@@ -63,6 +63,8 @@ Future<User?> registerWithEmailPassword(String email, String password) async {
     throw e.toString();
   }
 
+  signedInWithSocial = false;
+
   return user;
 }
 
@@ -110,6 +112,8 @@ Future<User?> signInWithEmailPassword(String email, String password) async {
     }
   }
 
+  signedInWithSocial = false;
+
   return user;
 }
 
@@ -138,6 +142,8 @@ Future<User?> signInWithGoogle() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('auth', true);
   }
+
+  signedInWithSocial = true;
 
   return user;
 }
@@ -201,10 +207,9 @@ Future<User?> changePassword(
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('auth', true);
-
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password' ||
-        (e.message != null && e.message!.contains('weak-password'))) {
+          (e.message != null && e.message!.contains('weak-password'))) {
         debugPrint(
             'The new password provided is too weak. Password should be at least 6 characters.');
         throw 'The new password provided is too weak.\nPassword should be at least 6 characters.';
@@ -243,6 +248,8 @@ Future<String> signOut() async {
   userEmail = null;
   name = null;
   imageUrl = null;
+
+  signedInWithSocial = false;
 
   return 'User signed out';
 }

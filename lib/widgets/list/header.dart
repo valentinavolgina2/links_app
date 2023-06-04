@@ -4,7 +4,7 @@ import '../../model/list.dart';
 import '../../styles/size.dart';
 
 class ListPageHeader extends StatefulWidget {
-  ListPageHeader(
+  const ListPageHeader(
       {super.key,
       required this.list,
       required this.allTags,
@@ -12,7 +12,7 @@ class ListPageHeader extends StatefulWidget {
 
   final LinksList list;
   final ValueNotifier<List<String>> allTags;
-  ValueNotifier<Set<String>> tagFilters;
+  final ValueNotifier<Set<String>> tagFilters;
 
   @override
   State<ListPageHeader> createState() => _ListPageHeaderState();
