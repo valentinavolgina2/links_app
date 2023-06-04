@@ -44,6 +44,7 @@ class _ListPageHeaderState extends State<ListPageHeader> {
             SizedBox(height: AppSizes.medium),
             Wrap(
               spacing: AppSizes.xsmall,
+              runSpacing: AppSizes.xsmall,
               children: widget.allTags.value.isEmpty
                   ? [const Text('no tags added for this list')]
                   : widget.allTags.value.map((String tag) {
