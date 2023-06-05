@@ -79,10 +79,12 @@ class _LinkTagsState extends State<LinkTags> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(tag),
+                            SizedBox(width: AppSizes.xsmall),
                             Icon(Icons.cancel,
                                 size: AppSizes.deleteIcon),
                           ],
                         ),
+                        tooltip: 'Delete $tag',
                         selected: false,
                         onSelected: (bool selected) {
                           setState(() {

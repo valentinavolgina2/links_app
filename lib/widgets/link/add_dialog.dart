@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:links_app/styles/color.dart';
 
 import '../../model/list.dart';
 import '../../styles/size.dart';
@@ -36,9 +37,7 @@ class LinkAddDialog extends StatelessWidget {
     return Dialog(
         child: Container(
           constraints: BoxConstraints(maxWidth: AppSizes.dialogMaxWidth),
-          child: Padding(
-              padding: EdgeInsets.all(AppSizes.medium),
-              child: Form(
+          child: Form(
                   key: addLinkFormKey,
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,61 +46,69 @@ class LinkAddDialog extends StatelessWidget {
                         SizedBox(
                           height: AppSizes.dialogHeight,
                           child: SingleChildScrollView(
-                            child: Column(
-                              children: [
-                                Text('Adding new link',
-                                  style: TextStyle(fontSize: AppSizes.textTitle)),
-                                SizedBox(height: AppSizes.medium),
-                                const LinkFormLabel(text: 'Name'),
-                                SizedBox(height: AppSizes.small),
-                                TextFormField(
-                                  controller: linkNameController,
-                                  decoration: FormHelpers.inputDecoration(hintText: 'Name'),
-                                  maxLength: linkNameMaxLength,
-                                  validator: (value) => linkNameValidator(value),
-                                ),
-                                SizedBox(height: AppSizes.medium),
-                                const LinkFormLabel(text: 'Url'),
-                                SizedBox(height: AppSizes.small),
-                                TextFormField(
-                                  controller: linkUrlController,
-                                  decoration: FormHelpers.inputDecoration(hintText: 'Url'),
-                                  validator: (value) => linkUrlValidator(value),
-                                ),
-                                SizedBox(height: AppSizes.medium),
-                                const LinkFormLabel(text: 'Category'),
-                                SizedBox(height: AppSizes.small),
-                                LinkCategory(
-                                  categoryOptions: listCategories
-                                      .where((category) => category != '')
-                                      .toList(),
-                                  selectedCategory: selectedCategory,
-                                  initialCategory: category,
-                                ),
-                                SizedBox(height: AppSizes.medium),
-                                LinkTags(tagOptions: listTags, selectedTags: tags),
-                                SizedBox(height: AppSizes.large),
-                              ]
+                            child: Padding(
+                              padding: EdgeInsets.all(AppSizes.medium),
+                              child: Column(
+                                children: [
+                                  Text('Adding new link',
+                                    style: TextStyle(fontSize: AppSizes.textTitle)),
+                                  SizedBox(height: AppSizes.medium),
+                                  const LinkFormLabel(text: 'Name'),
+                                  SizedBox(height: AppSizes.small),
+                                  TextFormField(
+                                    controller: linkNameController,
+                                    decoration: FormHelpers.inputDecoration(hintText: 'Name'),
+                                    maxLength: linkNameMaxLength,
+                                    validator: (value) => linkNameValidator(value),
+                                  ),
+                                  SizedBox(height: AppSizes.medium),
+                                  const LinkFormLabel(text: 'Url'),
+                                  SizedBox(height: AppSizes.small),
+                                  TextFormField(
+                                    controller: linkUrlController,
+                                    decoration: FormHelpers.inputDecoration(hintText: 'Url'),
+                                    validator: (value) => linkUrlValidator(value),
+                                  ),
+                                  SizedBox(height: AppSizes.medium),
+                                  const LinkFormLabel(text: 'Category'),
+                                  SizedBox(height: AppSizes.small),
+                                  LinkCategory(
+                                    categoryOptions: listCategories
+                                        .where((category) => category != '')
+                                        .toList(),
+                                    selectedCategory: selectedCategory,
+                                    initialCategory: category,
+                                  ),
+                                  SizedBox(height: AppSizes.medium),
+                                  LinkTags(tagOptions: listTags, selectedTags: tags),
+                                  SizedBox(height: AppSizes.medium),
+                                ]
+                              ),
                             ),
                           )
                         ),
-                        Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              const FormCancelButton(),
-                              LinkAddButton(
-                                list: list,
-                                formKey: addLinkFormKey,
-                                nameController: linkNameController,
-                                urlController: linkUrlController,
-                                tags: tags,
-                                selectedCategory: selectedCategory
-                              )
-                            ])
+                        Container(
+                          color: AppColors.lightGrey,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: AppSizes.medium, horizontal: AppSizes.small),
+                            child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: [
+                                  const FormCancelButton(),
+                                  LinkAddButton(
+                                    list: list,
+                                    formKey: addLinkFormKey,
+                                    nameController: linkNameController,
+                                    urlController: linkUrlController,
+                                    tags: tags,
+                                    selectedCategory: selectedCategory
+                                  )
+                                ]),
+                          ),
+                        )
                       ])),
             ),
-        ),
     );
   }
 }

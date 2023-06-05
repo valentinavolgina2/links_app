@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../model/link.dart';
+import '../../styles/color.dart';
 import '../../styles/size.dart';
 import '../category/category.dart';
 import '../forms/cancel_btn.dart';
@@ -41,9 +42,7 @@ class EditLinkDialog extends StatelessWidget {
     return Dialog(
       child: Container(
           constraints: BoxConstraints(maxWidth: AppSizes.dialogMaxWidth),
-          child: Padding(
-              padding: EdgeInsets.all(AppSizes.medium),
-              child: Form(
+          child: Form(
                     key: editLinkFormKey,
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,65 +51,73 @@ class EditLinkDialog extends StatelessWidget {
                           SizedBox(
                             height: AppSizes.dialogHeight,
                             child: SingleChildScrollView(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text('Editing ${link.name}',
-                                      style: TextStyle(fontSize: AppSizes.textTitle)),
-                                  SizedBox(height: AppSizes.medium),
-                                  const LinkFormLabel(text: 'Name'),
-                                  SizedBox(height: AppSizes.small),
-                                  TextFormField(
-                                      controller: editLinkNameController,
-                                      decoration:
-                                          FormHelpers.inputDecoration(hintText: 'Name'),
-                                      maxLength: linkNameMaxLength,
-                                      validator: (value) => linkNameValidator(value)),
-                                  SizedBox(height: AppSizes.medium),
-                                  const LinkFormLabel(text: 'Url'),
-                                  SizedBox(height: AppSizes.small),
-                                  TextFormField(
-                                      controller: editLinkUrlController,
-                                      decoration:
-                                          FormHelpers.inputDecoration(hintText: 'Url'),
-                                      validator: (value) => linkUrlValidator(value)),
-                                  SizedBox(height: AppSizes.medium),
-                                  const LinkFormLabel(text: 'Category'),
-                                  SizedBox(height: AppSizes.small),
-                                  LinkCategory(
-                                    categoryOptions: listCategories
-                                        .where((category) => category != '')
-                                        .toList(),
-                                    selectedCategory: selectedCategory,
-                                    initialCategory: link.category,
-                                  ),
-                                  SizedBox(height: AppSizes.medium),
-                                  LinkTags(
-                                      initialTags: link.tags,
-                                      tagOptions: listTags,
-                                      selectedTags: tags),
-                                  SizedBox(height: AppSizes.large),
-                                ]
+                              child: Padding(
+                                padding: EdgeInsets.all(AppSizes.medium),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text('Editing ${link.name}',
+                                        style: TextStyle(fontSize: AppSizes.textTitle)),
+                                    SizedBox(height: AppSizes.medium),
+                                    const LinkFormLabel(text: 'Name'),
+                                    SizedBox(height: AppSizes.small),
+                                    TextFormField(
+                                        controller: editLinkNameController,
+                                        decoration:
+                                            FormHelpers.inputDecoration(hintText: 'Name'),
+                                        maxLength: linkNameMaxLength,
+                                        validator: (value) => linkNameValidator(value)),
+                                    SizedBox(height: AppSizes.medium),
+                                    const LinkFormLabel(text: 'Url'),
+                                    SizedBox(height: AppSizes.small),
+                                    TextFormField(
+                                        controller: editLinkUrlController,
+                                        decoration:
+                                            FormHelpers.inputDecoration(hintText: 'Url'),
+                                        validator: (value) => linkUrlValidator(value)),
+                                    SizedBox(height: AppSizes.medium),
+                                    const LinkFormLabel(text: 'Category'),
+                                    SizedBox(height: AppSizes.small),
+                                    LinkCategory(
+                                      categoryOptions: listCategories
+                                          .where((category) => category != '')
+                                          .toList(),
+                                      selectedCategory: selectedCategory,
+                                      initialCategory: link.category,
+                                    ),
+                                    SizedBox(height: AppSizes.medium),
+                                    LinkTags(
+                                        initialTags: link.tags,
+                                        tagOptions: listTags,
+                                        selectedTags: tags),
+                                    SizedBox(height: AppSizes.medium),
+                                  ]
+                                ),
                               ),
                             )
                           ),
-                          Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                const FormCancelButton(),
-                                LinkUpdateButton(
-                                  link: link,
-                                  formKey: editLinkFormKey,
-                                  nameController: editLinkNameController,
-                                  urlController: editLinkUrlController,
-                                  tags: tags,
-                                  selectedCategory: selectedCategory
-                                ),
-                              ])
+                          Container(
+                            color: AppColors.lightGrey,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: AppSizes.medium, horizontal: AppSizes.small),
+                              child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    const FormCancelButton(),
+                                    LinkUpdateButton(
+                                      link: link,
+                                      formKey: editLinkFormKey,
+                                      nameController: editLinkNameController,
+                                      urlController: editLinkUrlController,
+                                      tags: tags,
+                                      selectedCategory: selectedCategory
+                                    ),
+                                  ]),
+                            ),
+                          )
                         ])
                   ),
-            ),
         ),
     );
   }
