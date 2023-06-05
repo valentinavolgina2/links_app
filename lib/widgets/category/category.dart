@@ -21,7 +21,7 @@ class LinkCategory extends StatefulWidget {
 
 class _LinkCategoryState extends State<LinkCategory> {
   double optionsListMaxHeight = 200;
-  double optionsListMaxWidth = AppSizes.dialogMaxWidth - 2 * AppSizes.small;
+  double optionsListMaxWidth = AppSizes.dialogMaxWidth - 2 * AppSizes.medium;
 
   @override
   void didChangeDependencies() {
@@ -65,6 +65,7 @@ class _LinkCategoryState extends State<LinkCategory> {
                   alignment: Alignment.topLeft,
                   child: Material(
                     elevation: AppSizes.xsmall,
+                    color: AppColors.lightGrey,
                     child: ConstrainedBox(
                       constraints: BoxConstraints(
                           maxHeight: optionsListMaxHeight,

@@ -4,7 +4,7 @@ import '../../styles/size.dart';
 
 class FormHelpers {
   static InputDecoration inputDecoration(
-      {String hintText = '', String? errorText}) {
+      {String hintText = '', String? errorText, String? helperText}) {
     return InputDecoration(
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSizes.inputBorderRadius),
@@ -18,6 +18,7 @@ class FormHelpers {
           color: AppColors.darkText,
         ),
         hintText: '', //hintText,
+        helperText: helperText,
         fillColor: AppColors.whiteText,
         errorText: errorText,
         errorStyle: TextStyle(

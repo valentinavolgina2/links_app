@@ -13,8 +13,11 @@ class AppSizes {
   static double inputBorderWidth = 3;
 
   static double dialogMaxWidth = 300.0;
+  static double dialogHeight = 500.0;
   static double listMaxWidth = 600.0;
 
   static double googleButtonRadius = 16.0;
   static double googleBorderWidth = 1;
+
+  static double deleteIcon = 14.0;
 }
