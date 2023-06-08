@@ -57,7 +57,7 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   List<LinksList> myLists = [];
 
   late StreamSubscription<DatabaseEvent> _listsSubscription;
@@ -66,8 +66,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
   late DatabaseReference _listsRef;
 
+  bool loading = true;
+  late AnimationController progressController;
+
   @override
   void initState() {
+    progressController = AnimationController(
+      /// [AnimationController]s can be created with `vsync: this` because of
+      /// [TickerProviderStateMixin].
+      vsync: this,
+      duration: const Duration(seconds: 5),
+    )..addListener(() {
+        setState(() {});
+      });
+    progressController.repeat(reverse: true);
+
     init();
 
     super.initState();
@@ -84,6 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
           myLists.insert(0,
               LinksList.fromSnapshot(snapshot: event.snapshot, userId: uid!));
         });
+        print(2);
       },
       onError: (Object o) {
         final error = o as FirebaseException;
@@ -118,6 +132,19 @@ class _MyHomePageState extends State<MyHomePage> {
         debugPrint('Error: ${error.code} ${error.message}');
       },
     );
+
+    final snapshot = await _listsRef.get();
+    if (snapshot.exists) {
+        //print(snapshot.value);
+    } else {
+        //print('No data available.');
+    }   
+
+    setState(() {
+      loading = false;
+    });
+
+    print(1);
   }
 
   @override
@@ -162,22 +189,27 @@ class _MyHomePageState extends State<MyHomePage> {
                 constraints: BoxConstraints(maxWidth: AppSizes.listMaxWidth),
                 child: uid == null
                     ? const NeedLoginPage()
-                    : myLists.isEmpty
-                        ? const NoListsPage()
-                        : ListTile(
-                            title: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: AppSizes.medium,
-                                    horizontal: AppSizes.small),
-                                child: Text('My lists',
-                                    style: TextStyle(
-                                        fontSize: titleStyle.fontSize))),
-                            subtitle: ListView(
-                              children: myLists
-                                  .map((list) => ListCard(list: list))
-                                  .toList(),
-                            ),
-                          )),
+                    : loading
+                        ? CircularProgressIndicator(
+                            value: progressController.value,
+                            semanticsLabel: 'Circular progress indicator',
+                          )
+                        : myLists.isEmpty
+                            ? const NoListsPage()
+                            : ListTile(
+                                title: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: AppSizes.medium,
+                                        horizontal: AppSizes.small),
+                                    child: Text('My lists',
+                                        style: TextStyle(
+                                            fontSize: titleStyle.fontSize))),
+                                subtitle: ListView(
+                                  children: myLists
+                                      .map((list) => ListCard(list: list))
+                                      .toList(),
+                                ),
+                              )),
           ),
         ),
       )),
