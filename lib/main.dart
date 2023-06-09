@@ -57,7 +57,7 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+class _MyHomePageState extends State<MyHomePage> {
   List<LinksList> myLists = [];
 
   late StreamSubscription<DatabaseEvent> _listsSubscription;
@@ -67,22 +67,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   late DatabaseReference _listsRef;
 
   bool loading = true;
-  late AnimationController progressController;
 
   @override
   void initState() {
-    progressController = AnimationController(
-      /// [AnimationController]s can be created with `vsync: this` because of
-      /// [TickerProviderStateMixin].
-      vsync: this,
-      duration: const Duration(seconds: 5),
-    )..addListener(() {
-        setState(() {});
-      });
-    progressController.repeat(reverse: true);
-
     init();
-
     super.initState();
   }
 
@@ -97,7 +85,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           myLists.insert(0,
               LinksList.fromSnapshot(snapshot: event.snapshot, userId: uid!));
         });
-        print(2);
       },
       onError: (Object o) {
         final error = o as FirebaseException;
@@ -135,16 +122,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
     final snapshot = await _listsRef.get();
     if (snapshot.exists) {
-        //print(snapshot.value);
+      //print(snapshot.value);
     } else {
-        //print('No data available.');
-    }   
+      //print('No data available.');
+    }
 
     setState(() {
       loading = false;
     });
-
-    print(1);
   }
 
   @override
@@ -190,10 +175,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 child: uid == null
                     ? const NeedLoginPage()
                     : loading
-                        ? CircularProgressIndicator(
-                            value: progressController.value,
-                            semanticsLabel: 'Circular progress indicator',
-                          )
+                        ? null
                         : myLists.isEmpty
                             ? const NoListsPage()
                             : ListTile(

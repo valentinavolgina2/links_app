@@ -26,13 +26,11 @@ class _LinkTagsState extends State<LinkTags> {
   double optionsListMaxHeight = 200;
   double optionsListMaxWidth = AppSizes.dialogMaxWidth - 2 * AppSizes.medium;
 
-  final double _distanceToField = AppSizes.dialogMaxWidth;
   final TextfieldTagsController _controller = TextfieldTagsController();
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    //_distanceToField = MediaQuery.of(context).size.width;
   }
 
   @override

@@ -51,6 +51,8 @@ class _ListContainerState extends State<ListContainer> {
   int _count = 0;
   late Key _panelKey;
 
+  bool loading = true;
+
   @override
   void initState() {
     init();
@@ -121,6 +123,17 @@ class _ListContainerState extends State<ListContainer> {
     tagFilters.addListener(() {
       setState(() {});
     });
+
+    final snapshot = await _linksRef.get();
+    if (snapshot.exists) {
+      //print(snapshot.value);
+    } else {
+      //print('No data available.');
+    }
+
+    setState(() {
+      loading = false;
+    });
   }
 
   _updatePanelKey() {
@@ -175,40 +188,43 @@ class _ListContainerState extends State<ListContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return _links.isEmpty
-        ? Center(
-            child: Container(
-                constraints: BoxConstraints(maxWidth: AppSizes.listMaxWidth),
-                child: NoLinksPage(list: widget.list)),
-          )
-        : SingleChildScrollView(
-            physics: const ScrollPhysics(),
-            child: Center(
+    return loading
+        ? const SizedBox()
+        : _links.isEmpty
+            ? Center(
                 child: Container(
-              constraints: BoxConstraints(maxWidth: AppSizes.listMaxWidth),
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(0.0),
-                title: ListPageHeader(
-                    list: widget.list,
-                    allTags: widget.allTags,
-                    tagFilters: tagFilters),
-                subtitle: ExpansionPanelList(
-                    key: _panelKey,
-                    expansionCallback: (int index, bool isExpanded) {
-                      setState(() {
-                        categoriesWithEmpty[index].isExpanded = !isExpanded;
-                      });
-                    },
-                    children: categoriesWithEmpty
-                        .map<ExpansionPanel>((category) =>
-                            categoryExpansionPanel(
-                                category: category,
-                                links: _links,
-                                tagFilters: tagFilters.value,
-                                allTags: widget.allTags.value,
-                                allCategories: widget.allCategories.value))
-                        .toList()),
-              ),
-            )));
+                    constraints:
+                        BoxConstraints(maxWidth: AppSizes.listMaxWidth),
+                    child: NoLinksPage(list: widget.list)),
+              )
+            : SingleChildScrollView(
+                physics: const ScrollPhysics(),
+                child: Center(
+                    child: Container(
+                  constraints: BoxConstraints(maxWidth: AppSizes.listMaxWidth),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.all(0.0),
+                    title: ListPageHeader(
+                        list: widget.list,
+                        allTags: widget.allTags,
+                        tagFilters: tagFilters),
+                    subtitle: ExpansionPanelList(
+                        key: _panelKey,
+                        expansionCallback: (int index, bool isExpanded) {
+                          setState(() {
+                            categoriesWithEmpty[index].isExpanded = !isExpanded;
+                          });
+                        },
+                        children: categoriesWithEmpty
+                            .map<ExpansionPanel>((category) =>
+                                categoryExpansionPanel(
+                                    category: category,
+                                    links: _links,
+                                    tagFilters: tagFilters.value,
+                                    allTags: widget.allTags.value,
+                                    allCategories: widget.allCategories.value))
+                            .toList()),
+                  ),
+                )));
   }
 }
