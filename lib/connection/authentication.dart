@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../auth/result_handler.dart';
 import '../widgets/forms/validation.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -232,6 +233,17 @@ Future<User?> changePassword(
   }
 
   return user;
+}
+
+Future<AuthStatus> resetPassword({required String email}) async {
+  late AuthStatus status;
+  
+  await _auth
+      .sendPasswordResetEmail(email: email)
+      .then((value) => status = AuthStatus.successful)
+      .catchError((e) => status = AuthExceptionHandler.handleAuthException(e));
+
+  return status;
 }
 
 Future<String> signOut() async {

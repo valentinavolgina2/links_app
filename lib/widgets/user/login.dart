@@ -4,6 +4,7 @@ import 'package:links_app/styles/color.dart';
 import 'package:links_app/widgets/user/text_field.dart';
 
 import '../../connection/authentication.dart';
+import '../../pages/password_reset.dart';
 import '../../pages/register.dart';
 import '../../styles/size.dart';
 import '../forms/helper.dart';
@@ -44,6 +45,8 @@ class SigninDialog extends StatelessWidget {
                       label: 'Password',
                       fieldType: TextInputType.visiblePassword,
                       controller: textControllerPassword),
+                  SizedBox(height: AppSizes.small),
+                  const ForgotPasswordSign(),
                   SizedBox(height: AppSizes.medium),
                   LoginButton(
                       emailController: textControllerEmail,
@@ -148,6 +151,33 @@ class RegisterInsteadSign extends StatelessWidget {
               },
               child: Text(
                 'Register',
+                style: TextStyle(
+                  color: AppColors.secondaryColor,
+                  fontWeight: FontWeight.w600)
+              )
+          )
+        ]);
+  }
+}
+
+class ForgotPasswordSign extends StatelessWidget {
+  const ForgotPasswordSign({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const PasswordResetPage()),
+                );
+              },
+              child: Text(
+                'Forgot my password',
                 style: TextStyle(
                   color: AppColors.secondaryColor,
                   fontWeight: FontWeight.w600)
