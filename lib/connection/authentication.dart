@@ -237,9 +237,9 @@ Future<User?> changePassword(
 
 Future<AuthStatus> resetPassword({required String email}) async {
   late AuthStatus status;
-  
+
   await _auth
-      .sendPasswordResetEmail(email: email)
+      .sendPasswordResetEmail(email: email, actionCodeSettings: ActionCodeSettings(url: 'https://links-app-d361f.web.app/'))
       .then((value) => status = AuthStatus.successful)
       .catchError((e) => status = AuthExceptionHandler.handleAuthException(e));
 
