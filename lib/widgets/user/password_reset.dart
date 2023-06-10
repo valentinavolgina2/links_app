@@ -3,55 +3,99 @@ import 'package:links_app/widgets/user/text_field.dart';
 
 import '../../auth/result_handler.dart';
 import '../../connection/authentication.dart';
-import '../../main.dart';
-import '../../pages/login.dart';
 import '../../styles/color.dart';
 import '../../styles/size.dart';
 import '../forms/helper.dart';
-import '../message.dart';
 import 'header.dart';
 
-class PasswordReset extends StatelessWidget {
-  PasswordReset({super.key});
+class PasswordReset extends StatefulWidget {
+  const PasswordReset({super.key});
 
+  @override
+  State<PasswordReset> createState() => _PasswordResetState();
+}
+
+class _PasswordResetState extends State<PasswordReset> {
   final TextEditingController textControllerEmail = TextEditingController();
+  final ValueNotifier<String> _resetMessage = ValueNotifier<String>('');
+
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    _resetMessage.addListener(() {
+      setState(() {
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        constraints: FormHelpers.formMaxWidthConstraints(),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(AppSizes.medium),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const AuthHeader(headerText: 'Password reset'),
-                  AuthTextField(
-                      label: 'Email',
-                      fieldType: TextInputType.emailAddress,
-                      controller: textControllerEmail),
-                  SizedBox(height: AppSizes.medium),
-                  ResetButton(emailController: textControllerEmail),
-                ],
+          constraints: FormHelpers.formMaxWidthConstraints(),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(AppSizes.medium),
+              child: Form(
+                key: _formKey,
+                child: _resetMessage.value != ''
+                ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const AuthHeader(headerText: 'Password reset'),
+                    Text(
+                      'A link to reset your password has been sent to ${_resetMessage.value} and should be arriving shortly. If it does not arrive in your inbox, check your spam folder.',
+                      textAlign: TextAlign.center,),
+                    SizedBox(height: AppSizes.large),
+                    const Text('Still haven\'t recieved the link?'),
+                    SizedBox(height: AppSizes.small),
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          _resetMessage.value = '';
+                        });
+                      },
+                      child: Text(
+                        'Let\'s try one more time',
+                        style: TextStyle(
+                          color: AppColors.secondaryColor,
+                          fontWeight: FontWeight.w600)
+                      ),
+                    )      
+                  ],
+                )
+                : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const AuthHeader(headerText: 'Password reset'),
+                    AuthTextField(
+                        label: 'Email',
+                        fieldType: TextInputType.emailAddress,
+                        controller: textControllerEmail),
+                    SizedBox(height: AppSizes.medium),
+                    ResetButton(
+                        emailController: textControllerEmail,
+                        resetMessage: _resetMessage),
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
     );
   }
 }
 
 class ResetButton extends StatefulWidget {
-  const ResetButton({super.key, required this.emailController});
+  const ResetButton(
+      {super.key, required this.emailController, required this.resetMessage});
 
   final TextEditingController emailController;
+  final ValueNotifier<String> resetMessage;
 
   @override
   State<ResetButton> createState() => _ResetButtonState();
@@ -66,18 +110,16 @@ class _ResetButtonState extends State<ResetButton> {
       _isResetting = true;
     });
 
-  await resetPassword(email: widget.emailController.text)
-    .then((result) {
+    await resetPassword(email: widget.emailController.text).then((result) {
       if (result == AuthStatus.successful) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginPage()),
-        );
-        SystemMessage.showSuccess(
-            context: context, message: 'You have reset your password.');
+        setState(() {
+          widget.resetMessage.value = widget.emailController.text;
+          _error = '';
+        });
       } else {
         final error = AuthExceptionHandler.generateErrorMessage(result);
         setState(() {
+          widget.resetMessage.value = '';
           _error = error;
         });
       }
