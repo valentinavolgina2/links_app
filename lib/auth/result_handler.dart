@@ -4,8 +4,10 @@ enum AuthStatus {
   successful,
   wrongPassword,
   emailAlreadyExists,
+  userNotFound,
   invalidEmail,
   weakPassword,
+  passwordResetNotAllowed,
   unknown,
 }
 
@@ -24,6 +26,9 @@ class AuthExceptionHandler {
         break;
       case "email-already-in-use":
         status = AuthStatus.emailAlreadyExists;
+        break;
+      case "user-not-found":
+        status = AuthStatus.userNotFound;
         break;
       default:
         status = AuthStatus.unknown;
@@ -45,6 +50,14 @@ class AuthExceptionHandler {
       case AuthStatus.emailAlreadyExists:
         errorMessage =
             "The email address is already in use by another account.";
+        break;
+      case AuthStatus.userNotFound:
+        errorMessage =
+            "No user found for this email address.";
+        break;
+      case AuthStatus.passwordResetNotAllowed:
+        errorMessage =
+            "Password reset is not allowed for this email address.";
         break;
       default:
         errorMessage = "An error occured. Please try again later.";

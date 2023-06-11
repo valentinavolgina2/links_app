@@ -24,8 +24,7 @@ class _PasswordResetState extends State<PasswordReset> {
   @override
   void initState() {
     _resetMessage.addListener(() {
-      setState(() {
-      });
+      setState(() {});
     });
     super.initState();
   }
@@ -34,58 +33,57 @@ class _PasswordResetState extends State<PasswordReset> {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-          constraints: FormHelpers.formMaxWidthConstraints(),
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.all(AppSizes.medium),
-              child: Form(
-                key: _formKey,
-                child: _resetMessage.value != ''
-                ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const AuthHeader(headerText: 'Password reset'),
-                    Text(
-                      'A link to reset your password has been sent to ${_resetMessage.value} and should be arriving shortly. If it does not arrive in your inbox, check your spam folder.',
-                      textAlign: TextAlign.center,),
-                    SizedBox(height: AppSizes.large),
-                    const Text('Still haven\'t recieved the link?'),
-                    SizedBox(height: AppSizes.small),
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          _resetMessage.value = '';
-                        });
-                      },
-                      child: Text(
-                        'Let\'s try one more time',
-                        style: TextStyle(
-                          color: AppColors.secondaryColor,
-                          fontWeight: FontWeight.w600)
-                      ),
-                    )      
-                  ],
-                )
-                : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const AuthHeader(headerText: 'Password reset'),
-                    AuthTextField(
-                        label: 'Email',
-                        fieldType: TextInputType.emailAddress,
-                        controller: textControllerEmail),
-                    SizedBox(height: AppSizes.medium),
-                    ResetButton(
-                        emailController: textControllerEmail,
-                        resetMessage: _resetMessage),
-                  ],
-                ),
-              ),
+        constraints: FormHelpers.formMaxWidthConstraints(),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(AppSizes.medium),
+            child: Form(
+              key: _formKey,
+              child: _resetMessage.value != ''
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const AuthHeader(headerText: 'Password reset'),
+                        Text(
+                          'A link to reset your password has been sent to ${_resetMessage.value} and should be arriving shortly. If it does not arrive in your inbox, check your spam folder.',
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: AppSizes.large),
+                        const Text('Still haven\'t recieved the link?'),
+                        SizedBox(height: AppSizes.small),
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              _resetMessage.value = '';
+                            });
+                          },
+                          child: Text('Let\'s try one more time',
+                              style: TextStyle(
+                                  color: AppColors.secondaryColor,
+                                  fontWeight: FontWeight.w600)),
+                        )
+                      ],
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const AuthHeader(headerText: 'Password reset'),
+                        AuthTextField(
+                            label: 'Email',
+                            fieldType: TextInputType.emailAddress,
+                            controller: textControllerEmail),
+                        SizedBox(height: AppSizes.medium),
+                        ResetButton(
+                            emailController: textControllerEmail,
+                            resetMessage: _resetMessage),
+                      ],
+                    ),
             ),
           ),
         ),
+      ),
     );
   }
 }
@@ -105,10 +103,22 @@ class _ResetButtonState extends State<ResetButton> {
   String _error = '';
   bool _isResetting = false;
 
-  void _reset(BuildContext context) async {
+  void _reset() async {
     setState(() {
       _isResetting = true;
     });
+
+    final result =
+        await signedInWithPassword(email: widget.emailController.text);
+    if (result != AuthStatus.successful) {
+      setState(() {
+        widget.resetMessage.value = '';
+        _error = AuthExceptionHandler.generateErrorMessage(result);
+        _isResetting = false;
+      });
+
+      return;
+    }
 
     await resetPassword(email: widget.emailController.text).then((result) {
       if (result == AuthStatus.successful) {
@@ -145,7 +155,7 @@ class _ResetButtonState extends State<ResetButton> {
       SizedBox(
         width: double.maxFinite,
         child: FilledButton(
-          onPressed: () => _reset(context),
+          onPressed: () => _reset(),
           child: Padding(
             padding: EdgeInsets.only(
               top: AppSizes.medium,

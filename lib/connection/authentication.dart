@@ -235,6 +235,25 @@ Future<User?> changePassword(
   return user;
 }
 
+Future<AuthStatus> signedInWithPassword({required String email}) async {
+  late AuthStatus status;
+
+  await FirebaseAuth.instance
+    .fetchSignInMethodsForEmail(email)
+    .then((methods) {
+
+      if (methods.isNotEmpty) {
+        status = methods.contains('password') ? AuthStatus.successful : AuthStatus.passwordResetNotAllowed;
+      } else {
+        status = AuthStatus.userNotFound;
+      }
+
+      return status;
+    }).catchError((e) => status = AuthExceptionHandler.handleAuthException(e));
+
+  return status;
+}
+
 Future<AuthStatus> resetPassword({required String email}) async {
   late AuthStatus status;
 
@@ -251,11 +270,7 @@ Future<AuthStatus> resetPassword({required String email}) async {
           actionCodeSettings:
               ActionCodeSettings(url: 'https://links-app-d361f.web.app/'))
       .then((value) => status = AuthStatus.successful)
-      .catchError((e) {
-    status = AuthExceptionHandler.handleAuthException(e);
-    print(e.message);
-    return status;
-  });
+      .catchError((e) => status = AuthExceptionHandler.handleAuthException(e));
 
   return status;
 }
