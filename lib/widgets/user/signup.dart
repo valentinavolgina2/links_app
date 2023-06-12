@@ -3,6 +3,7 @@ import 'package:links_app/pages/login.dart';
 import 'package:links_app/styles/color.dart';
 import 'package:links_app/widgets/user/text_field.dart';
 
+import '../../auth/result_handler.dart';
 import '../../connection/authentication.dart';
 import '../../main.dart';
 import '../../styles/size.dart';
@@ -83,7 +84,8 @@ class _SignupButtonState extends State<SignupButton> {
     await registerWithEmailPassword(
             widget.emailController.text, widget.passwordController.text)
         .then((result) {
-      if (result != null) {
+
+      if (result == AuthStatus.successful) {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const MyHomePage()),
@@ -91,11 +93,11 @@ class _SignupButtonState extends State<SignupButton> {
 
         SystemMessage.showSuccess(
             context: context, message: 'You have registered successfully.');
+      } else {
+        setState(() {
+          _error = AuthExceptionHandler.generateErrorMessage(result);
+        });
       }
-    }).catchError((error) {
-      setState(() {
-        _error = error;
-      });
     });
 
     setState(() {

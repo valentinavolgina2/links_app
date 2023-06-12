@@ -15,19 +15,18 @@ String? name;
 String? imageUrl;
 bool signedInWithSocial = false;
 
-Future<User?> registerWithEmailPassword(String email, String password) async {
-  User? user;
+Future<AuthStatus> registerWithEmailPassword(
+    String email, String password) async {
+  late AuthStatus status;
 
   final emailValidationResult = emailValidator(email);
   if (emailValidationResult != null) {
-    debugPrint(emailValidationResult);
-    throw emailValidationResult;
+    return AuthStatus.invalidEmail;
   }
 
   final passwordValidationResult = passwordValidator(password);
   if (passwordValidationResult != null) {
-    debugPrint(passwordValidationResult);
-    throw passwordValidationResult;
+    return AuthStatus.emptyPassword;
   }
 
   try {
@@ -36,7 +35,7 @@ Future<User?> registerWithEmailPassword(String email, String password) async {
       password: password,
     );
 
-    user = userCredential.user;
+    User? user = userCredential.user;
 
     if (user != null) {
       uid = user.uid;
@@ -44,44 +43,34 @@ Future<User?> registerWithEmailPassword(String email, String password) async {
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('auth', true);
+
+      status = AuthStatus.successful;
+    } else {
+      status = AuthStatus.userNotFound;
     }
   } on FirebaseAuthException catch (e) {
-    if (e.code == 'weak-password' ||
-        (e.message != null && e.message!.contains('weak-password'))) {
-      debugPrint(
-          'The password provided is too weak. Password should be at least 6 characters.');
-      throw 'The password provided is too weak.\nPassword should be at least 6 characters.';
-    } else if (e.code == 'email-already-in-use' ||
-        (e.message != null && e.message!.contains('email-already-in-use'))) {
-      debugPrint('An account already exists for that email.');
-      throw 'An account already exists for that email.';
-    } else if (e.message != null) {
-      debugPrint(e.message);
-      throw e.message!;
-    }
+    status = AuthExceptionHandler.handleAuthException(e);
   } catch (e) {
-    debugPrint(e.toString());
-    throw e.toString();
+    status = AuthStatus.unknown;
   }
 
   signedInWithSocial = false;
 
-  return user;
+  return status;
 }
 
-Future<User?> signInWithEmailPassword(String email, String password) async {
-  User? user;
+Future<AuthStatus> signInWithEmailPassword(
+    String email, String password) async {
+  late AuthStatus status;
 
   final emailValidationResult = emailValidator(email);
   if (emailValidationResult != null) {
-    debugPrint(emailValidationResult);
-    throw emailValidationResult;
+    return AuthStatus.invalidEmail;
   }
 
   final passwordValidationResult = passwordValidator(password);
   if (passwordValidationResult != null) {
-    debugPrint(passwordValidationResult);
-    throw passwordValidationResult;
+    return AuthStatus.emptyPassword;
   }
 
   try {
@@ -90,7 +79,7 @@ Future<User?> signInWithEmailPassword(String email, String password) async {
       password: password,
     );
 
-    user = userCredential.user;
+    User? user = userCredential.user;
 
     if (user != null) {
       uid = user.uid;
@@ -98,28 +87,22 @@ Future<User?> signInWithEmailPassword(String email, String password) async {
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('auth', true);
+
+      status = AuthStatus.successful;
+    } else {
+      status = AuthStatus.userNotFound;
     }
   } on FirebaseAuthException catch (e) {
-    if (e.code == 'user-not-found' ||
-        (e.message != null && e.message!.contains('user-not-found'))) {
-      debugPrint('No user found for that email.');
-      throw 'No user found for that email.';
-    } else if (e.code == 'wrong-password' ||
-        (e.message != null && e.message!.contains('password is invalid'))) {
-      debugPrint('Wrong password provided.');
-      throw 'Wrong password provided.';
-    } else {
-      throw 'Unknown error occurred during the authetication.';
-    }
+    status = AuthExceptionHandler.handleAuthException(e);
   }
 
   signedInWithSocial = false;
 
-  return user;
+  return status;
 }
 
-Future<User?> signInWithGoogle() async {
-  User? user;
+Future<AuthStatus> signInWithGoogle() async {
+  late AuthStatus status;
 
   // The `GoogleAuthProvider` can only be used while running on the web
   // for app: https://blog.codemagic.io/firebase-authentication-google-sign-in-using-flutter/
@@ -129,24 +112,28 @@ Future<User?> signInWithGoogle() async {
     final UserCredential userCredential =
         await _auth.signInWithPopup(authProvider);
 
-    user = userCredential.user;
+    User? user = userCredential.user;
+
+    if (user != null) {
+      uid = user.uid;
+      name = user.displayName;
+      userEmail = user.email;
+      imageUrl = user.photoURL;
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool('auth', true);
+
+      signedInWithSocial = true;
+
+      status = AuthStatus.successful;
+    } else {
+      status = AuthStatus.userNotFound;
+    }
   } catch (e) {
-    debugPrint(e.toString());
+    status = AuthStatus.unknown;
   }
 
-  if (user != null) {
-    uid = user.uid;
-    name = user.displayName;
-    userEmail = user.email;
-    imageUrl = user.photoURL;
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('auth', true);
-  }
-
-  signedInWithSocial = true;
-
-  return user;
+  return status;
 }
 
 Future<User?> signInWithFacebook() async {
@@ -182,19 +169,21 @@ Future<User?> signInWithFacebook() async {
   return user;
 }
 
-Future<User?> changePassword(
+Future<AuthStatus> changePassword(
     {required String currentPassword, required String newPassword}) async {
   final User? user = _auth.currentUser;
+  late AuthStatus status;
 
   if (user == null) {
-    debugPrint('User is null when trying to change password');
-    throw 'User is not defined';
+    return AuthStatus.userNotFound;
   }
 
-  final passwordValidationResult = passwordValidator(newPassword);
-  if (passwordValidationResult != null) {
-    debugPrint(passwordValidationResult);
-    throw passwordValidationResult;
+  if (passwordValidator(newPassword) != null) {
+    return AuthStatus.emptyPassword;
+  }
+
+  if (passwordValidator(currentPassword) != null) {
+    return AuthStatus.emptyPassword;
   }
 
   final cred = EmailAuthProvider.credential(
@@ -208,48 +197,32 @@ Future<User?> changePassword(
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('auth', true);
+
+      status = AuthStatus.successful;
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password' ||
-          (e.message != null && e.message!.contains('weak-password'))) {
-        debugPrint(
-            'The new password provided is too weak. Password should be at least 6 characters.');
-        throw 'The new password provided is too weak.\nPassword should be at least 6 characters.';
-      } else {
-        throw 'Unknown error occurred during the authetication.';
-      }
+      status = AuthExceptionHandler.handleAuthException(e, newPassword: true);
     }
   } on FirebaseAuthException catch (e) {
-    if (e.code == 'user-not-found' ||
-        (e.message != null && e.message!.contains('user-not-found'))) {
-      debugPrint('No user found for that email.');
-      throw 'No user found for that email.';
-    } else if (e.code == 'wrong-password' ||
-        (e.message != null && e.message!.contains('password is invalid'))) {
-      debugPrint('Wrong current password provided.');
-      throw 'Wrong current password provided.';
-    } else {
-      throw 'Unknown error occurred during the authetication.';
-    }
+    status = AuthExceptionHandler.handleAuthException(e, currentPassword: true);
   }
 
-  return user;
+  return status;
 }
 
 Future<AuthStatus> signedInWithPassword({required String email}) async {
   late AuthStatus status;
 
-  await FirebaseAuth.instance
-    .fetchSignInMethodsForEmail(email)
-    .then((methods) {
+  await FirebaseAuth.instance.fetchSignInMethodsForEmail(email).then((methods) {
+    if (methods.isNotEmpty) {
+      status = methods.contains('password')
+          ? AuthStatus.successful
+          : AuthStatus.passwordResetNotAllowed;
+    } else {
+      status = AuthStatus.userNotFound;
+    }
 
-      if (methods.isNotEmpty) {
-        status = methods.contains('password') ? AuthStatus.successful : AuthStatus.passwordResetNotAllowed;
-      } else {
-        status = AuthStatus.userNotFound;
-      }
-
-      return status;
-    }).catchError((e) => status = AuthExceptionHandler.handleAuthException(e));
+    return status;
+  }).catchError((e) => status = AuthExceptionHandler.handleAuthException(e));
 
   return status;
 }

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:links_app/styles/color.dart';
 import 'package:links_app/styles/size.dart';
 
+import '../../auth/result_handler.dart';
 import '../../connection/authentication.dart';
 import '../../main.dart';
+import '../message.dart';
 
 class GoogleButton extends StatefulWidget {
   const GoogleButton({super.key});
@@ -38,9 +40,9 @@ class _GoogleButtonState extends State<GoogleButton> {
           setState(() {
             _isProcessing = true;
           });
+          
           await signInWithGoogle().then((result) {
-            debugPrint(result.toString());
-            if (result != null) {
+            if (result == AuthStatus.successful) {
               Navigator.of(context).pop();
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
@@ -48,10 +50,12 @@ class _GoogleButtonState extends State<GoogleButton> {
                   builder: (context) => const MyHomePage(),
                 ),
               );
+            } else {
+              SystemMessage.showError(
+                context: context, message: AuthExceptionHandler.generateErrorMessage(result));
             }
-          }).catchError((error) {
-            debugPrint('Registration Error: $error');
           });
+
           setState(() {
             _isProcessing = false;
           });

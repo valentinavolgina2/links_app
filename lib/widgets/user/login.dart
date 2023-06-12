@@ -3,6 +3,7 @@ import 'package:links_app/main.dart';
 import 'package:links_app/styles/color.dart';
 import 'package:links_app/widgets/user/text_field.dart';
 
+import '../../auth/result_handler.dart';
 import '../../connection/authentication.dart';
 import '../../pages/password_reset.dart';
 import '../../pages/register.dart';
@@ -87,18 +88,19 @@ class _LoginButtonState extends State<LoginButton> {
     await signInWithEmailPassword(
             widget.emailController.text, widget.passwordController.text)
         .then((result) {
-      if (result != null) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const MyHomePage()),
-        );
 
-        SystemMessage.showSuccess(context: context, message: 'Welcome back!');
-      }
-    }).catchError((error) {
-      setState(() {
-        _error = error;
-      });
+        if (result == AuthStatus.successful) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const MyHomePage()),
+          );
+
+          SystemMessage.showSuccess(context: context, message: 'Welcome back!');
+        } else {
+          setState(() {
+            _error = AuthExceptionHandler.generateErrorMessage(result);
+          });
+        }
     });
   }
 

@@ -3,6 +3,7 @@ import 'package:links_app/main.dart';
 import 'package:links_app/styles/color.dart';
 import 'package:links_app/widgets/user/text_field.dart';
 
+import '../../auth/result_handler.dart';
 import '../../connection/authentication.dart';
 import '../../styles/size.dart';
 import '../forms/helper.dart';
@@ -74,18 +75,19 @@ class _UpdatePasswordButtonState extends State<UpdatePasswordButton> {
   void _update(BuildContext context) async {
     await changePassword(currentPassword: widget.passwordController.text, newPassword: widget.newPasswordController.text)
         .then((result) {
-      if (result != null) {
+
+      if (result == AuthStatus.successful) {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const MyHomePage()),
         );
 
         SystemMessage.showSuccess(context: context, message: 'Password was updated.');
+      } else {
+        setState(() {
+          _error = AuthExceptionHandler.generateErrorMessage(result);
+        });
       }
-    }).catchError((error) {
-      setState(() {
-        _error = error;
-      });
     });
   }
 
