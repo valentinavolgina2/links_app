@@ -70,8 +70,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    init();
     super.initState();
+    
+    init();
   }
 
   Future<void> init() async {

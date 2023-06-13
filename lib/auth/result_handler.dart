@@ -45,13 +45,13 @@ class AuthExceptionHandler {
       status = AuthStatus.unknown;
     } else if (e.message!.contains('invalid-email')) {
       status = AuthStatus.invalidEmail;
-    } else if (e.message!.contains('wrong-password')) {
+    } else if (e.message!.contains('wrong-password') || e.message!.contains('password is invalid')) {
       status = currentPassword ? AuthStatus.wrongCurrentPassword : AuthStatus.wrongPassword;
-    } else if (e.message!.contains('weak-password')) {
+    } else if (e.message!.contains('weak-password') || e.message!.contains('Password should be at least 6 characters')) {
       status = newPassword ? AuthStatus.weakNewPassword : AuthStatus.weakPassword;
-    } else if (e.message!.contains('email-already-in-use')) {
+    } else if (e.message!.contains('email-already-in-use') || e.message!.contains('email address is already in use')) {
       status = AuthStatus.emailAlreadyExists;
-    } else if (e.message!.contains('user-not-found')) {
+    } else if (e.message!.contains('user-not-found') || e.message!.contains('no user record')) {
       status = AuthStatus.userNotFound;
     } else {
       status = AuthStatus.unknown;

@@ -55,8 +55,9 @@ class _ListContainerState extends State<ListContainer> {
 
   @override
   void initState() {
-    init();
     super.initState();
+    
+    init();
   }
 
   Future<void> init() async {

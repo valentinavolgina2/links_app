@@ -232,7 +232,6 @@ Future<AuthStatus> resetPassword({required String email}) async {
 
   final emailValidationResult = emailValidator(email);
   if (emailValidationResult != null) {
-    debugPrint(emailValidationResult);
     status = AuthStatus.invalidEmail;
     return status;
   }

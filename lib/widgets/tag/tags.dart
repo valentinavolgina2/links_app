@@ -35,8 +35,9 @@ class _LinkTagsState extends State<LinkTags> {
 
   @override
   void initState() {
-    _controller.addListener(_updateSelectedTags);
     super.initState();
+    
+    _controller.addListener(_updateSelectedTags);
   }
 
   _updateSelectedTags() {

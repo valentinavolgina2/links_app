@@ -20,7 +20,7 @@ class PasswordResetPage extends StatelessWidget {
               child: const MyAppBar()),
       drawer: const MyDrawer(),
       body: LayoutBuilder(builder: (context, constraints) {
-        return SafeArea(
+        return const SafeArea(
           child: PasswordReset(),
         );
       }),
