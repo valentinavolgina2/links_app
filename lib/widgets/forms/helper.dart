@@ -4,8 +4,16 @@ import '../../styles/size.dart';
 
 class FormHelpers {
   static InputDecoration inputDecoration(
-      {String hintText = '', String? errorText, String? helperText}) {
+      {String hintText = '', String? errorText, String? helperText, TextEditingController? editingController}) {
     return InputDecoration(
+        suffixIcon: editingController == null
+          ? null
+          : IconButton(
+          onPressed: () {
+            editingController.clear();
+          },
+          icon: const Icon(Icons.clear),
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSizes.inputBorderRadius),
           borderSide: BorderSide(

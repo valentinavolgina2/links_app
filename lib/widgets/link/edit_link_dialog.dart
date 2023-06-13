@@ -64,7 +64,7 @@ class EditLinkDialog extends StatelessWidget {
                                     TextFormField(
                                         controller: editLinkNameController,
                                         decoration:
-                                            FormHelpers.inputDecoration(hintText: 'Name'),
+                                            FormHelpers.inputDecoration(hintText: 'Name', editingController: editLinkNameController),
                                         maxLength: linkNameMaxLength,
                                         validator: (value) => linkNameValidator(value)),
                                     SizedBox(height: AppSizes.medium),
@@ -73,7 +73,7 @@ class EditLinkDialog extends StatelessWidget {
                                     TextFormField(
                                         controller: editLinkUrlController,
                                         decoration:
-                                            FormHelpers.inputDecoration(hintText: 'Url'),
+                                            FormHelpers.inputDecoration(hintText: 'Url', editingController: editLinkUrlController),
                                         validator: (value) => linkUrlValidator(value)),
                                     SizedBox(height: AppSizes.medium),
                                     const LinkFormLabel(text: 'Category'),

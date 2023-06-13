@@ -57,7 +57,7 @@ class LinkAddDialog extends StatelessWidget {
                                   SizedBox(height: AppSizes.small),
                                   TextFormField(
                                     controller: linkNameController,
-                                    decoration: FormHelpers.inputDecoration(hintText: 'Name'),
+                                    decoration: FormHelpers.inputDecoration(hintText: 'Name', editingController: linkNameController),
                                     maxLength: linkNameMaxLength,
                                     validator: (value) => linkNameValidator(value),
                                   ),
@@ -66,7 +66,7 @@ class LinkAddDialog extends StatelessWidget {
                                   SizedBox(height: AppSizes.small),
                                   TextFormField(
                                     controller: linkUrlController,
-                                    decoration: FormHelpers.inputDecoration(hintText: 'Url'),
+                                    decoration: FormHelpers.inputDecoration(hintText: 'Url', editingController: linkUrlController),
                                     validator: (value) => linkUrlValidator(value),
                                   ),
                                   SizedBox(height: AppSizes.medium),

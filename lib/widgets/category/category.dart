@@ -40,19 +40,26 @@ class _LinkCategoryState extends State<LinkCategory> {
                 return widget.categoryOptions;
               }
               return widget.categoryOptions.where((String option) {
-                return option.toLowerCase().contains(textEditingValue.text.toLowerCase());
+                return option
+                    .toLowerCase()
+                    .contains(textEditingValue.text.toLowerCase());
               });
             },
             fieldViewBuilder:
                 (context, textEditingController, focusNode, onFieldSubmitted) {
               textEditingController.text = widget.initialCategory;
+
+              textEditingController.addListener(
+                () {
+                  widget.selectedCategory.value = textEditingController.text;
+                },
+              );
               return TextField(
                 controller: textEditingController,
                 focusNode: focusNode,
-                decoration: FormHelpers.inputDecoration(hintText: 'Category'),
-                onChanged: (value) {
-                  widget.selectedCategory.value = value;
-                },
+                decoration: FormHelpers.inputDecoration(
+                    hintText: 'Category',
+                    editingController: textEditingController),
               );
             },
             onSelected: (String selection) {

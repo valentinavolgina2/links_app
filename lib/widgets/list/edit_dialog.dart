@@ -37,7 +37,7 @@ class EditListDialog extends StatelessWidget {
                 SizedBox(height: AppSizes.small),
                 TextFormField(
                   controller: editNameController,
-                  decoration: FormHelpers.inputDecoration(hintText: 'Name'),
+                  decoration: FormHelpers.inputDecoration(hintText: 'Name', editingController: editNameController),
                   maxLength: listNameMaxLength,
                   validator: (value) => listNameValidator(value),
                 ),

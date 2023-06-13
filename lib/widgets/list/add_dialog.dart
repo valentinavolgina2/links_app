@@ -32,7 +32,7 @@ class AddListDialog extends StatelessWidget {
                   SizedBox(height: AppSizes.small),
                   TextFormField(
                     controller: addListController,
-                    decoration: FormHelpers.inputDecoration(hintText: 'Name'),
+                    decoration: FormHelpers.inputDecoration(hintText: 'Name', editingController: addListController),
                     maxLength: listNameMaxLength,
                     validator: (value) => listNameValidator(value),
                   ),
