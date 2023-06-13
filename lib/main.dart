@@ -71,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    
+
     init();
   }
 
@@ -135,10 +135,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void dispose() {
-    super.dispose();
-    _listsSubscription.cancel();
-    _listsDeleteSubscription.cancel();
     _listsChangeSubscription.cancel();
+    _listsDeleteSubscription.cancel();
+    _listsSubscription.cancel();
+    super.dispose();
   }
 
   LinearGradient _homePageGradient() {

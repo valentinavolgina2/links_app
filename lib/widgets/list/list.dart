@@ -56,7 +56,7 @@ class _ListContainerState extends State<ListContainer> {
   @override
   void initState() {
     super.initState();
-    
+
     init();
   }
 
@@ -181,10 +181,12 @@ class _ListContainerState extends State<ListContainer> {
 
   @override
   void dispose() {
-    super.dispose();
-    _linksSubscription.cancel();
-    _linksDeleteSubscription.cancel();
     _linksUpdateSubscription.cancel();
+    _linksDeleteSubscription.cancel();
+    _linksSubscription.cancel();
+    tagFilters.dispose();
+    
+    super.dispose();
   }
 
   @override

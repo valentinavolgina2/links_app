@@ -29,24 +29,28 @@ class ListPage extends StatelessWidget {
       body: LayoutBuilder(builder: (context, constraints) {
         return SafeArea(
           child: Padding(
-              padding: EdgeInsets.fromLTRB(AppSizes.small, AppSizes.small, AppSizes.small, AppSizes.large),
-              child: ListContainer(list: list, withName: false, allTags: _listTags, allCategories: _listCategories,)),
+              padding: EdgeInsets.fromLTRB(AppSizes.small, AppSizes.small,
+                  AppSizes.small, AppSizes.large),
+              child: ListContainer(
+                list: list,
+                withName: false,
+                allTags: _listTags,
+                allCategories: _listCategories,
+              )),
         );
       }),
       floatingActionButton: FloatingActionButton(
-
           onPressed: () {
             showDialog(
-              context: context,
-              barrierDismissible: false, // user must tap button for close dialog!
-              builder: (BuildContext context) {
-                return LinkAddDialog(
-                  list: list,
-                  listTags: _listTags.value,
-                  listCategories: _listCategories.value
-                );
-              }
-            );
+                context: context,
+                barrierDismissible:
+                    false, // user must tap button for close dialog!
+                builder: (BuildContext context) {
+                  return LinkAddDialog(
+                      list: list,
+                      listTags: _listTags.value,
+                      listCategories: _listCategories.value);
+                });
           },
           tooltip: 'Add new link',
           child: const Icon(Icons.add)),

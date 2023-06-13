@@ -36,7 +36,7 @@ class _LinkTagsState extends State<LinkTags> {
   @override
   void initState() {
     super.initState();
-    
+
     _controller.addListener(_updateSelectedTags);
   }
 
@@ -79,8 +79,7 @@ class _LinkTagsState extends State<LinkTags> {
                           children: [
                             Text(tag),
                             SizedBox(width: AppSizes.xsmall),
-                            Icon(Icons.cancel,
-                                size: AppSizes.deleteIcon),
+                            Icon(Icons.cancel, size: AppSizes.deleteIcon),
                           ],
                         ),
                         tooltip: 'Delete $tag',

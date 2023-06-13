@@ -24,10 +24,18 @@ class _PasswordResetState extends State<PasswordReset> {
   @override
   void initState() {
     super.initState();
-    
+
     _resetMessage.addListener(() {
       setState(() {});
     });
+  }
+
+  @override
+  void dispose() {
+    _resetMessage.dispose();
+    textControllerEmail.dispose();
+
+    super.dispose();
   }
 
   @override
