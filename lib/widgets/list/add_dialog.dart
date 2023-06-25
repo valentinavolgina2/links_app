@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:links_app/widgets/list/image.dart';
 
 import '../../styles/size.dart';
 import '../forms/add_list_btn.dart';
@@ -13,6 +15,7 @@ class AddListDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final TextEditingController addListController = TextEditingController();
     final addListFormKey = GlobalKey<FormState>();
+    final ValueNotifier<XFile?> imgNotifier = ValueNotifier<XFile?>(null);
 
     return Dialog(
       child: Container(
@@ -32,10 +35,13 @@ class AddListDialog extends StatelessWidget {
                   SizedBox(height: AppSizes.small),
                   TextFormField(
                     controller: addListController,
-                    decoration: FormHelpers.inputDecoration(hintText: 'Name', editingController: addListController),
+                    decoration: FormHelpers.inputDecoration(
+                        hintText: 'Name', editingController: addListController),
                     maxLength: listNameMaxLength,
                     validator: (value) => listNameValidator(value),
                   ),
+                  SizedBox(height: AppSizes.medium),
+                  ImageUpload(imgNotifier: imgNotifier),
                   SizedBox(height: AppSizes.medium),
                   Row(
                       mainAxisSize: MainAxisSize.max,
@@ -44,7 +50,8 @@ class AddListDialog extends StatelessWidget {
                         const FormCancelButton(),
                         ListAddButton(
                             formKey: addListFormKey,
-                            nameController: addListController)
+                            nameController: addListController,
+                            imgNotifier: imgNotifier)
                       ])
                 ],
               )),

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import '../firebase_options.dart';
 
@@ -16,6 +17,8 @@ class DB {
   static const _authEmulatorPort = 9099;
   static const _authEmulatorHost = 'localhost';
 
+  static const _storageEmulatorPort = 9199;
+
   static Future<void> connect() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -25,7 +28,10 @@ class DB {
       FirebaseDatabase.instance
           .useDatabaseEmulator(_dbEmulatorHost, _dbEmulatorPort);
 
-      await FirebaseAuth.instance.useAuthEmulator(_authEmulatorHost, _authEmulatorPort);
+      await FirebaseAuth.instance
+          .useAuthEmulator(_authEmulatorHost, _authEmulatorPort);
+
+      await FirebaseStorage.instance.useStorageEmulator(_authEmulatorHost, _storageEmulatorPort);
     }
   }
 
