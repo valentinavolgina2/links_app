@@ -26,8 +26,7 @@ class ListProvider {
       await newList.set({'name': name, 'img': ''});
 
       if (img != null && newList.key != null) {
-        await _updateListImage(
-            userId: userId, listId: newList.key!, file: img);
+        await _updateListImage(userId: userId, listId: newList.key!, file: img);
       }
     } catch (err) {
       debugPrint(err.toString());
@@ -36,12 +35,12 @@ class ListProvider {
   }
 
   static Future<void> deleteList(LinksList list) async {
+    await _deleteListImage(listId: list.id, userId: list.userId);
+
     final listRef = userlistsRef(userId: list.userId).child(list.id);
     await listRef.remove();
 
     await LinkProvider.listLinksRef(listId: list.id).remove();
-
-    // TODO: remove img
   }
 
   static Future<void> updateList(
@@ -60,7 +59,7 @@ class ListProvider {
 
     try {
       if (img == null) {
-        await _deleteListImage(list: list);
+        await _deleteListImage(listId: list.id, userId: list.userId);
       } else {
         await _updateListImage(userId: list.userId, listId: list.id, file: img);
       }
@@ -91,13 +90,15 @@ class ListProvider {
       final fileUrl = await res.ref.getDownloadURL();
 
       final listRef = userlistsRef(userId: userId).child(listId);
-      await listRef.update({
-        'img': fileUrl});
+      await listRef.update({'img': fileUrl});
     });
     xhr.send();
   }
 
-  static Future<void> _deleteListImage({required LinksList list}) async {
-    await FirebaseStorage.instance.ref().child('images/${list.id}').delete();
+  static Future<void> _deleteListImage({required String listId, required String userId}) async {
+    await FirebaseStorage.instance.ref().child('images/$listId').delete();
+
+    final listRef = userlistsRef(userId: userId).child(listId);
+    await listRef.update({'img': ''});
   }
 }

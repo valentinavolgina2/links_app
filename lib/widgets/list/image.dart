@@ -23,7 +23,7 @@ class _ImageUploadState extends State<ImageUpload> {
     final picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
-      widget.currentImageUrl = null;
+      widget.currentImageUrl = '';
 
       widget.imgNotifier.value = image;
 
@@ -57,39 +57,51 @@ class _ImageUploadState extends State<ImageUpload> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: GestureDetector(
-      onTap: () {
-        imgFromGallery();
-      },
-      child: Container(
-          constraints: const BoxConstraints(
-              minWidth: double.infinity, minHeight: 100, maxHeight: 300),
-          decoration: BoxDecoration(color: AppColors.lightGrey),
-          child: widget.currentImageUrl != null
-          ? Image.network(
-                  widget.currentImageUrl!,
-                  width: double.infinity,
-                  fit: BoxFit.fitWidth,
-                )
-          : _imgBytes == null
-              ? Icon(
-                  Icons.camera_alt,
-                  color: AppColors.darkText,
-                )
-              : Image.memory(
-                  _imgBytes!,
-                  width: double.infinity,
-                  fit: BoxFit.fitWidth,
-                )
-          // Image.network(
-          //           //   _imgUrl!,
-          //           //   width: 100,
-          //           //   height: 100,
-          //           //   fit: BoxFit.fitHeight,
-          //           // ),
-          //           )
-          ),
-    ));
+    return Stack(
+      children: [
+        Center(
+          child: GestureDetector(
+            onTap: () {
+              imgFromGallery();
+            },
+            child: Container(
+                constraints: const BoxConstraints(
+                    minWidth: double.infinity, minHeight: 100, maxHeight: 300),
+                decoration: BoxDecoration(color: AppColors.lightGrey),
+                child: widget.currentImageUrl != ''
+                ? Image.network(
+                        widget.currentImageUrl!,
+                        width: double.infinity,
+                        fit: BoxFit.fitWidth,
+                      )
+                : _imgBytes == null
+                    ? Icon(
+                        Icons.camera_alt,
+                        color: AppColors.darkText,
+                      )
+                    : Image.memory(
+                        _imgBytes!,
+                        width: double.infinity,
+                        fit: BoxFit.fitWidth,
+                      )
+          )
+        )),
+        widget.currentImageUrl != '' || _imgBytes != null
+        ? Positioned(
+          top: 5,
+          right: 5,
+          child: GestureDetector(
+              onTap: (){
+                setState(() {
+                  widget.currentImageUrl = '';
+                  widget.imgNotifier.value = null;
+                  _imgBytes = null;
+                });
+              },
+              child: const Icon(Icons.close),
+        ))
+        : const SizedBox(),
+      ],
+    );
   }
 }
