@@ -200,7 +200,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     physics:
                                         const NeverScrollableScrollPhysics(),
                                     primary: true,
-                                    childAspectRatio: 1.5,
+                                    childAspectRatio: 1.2,
                                     crossAxisCount: crossAxisCountByWidth(
                                         constraints.maxWidth),
                                     mainAxisSpacing: 2,

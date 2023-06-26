@@ -32,11 +32,9 @@ class EditListDialog extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Editing ${list.name}',
+                Text('Edit list name',
                     style: TextStyle(fontSize: AppSizes.textTitle)),
                 SizedBox(height: AppSizes.medium),
-                const Text('Name'),
-                SizedBox(height: AppSizes.small),
                 TextFormField(
                   controller: editNameController,
                   decoration: FormHelpers.inputDecoration(hintText: 'Name', editingController: editNameController),
