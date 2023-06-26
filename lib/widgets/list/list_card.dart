@@ -14,16 +14,17 @@ class ListCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Container(
-        height: 300,
+        //constraints: BoxConstraints(minHeight: 100, maxHeight: 400),
+        //height: 300,
         decoration: BoxDecoration(
           image: list.imgUrl == '' ? null : DecorationImage(
-            opacity: 0.5,
-            fit: BoxFit.fitWidth,  //I assumed you want to occupy the entire space of the card
+            opacity: 0.4,
+            fit: BoxFit.cover,  //I assumed you want to occupy the entire space of the card
             image: NetworkImage(list.imgUrl),
           ),
         ),
         child: ListTile(
-            title: Center(child: Container(padding: EdgeInsets.all(AppSizes.small), color: AppColors.whiteText, child: Text(list.name))),
+            title: Text(list.name),
             trailing: ListPopupMenu(list: list),
             onTap: () {
               Navigator.push(
@@ -33,29 +34,5 @@ class ListCard extends StatelessWidget {
             }),
       ),
     );
-  }
-}
-
-class ListImage extends StatelessWidget {
-  const ListImage({super.key, required this.list});
-  final LinksList list;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(
-          minWidth: double.infinity, minHeight: 100, maxHeight: 300),
-      decoration: BoxDecoration(color: AppColors.lightGrey),
-      child: list.imgUrl == ''
-          ? Icon(
-              Icons.camera_alt,
-              color: AppColors.darkText,
-            )
-          : Image.network(
-              list.imgUrl,
-              width: double.infinity,
-              fit: BoxFit.fitWidth,
-            )
-      );
   }
 }

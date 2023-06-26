@@ -156,6 +156,12 @@ class _MyHomePageState extends State<MyHomePage> {
     final TextStyle titleStyle =
         TextStyle(color: AppColors.darkText, fontSize: AppSizes.textTitle);
 
+    int crossAxisCountByWidth(width) {
+      const itemMinWidth = 190;
+
+      return (width < itemMinWidth) ? 1 : width ~/ itemMinWidth;
+    }
+
     return Scaffold(
       appBar: ResponsiveWidget.isSmallScreen(context)
           ? smallScreenAppBar()
@@ -163,39 +169,49 @@ class _MyHomePageState extends State<MyHomePage> {
               preferredSize: Size(screenSize.width, 1000),
               child: const MyAppBar()),
       drawer: const MyDrawer(),
-      body: SafeArea(
-          child: Container(
-        decoration: BoxDecoration(
-          gradient: _homePageGradient(),
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(AppSizes.small),
-          child: Center(
+      body: LayoutBuilder(builder: (context, constraints) {
+        return SafeArea(
             child: Container(
-                constraints: BoxConstraints(maxWidth: AppSizes.listMaxWidth),
-                child: uid == null
-                    ? const NeedLoginPage()
-                    : loading
-                        ? null
-                        : myLists.isEmpty
-                            ? const NoListsPage()
-                            : ListTile(
-                                title: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: AppSizes.medium,
-                                        horizontal: AppSizes.small),
-                                    child: Text('My lists',
-                                        style: TextStyle(
-                                            fontSize: titleStyle.fontSize))),
-                                subtitle: ListView(
-                                  children: myLists
-                                      .map((list) => ListCard(list: list))
-                                      .toList(),
-                                ),
-                              )),
+          decoration: BoxDecoration(
+            gradient: _homePageGradient(),
           ),
-        ),
-      )),
+          child: Padding(
+            padding: EdgeInsets.all(AppSizes.small),
+              child: Container(
+                height: double.infinity,
+                width: double.infinity,
+                  child: uid == null
+                      ? const Center(child: NeedLoginPage())
+                      : loading
+                          ? null
+                          : myLists.isEmpty
+                              ? const NoListsPage()
+                              : ListTile(
+                                  title: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: AppSizes.medium,
+                                          horizontal: AppSizes.small),
+                                      child: Text('My lists',
+                                          style: TextStyle(
+                                              fontSize: titleStyle.fontSize))),
+                                  subtitle: GridView.count(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    primary: true,
+                                    childAspectRatio: 1.5,
+                                    crossAxisCount: crossAxisCountByWidth(
+                                        constraints.maxWidth),
+                                    mainAxisSpacing: 2,
+                                    crossAxisSpacing: 2,
+                                    children: myLists
+                                        .map((list) => ListCard(list: list))
+                                        .toList(),
+                                  ),
+                                )),
+          ),
+        ));
+      }),
       floatingActionButton: uid == null
           ? null
           : FloatingActionButton(

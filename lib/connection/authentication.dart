@@ -248,7 +248,7 @@ Future<AuthStatus> resetPassword({required String email}) async {
 }
 
 Future<String> signOut() async {
-  if (googleSignIn.clientId != null) {
+  if (signedInWithSocial) {
     await googleSignIn.signOut();
   }
 
