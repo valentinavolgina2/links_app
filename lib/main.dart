@@ -112,7 +112,8 @@ class _MyHomePageState extends State<MyHomePage> {
         setState(() {
           final listToChange =
               myLists.where((list) => list.id == event.snapshot.key).first;
-          listToChange.name = event.snapshot.value.toString();
+
+          listToChange.updateFromSnapshot(event.snapshot);
         });
       },
       onError: (Object o) {

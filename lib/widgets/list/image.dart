@@ -6,9 +6,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:links_app/styles/color.dart';
 
 class ImageUpload extends StatefulWidget {
-  const ImageUpload({super.key, required this.imgNotifier});
+  ImageUpload(
+      {super.key, required this.imgNotifier, this.currentImageUrl});
 
   final ValueNotifier<XFile?> imgNotifier;
+  String? currentImageUrl;
 
   @override
   State<ImageUpload> createState() => _ImageUploadState();
@@ -21,6 +23,8 @@ class _ImageUploadState extends State<ImageUpload> {
     final picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
+      widget.currentImageUrl = null;
+
       widget.imgNotifier.value = image;
 
       _imgBytes = await image.readAsBytes();
@@ -62,7 +66,13 @@ class _ImageUploadState extends State<ImageUpload> {
           constraints: const BoxConstraints(
               minWidth: double.infinity, minHeight: 100, maxHeight: 300),
           decoration: BoxDecoration(color: AppColors.lightGrey),
-          child: _imgBytes == null
+          child: widget.currentImageUrl != null
+          ? Image.network(
+                  widget.currentImageUrl!,
+                  width: double.infinity,
+                  fit: BoxFit.fitWidth,
+                )
+          : _imgBytes == null
               ? Icon(
                   Icons.camera_alt,
                   color: AppColors.darkText,

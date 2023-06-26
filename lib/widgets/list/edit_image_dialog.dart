@@ -6,60 +6,45 @@ import '../../model/list.dart';
 import '../../styles/size.dart';
 import '../forms/cancel_btn.dart';
 import '../forms/helper.dart';
-import '../forms/update_list_btn.dart';
-import '../forms/validation.dart';
+import '../forms/update_list_image_btn.dart';
 
-class EditListDialog extends StatelessWidget {
-  const EditListDialog({super.key, required this.list});
+class EditListImageDialog extends StatelessWidget {
+  const EditListImageDialog({super.key, required this.list});
 
   final LinksList list;
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController editNameController = TextEditingController();
-    editNameController.text = list.name;
-
-    final formKey = GlobalKey<FormState>();
+    final ValueNotifier<XFile?> imgNotifier = ValueNotifier<XFile?>(null);
 
     return Dialog(
       child: Container(
         constraints: FormHelpers.formMaxWidthConstraints(),
         child: Padding(
           padding: EdgeInsets.all(AppSizes.medium),
-          child: Form(
-            key: formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Editing ${list.name}',
+                Text('Update image',
                     style: TextStyle(fontSize: AppSizes.textTitle)),
                 SizedBox(height: AppSizes.medium),
-                const Text('Name'),
-                SizedBox(height: AppSizes.small),
-                TextFormField(
-                  controller: editNameController,
-                  decoration: FormHelpers.inputDecoration(hintText: 'Name', editingController: editNameController),
-                  maxLength: listNameMaxLength,
-                  validator: (value) => listNameValidator(value),
-                ),
+                ImageUpload(imgNotifier: imgNotifier, currentImageUrl: list.imgUrl),
                 SizedBox(height: AppSizes.medium),
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     const FormCancelButton(),
-                    ListUpdateButton(
-                      list: list, 
-                      formKey: formKey, 
-                      editNameController: editNameController
+                    ListImageUpdateButton(
+                      list: list,
+                      imgNotifier: imgNotifier
                     )
                   ]
                 )
               ],
             )),
         ),
-      ),
     );
   }
 }

@@ -22,15 +22,16 @@ class ListProvider {
     name = escape(name); //replace <, >, &, ' and " with HTML entities
 
     try {
-      if (img != null) {
-        await _addListWithImage(name: name, userId: userId, file: img);
-      } else {
-        final DatabaseReference newList = userlistsRef(userId: userId).push();
+      final DatabaseReference newList = userlistsRef(userId: userId).push();
+      await newList.set({'name': name, 'img': ''});
 
-        await newList.set({'name': name, 'img': ''});
+      if (img != null && newList.key != null) {
+        await _updateListImage(
+            userId: userId, listId: newList.key!, file: img);
       }
     } catch (err) {
       debugPrint(err.toString());
+      return;
     }
   }
 
@@ -48,40 +49,55 @@ class ListProvider {
     newName = escape(newName); //replace <, >, &, ' and " with HTML entities
 
     final listRef = userlistsRef(userId: list.userId).child(list.id);
-    await listRef.set({'name': newName, 'img': list.imgUrl});
+    await listRef.update({'name': newName});
   }
 
-  static Future<void> _addListWithImage(
-      {required String name,
-      required String userId,
-      required XFile file}) async {
+  static Future<void> updateListImage(
+      {required LinksList list, XFile? img}) async {
+    if (img == null && list.imgUrl == '') {
+      return;
+    }
+
     try {
-      final url = file.path;
-      SettableMetadata meta =
-          SettableMetadata(contentType: mime(basename(file.name)));
-
-      var xhr = html.HttpRequest();
-      xhr.open("GET", url);
-      xhr.responseType = "blob";
-      xhr.addEventListener('load', (e) async {
-        final blob = xhr.response;
-
-        final res = await FirebaseStorage.instance
-            .ref()
-            .child('images/${file.name}')
-            .putBlob(blob, meta);
-
-        final fileUrl = await res.ref.getDownloadURL();
-
-        final DatabaseReference newList = userlistsRef(userId: userId).push();
-        await newList.set({'name': name, 'img': fileUrl});
-      });
-      xhr.send();
-
-      /// Use fileURL to save in Firebase document or show the uploaded file
+      if (img == null) {
+        await _deleteListImage(list: list);
+      } else {
+        await _updateListImage(userId: list.userId, listId: list.id, file: img);
+      }
     } catch (err) {
       debugPrint(err.toString());
-      throw Exception(['Error occured during file uploading.']);
     }
+  }
+
+  static Future<void> _updateListImage(
+      {required String userId,
+      required String listId,
+      required XFile file}) async {
+    final url = file.path;
+    SettableMetadata meta =
+        SettableMetadata(contentType: mime(basename(file.name)));
+
+    var xhr = html.HttpRequest();
+    xhr.open("GET", url);
+    xhr.responseType = "blob";
+    xhr.addEventListener('load', (e) async {
+      final blob = xhr.response;
+
+      final res = await FirebaseStorage.instance
+          .ref()
+          .child('images/$listId')
+          .putBlob(blob, meta);
+
+      final fileUrl = await res.ref.getDownloadURL();
+
+      final listRef = userlistsRef(userId: userId).child(listId);
+      await listRef.update({
+        'img': fileUrl});
+    });
+    xhr.send();
+  }
+
+  static Future<void> _deleteListImage({required LinksList list}) async {
+    await FirebaseStorage.instance.ref().child('images/${list.id}').delete();
   }
 }

@@ -7,17 +7,14 @@ import '../../providers/list.dart';
 import '../../styles/size.dart';
 import '../message.dart';
 
-class ListUpdateButton extends StatelessWidget {
-  const ListUpdateButton({
-    super.key, 
-    required this.list, 
-    required this.formKey, 
-    required this.editNameController
-  });
+class ListImageUpdateButton extends StatelessWidget {
+  const ListImageUpdateButton(
+      {super.key,
+      required this.list,
+      required this.imgNotifier});
 
   final LinksList list;
-  final GlobalKey<FormState> formKey;
-  final TextEditingController editNameController;
+  final ValueNotifier<XFile?> imgNotifier;
 
   @override
   Widget build(BuildContext context) {
@@ -28,16 +25,11 @@ class ListUpdateButton extends StatelessWidget {
         padding: EdgeInsets.only(left: AppSizes.small, right: AppSizes.small),
         child: FilledButton(
           onPressed: () {
-            if (formKey.currentState!.validate()) {
-              ListProvider.updateList(
-                list: list, 
-                newName: editNameController.text
-              );
-              Navigator.of(context).pop();
+            ListProvider.updateListImage(list: list, img: imgNotifier.value);
+            Navigator.of(context).pop();
 
-              SystemMessage.showSuccess(
-                  context: context, message: 'The changes were saved.');
-            }
+            SystemMessage.showSuccess(
+                context: context, message: 'The changes were saved.');
           },
           child: const SaveButton(),
         ),

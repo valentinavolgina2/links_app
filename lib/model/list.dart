@@ -23,4 +23,9 @@ class LinksList {
       : id = snapshot.key!,
         name = ((snapshot.value!) as Map<String, dynamic>)[columnName]!,
         imgUrl = ((snapshot.value!) as Map<String, dynamic>)[columnImg]!;
+
+  void updateFromSnapshot(DataSnapshot snapshot) {
+    name = ((snapshot.value!) as Map<String, dynamic>)[columnName]!;
+    imgUrl = ((snapshot.value!) as Map<String, dynamic>)[columnImg]!;
+  }
 }

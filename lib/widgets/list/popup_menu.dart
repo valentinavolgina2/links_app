@@ -4,6 +4,7 @@ import '../../model/list.dart';
 import '../../styles/size.dart';
 import 'delete_dialog.dart';
 import 'edit_dialog.dart';
+import 'edit_image_dialog.dart';
 
 
 class ListPopupMenu extends StatelessWidget {
@@ -39,6 +40,16 @@ class ListPopupMenu extends StatelessWidget {
           value: 3,
           child: Row(
             children: [
+              const Icon(Icons.image),
+              SizedBox(width: AppSizes.small),
+              const Text("Edit list image")
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 4,
+          child: Row(
+            children: [
               const Icon(Icons.close),
               SizedBox(width: AppSizes.small),
               const Text("Cancel")
@@ -61,6 +72,14 @@ class ListPopupMenu extends StatelessWidget {
             barrierDismissible: false, // user must tap button for close dialog!
             builder: (BuildContext context) {
               return EditListDialog(list: list);
+            },
+          );
+        } else if (value == 3) {
+          showDialog(
+            context: context,
+            barrierDismissible: false, // user must tap button for close dialog!
+            builder: (BuildContext context) {
+              return EditListImageDialog(list: list);
             },
           );
         }
