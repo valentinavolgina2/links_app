@@ -1,4 +1,6 @@
 import 'dart:html' as html;
+import 'dart:io';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -78,6 +80,7 @@ class ListProvider {
 
     var xhr = html.HttpRequest();
     xhr.open("GET", url);
+    xhr.setRequestHeader('Access-Control-Allow-Origin', 'https://links-app-d361f.web.app');
     xhr.responseType = "blob";
     xhr.addEventListener('load', (e) async {
       final blob = xhr.response;
@@ -95,7 +98,8 @@ class ListProvider {
     xhr.send();
   }
 
-  static Future<void> _deleteListImage({required String listId, required String userId}) async {
+  static Future<void> _deleteListImage(
+      {required String listId, required String userId}) async {
     await FirebaseStorage.instance.ref().child('images/$listId').delete();
 
     final listRef = userlistsRef(userId: userId).child(listId);
