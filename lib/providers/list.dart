@@ -1,5 +1,4 @@
 import 'dart:html' as html;
-import 'dart:io';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -80,7 +79,6 @@ class ListProvider {
 
     var xhr = html.HttpRequest();
     xhr.open("GET", url);
-    xhr.setRequestHeader('Access-Control-Allow-Origin', 'https://links-app-d361f.web.app');
     xhr.responseType = "blob";
     xhr.addEventListener('load', (e) async {
       final blob = xhr.response;

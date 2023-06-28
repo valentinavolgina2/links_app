@@ -6,7 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import '../firebase_options.dart';
 
 class DB {
-  static const _useEmulator = true;
+  static const _useEmulator = false;
   // The port we've set the Firebase Database emulator to run on via the
   // `firebase.json` configuration file.
   static const _dbEmulatorPort = 9000;
