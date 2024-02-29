@@ -187,29 +187,31 @@ class _MyHomePageState extends State<MyHomePage> {
                           ? null
                           : myLists.isEmpty
                               ? const NoListsPage()
-                              : ListTile(
-                                  title: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: AppSizes.medium,
-                                          horizontal: AppSizes.small),
-                                      child: Text('My lists',
-                                          style: TextStyle(
-                                              fontSize: titleStyle.fontSize))),
-                                  subtitle: GridView.count(
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    primary: true,
-                                    childAspectRatio: 1.2,
-                                    crossAxisCount: crossAxisCountByWidth(
-                                        constraints.maxWidth),
-                                    mainAxisSpacing: 2,
-                                    crossAxisSpacing: 2,
-                                    children: myLists
-                                        .map((list) => ListCard(list: list))
-                                        .toList(),
-                                  ),
-                                )),
+                              : SingleChildScrollView(
+                                child: ListTile(
+                                      title: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: AppSizes.medium,
+                                              horizontal: AppSizes.small),
+                                          child: Text('My lists',
+                                              style: TextStyle(
+                                                  fontSize: titleStyle.fontSize))),
+                                      subtitle: GridView.count(
+                                        physics: const NeverScrollableScrollPhysics(),
+                                            shrinkWrap: true,
+                                            primary: true,
+                                            childAspectRatio: 1.2,
+                                            crossAxisCount: crossAxisCountByWidth(
+                                                constraints.maxWidth),
+                                            mainAxisSpacing: 2,
+                                            crossAxisSpacing: 2,
+                                            children: myLists
+                                                .map((list) => ListCard(list: list))
+                                                .toList(),
+                                          ),
+                                    ),
+                              ),
+                              ),
           ),
         ));
       }),
