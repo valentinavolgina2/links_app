@@ -1,16 +1,11 @@
-# links_app
+Flutter web application that enables users to organize and manage lists of links efficiently. Key features include:
 
-A new Flutter project.
+- Link Organization: Users can save and categorize links into customizable categories, facilitating easy navigation and access to saved content.
 
-## Getting Started
+- Tagging System: Each link can be tagged with keywords, allowing users to filter and search for specific content quickly and effectively.
 
-This project is a starting point for a Flutter application.
+- Photo Upload: The application supports the uploading of photos for each list of links, providing visual context and enhancing user experience.
 
-A few resources to get you started if this is your first Flutter project:
+- Authentication Options: Implemented Google Sign-In and standard email/password authentication mechanisms to ensure secure access and personalized user accounts.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Firebase Integration: Leveraged Firebase services, including Firebase Authentication and Realtime Database, to power the backend infrastructure, enabling seamless data synchronization and real-time updates across devices.
